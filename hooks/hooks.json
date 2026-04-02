@@ -6,7 +6,7 @@
         "matcher": "Bash",
         "pattern": "rm -rf|git reset --hard|git push --force|git checkout \\.|git clean -f|drop table|truncate",
         "action": "deny",
-        "message": "Destructive operation blocked by Forge safety hook. Use /careful mode or confirm explicitly."
+        "message": "Destructive operation blocked. Use /careful mode or confirm explicitly."
       },
       {
         "description": "Block --no-verify on git commits",
@@ -16,18 +16,47 @@
         "message": "Skipping hooks/signing is blocked. Fix the underlying issue instead."
       },
       {
-        "description": "Detect hardcoded secrets before they enter code",
-        "matcher": "Write|Edit",
-        "pattern": "sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|AKIA[A-Z0-9]{16}|password\\s*=\\s*['\"][^'\"]+['\"]",
+        "description": "Block dev server starts (agents should never start long-running processes)",
+        "matcher": "Bash",
+        "pattern": "runserver|npm run dev|yarn dev|bun run dev|flask run|uvicorn.*--reload",
         "action": "deny",
-        "message": "Potential secret detected in code. Use environment variables instead."
+        "message": "Agents must not start dev servers. Dev servers are started by the user, not the agent."
       },
       {
-        "description": "Block writes to config protection files without confirmation",
+        "description": "Detect hardcoded secrets before they enter code",
         "matcher": "Write|Edit",
-        "pattern": ".ruff.toml|.eslintrc|biome.json|pyproject.toml",
+        "pattern": "sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|AKIA[A-Z0-9]{16}|password\\s*=\\s*['\"][^'\"]{8,}['\"]|api_key\\s*=\\s*['\"]",
+        "action": "deny",
+        "message": "Secret detected in code. Use environment variables (os.environ) instead."
+      },
+      {
+        "description": "TDD guard — warn if writing code without test first",
+        "matcher": "Write|Edit",
+        "pattern": "apps/*/models.py|apps/*/api.py|apps/*/services.py|apps/*/views.py",
+        "check": "no_matching_test_file",
         "action": "warn",
-        "message": "Modifying project config file. Verify this is intentional."
+        "message": "TDD: Writing implementation code. Verify the TEST was written FIRST. If not, write the test before this code."
+      },
+      {
+        "description": "Smart-approve safe read-only commands",
+        "matcher": "Bash",
+        "pattern": "^(ls|cat|head|tail|wc|grep|find|git status|git log|git diff|git branch|pwd|echo|date|which|type|file|stat|du|df)\\b",
+        "action": "approve",
+        "message": "Safe read-only command — auto-approved."
+      },
+      {
+        "description": "Smart-approve formatting and linting",
+        "matcher": "Bash",
+        "pattern": "^(black|ruff|isort|prettier|eslint)\\b",
+        "action": "approve",
+        "message": "Formatting/linting command — auto-approved."
+      },
+      {
+        "description": "Block writes to config files without confirmation",
+        "matcher": "Write|Edit",
+        "pattern": ".ruff.toml|.eslintrc|biome.json|pyproject.toml|settings.py",
+        "action": "warn",
+        "message": "Modifying config file. Verify this is intentional."
       },
       {
         "description": "Warn on file size limit",
@@ -65,12 +94,27 @@
         "pattern": "*.py",
         "check": "grep -n 'TODO\\|FIXME\\|HACK' {file}",
         "action": "warn",
-        "message": "Technical debt marker found. Implement now or create a GitHub Issue — no TODOs in committed code."
+        "message": "Technical debt marker found. Implement now or create a GitHub Issue."
+      },
+      {
+        "description": "Learning log — capture insights continuously",
+        "matcher": "Write|Edit",
+        "pattern": "*.py|*.md",
+        "action": "remind",
+        "message": "If this change revealed a non-obvious pattern or gotcha, capture it now with /learn."
+      },
+      {
+        "description": "Commit guard — enforce conventional format",
+        "matcher": "Bash",
+        "pattern": "git commit",
+        "check": "commit_message_format",
+        "action": "warn",
+        "message": "Commit message must follow conventional format: type(scope): description (feat, fix, docs, refactor, test, chore)"
       }
     ],
     "SessionStart": [
       {
-        "description": "Load playbook and rules at session start",
+        "description": "Load playbook, rules, and ethos at session start",
         "action": "load",
         "files": [
           "playbook/strategies.md",
@@ -79,24 +123,40 @@
         ]
       },
       {
-        "description": "Load last checkpoint if available",
+        "description": "Load last checkpoint and project index if available",
         "action": "load",
-        "files": ["docs/checkpoints/INDEX.md"],
+        "files": [
+          "docs/checkpoints/INDEX.md",
+          "PROJECT_INDEX.md"
+        ],
         "optional": true
+      },
+      {
+        "description": "Report session context to user",
+        "action": "remind",
+        "message": "Session started. Loaded: playbook, rules, ethos. Run /sc:load for full context restoration."
       }
     ],
     "Stop": [
       {
         "description": "Auto-save session summary on exit",
         "action": "remind",
-        "message": "Session ending — consider running /learn to save any new insights to the playbook."
+        "message": "Session ending. Run /learn for new insights. Run /sc:save to persist session context."
       }
     ],
     "PreCompact": [
       {
         "description": "Save state before context compression",
         "action": "remind",
-        "message": "Context compacting — verify important context (current task, spec section, test status) is preserved."
+        "message": "Context compacting — verify: current task, spec section, test status, and any in-progress work are preserved."
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "description": "Remind about handoff format after implementation",
+        "action": "remind",
+        "condition": "implementation_complete",
+        "message": "Implementation done? Use the standardized handoff format (docs/patterns/handoff-protocol.md)."
       }
     ]
   }

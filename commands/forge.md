@@ -72,7 +72,11 @@ Everything else runs autonomously.
    - Push to GitHub
    - Git: commit "init: scaffold project"
 
-7. Run `/sc:index-repo` on the new project
+7. Run @code-archaeologist on the scaffolded project
+   - Baseline assessment: architecture, quality metrics, file structure
+   - Identifies any scaffold issues before building on top
+
+8. Run `/sc:index-repo` on the new project
    - Generates PROJECT_INDEX.md (94% token savings per session)
    - Every future agent loads the index instead of scanning the full repo
 
@@ -108,8 +112,14 @@ Everything else runs autonomously.
 
 ### Phase 2: Architect
 
-11. Run `/design-doc` on the proposal
-    - Output: docs/design-doc.md (10 sections including API contracts)
+11. Run @api-architect to design API contracts
+    - Technology-agnostic contracts for EVERY endpoint
+    - Exact request/response/error shapes
+    - Both backend and frontend agents read SAME contract
+    - Output: docs/api-contracts.md
+
+12. Run `/design-doc` on the proposal + API contracts
+    - Output: docs/design-doc.md (10 sections, Section 4 references api-contracts.md)
     - **REVIEW:** @spec-panel validates:
       - Every design decision has "Will implement X because" + alternatives?
       - API contracts in Section 4 have exact request/response/error shapes?
