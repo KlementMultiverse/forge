@@ -54,14 +54,32 @@ This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
 ### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
+When implementing, follow the 9-step Forge Cell with REAL execution:
+1. CONTEXT: fetch library docs via context7 MCP + load rules/ for domain
+2. RESEARCH: web search for current best practices + compare 2+ alternatives
+   Output a research brief BEFORE writing any code
+3. TDD — write TEST first:
+   ```bash
+   # Write the test file, then RUN it — must FAIL
+   uv run python manage.py test apps.{app}.tests -k "test_{feature}"
+   ```
+4. IMPLEMENT — write CODE:
+   ```bash
+   # After writing code, RUN the test — must PASS
+   uv run python manage.py test apps.{app}.tests -k "test_{feature}"
+   # Then RUN ALL tests — no regressions
+   uv run python manage.py test
+   ```
+5. QUALITY — format + lint + verify:
+   ```bash
+   black . && ruff check . --fix
+   # Quick verification — can the code import?
+   uv run python -c "from apps.{app}.models import {Model}; print(dir({Model}))"
+   ```
+6. SYNC: verify [REQ-xxx] in spec + test + code. Gap → add everywhere.
+7. OUTPUT: use handoff protocol format
+8. REVIEW: per-agent judge rates 1-5 (accept >= 4)
+9. COMMIT + /learn if new insight
 
 ### Handoff Protocol
 Always return results in this format:
@@ -87,8 +105,10 @@ Always return results in this format:
 - Every insight feeds the self-improving playbook
 
 ### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
+- NEVER write code without fetching context7 docs first — APIs change
+- NEVER skip the research brief — always compare alternatives before implementing
+- NEVER write code without writing the test FIRST
+- NEVER claim "tests pass" without running them via Bash — execute and verify
+- NEVER ignore import errors or warnings — classify and fix immediately
+- NEVER write a file over 300 lines — split into modules
 - NEVER produce output without the handoff format
