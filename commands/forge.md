@@ -9,98 +9,257 @@ $ARGUMENTS — A one-sentence description of what to build (e.g., "a clinic mana
 
 <system-reminder>
 This is the master orchestration command. It runs ALL stages sequentially.
+
+REVIEWER RULE: Every agent output gets reviewed. NEVER skip the review step.
+- Phase 0-2: @spec-panel or domain expert reviews
+- Phase 3: Per-agent domain judge rates 1-5
+- Phase 3 end: /review (inline staff-engineer review)
+- All gates: CodeRabbit reviews PR → 0 suggestions required
+
+CODERABBIT RULE: Every /gate creates a PR and waits for CodeRabbit.
+- 0 suggestions → PASS → proceed to next phase
+- >0 suggestions → FIX each one → push → wait for re-review → repeat until 0
+- NEVER skip CodeRabbit. NEVER proceed with open suggestions.
+
 The ONLY times to stop and ask the user:
 1. /feasibility → "Recommended stack: [X]. Confirm?"
 2. Credentials needed (AWS keys, API keys, etc.)
 3. After 3 reflexion failures on a single issue
+4. /challenge verdict is RETHINK
 Everything else runs autonomously.
 </system-reminder>
+
+---
 
 ### Phase 0: Genesis
 
 1. Run `/discover` with the user's sentence
    - Output: docs/discovery-report.md
-   - Judge: PM validates problem is real, users identified
+   - **REVIEW:** PM validates — problem real? users identified? market exists?
+   - If review fails → reiterate @deep-research-agent with feedback (max 3)
+   - Git: commit
 
 2. Run `/requirements` on the discovery report
    - Output: docs/requirements.md with [REQ-xxx] tags
-   - Judge: @business-panel-experts validates viability
+   - **REVIEW:** @business-panel-experts validates viability + completeness
+   - If review fails → reiterate @requirements-analyst with feedback (max 3)
+   - Git: commit
 
 3. Run `/feasibility` on the requirements
    - Output: docs/feasibility.md with tech stack + risk matrix
+   - **REVIEW:** @system-architect validates stack fits requirements
    - **ASK USER:** "Recommended: [stack]. Use this or pick your own?"
    - Check: agents exist for stack? If not → @agent-factory creates them
+   - Git: commit
 
 4. Run `/generate-spec` synthesizing discovery + requirements + feasibility
    - Output: SPEC.md with all [REQ-xxx] tags
-   - Judge: @requirements-analyst verifies completeness
+   - **REVIEW:** @requirements-analyst verifies ALL requirements captured
+   - If any REQ missing → fix SPEC.md → re-review
+   - Git: commit
 
 5. Run `/challenge` on the generated SPEC.md
-   - 6 forcing questions: demand reality, status quo, specificity, scope, observation, future-fit
-   - Verdict: PROCEED / REFINE / RETHINK
-   - If REFINE → update SPEC.md with recommendations → re-run /challenge
-   - If RETHINK → STOP and ask user
+   - 6 forcing questions: demand, status quo, specificity, scope, observation, future-fit
+   - **REVIEW:** PM validates challenge verdict
+   - Verdict PROCEED → continue
+   - Verdict REFINE → update SPEC.md → re-run /challenge
+   - Verdict RETHINK → STOP and ask user
+   - Git: commit
 
 6. Run `/bootstrap` to scaffold the project
    - Creates: project folder, CLAUDE.md, git init, dependencies, docker
+   - **REVIEW:** PM verifies scaffold matches SPEC (correct apps, correct structure)
    - Push to GitHub
+   - Git: commit "init: scaffold project"
 
-7. Run `/gate phase-0`
+7. **GATE:** `/gate phase-0`
+   - Git push → create PR
+   - CodeRabbit reviews → fix ALL suggestions → 0 remaining → PASS
+   - If CodeRabbit has suggestions → fix → push → wait for re-review → repeat
+
+---
 
 ### Phase 1: Specify
 
-7. Run `/specify` on SPEC.md
+8. Run `/specify` on SPEC.md
    - Output: docs/proposals/01-project.md + GitHub Issues
-   - Judge: @spec-panel reviews
+   - **REVIEW:** @spec-panel (multi-expert) validates:
+     - All [REQ-xxx] covered in proposal?
+     - Acceptance criteria (Given/When/Then) for each requirement?
+     - Implementation phases ordered correctly?
+     - Risk table complete?
+   - If review fails → reiterate with feedback (max 3)
 
-8. Run `/checkpoint`
-9. Run `/gate stage-1`
+9. Run `/checkpoint` — evaluate proposal quality (PASS/FAIL score)
+   - If score <80% → fix issues → re-checkpoint
+
+10. **GATE:** `/gate stage-1`
+    - Git push → create PR
+    - CodeRabbit reviews → fix ALL suggestions → 0 remaining → PASS
+
+---
 
 ### Phase 2: Architect
 
-10. Run `/design-doc` on the proposal
+11. Run `/design-doc` on the proposal
     - Output: docs/design-doc.md (10 sections including API contracts)
-    - Judge: @spec-panel reviews
+    - **REVIEW:** @spec-panel validates:
+      - Every design decision has "Will implement X because" + alternatives?
+      - API contracts in Section 4 have exact request/response/error shapes?
+      - Testing strategy has 15+ scenarios?
+      - Security section covers auth, tenant isolation, data protection?
+    - If review fails → reiterate with feedback (max 3)
 
-11. Run `/plan-tasks` on the design doc
+12. Run `/plan-tasks` on the design doc
     - Output: docs/implementation-plan.md + GitHub Issues
-    - Judge: PM verifies dependency order
+    - **REVIEW:** PM validates:
+      - Dependency order correct? (infra → models → APIs → frontend)
+      - Each task links to [REQ-xxx]?
+      - Parallel markers [P] correct? (no write conflicts)
+    - If review fails → fix task ordering → re-review
 
-12. Run `/checkpoint` for each
-13. Run `/gate stage-2`
+13. Run `/checkpoint` for each output
+
+14. **GATE:** `/gate stage-2`
+    - Git push → create PR
+    - CodeRabbit reviews → fix ALL suggestions → 0 remaining → PASS
+
+---
 
 ### Phase 3: Implement
 
-14. For each GitHub Issue (in dependency order):
-    - Run the Forge Cell:
-      1. @context-loader-agent → fetch library docs
-      2. Select domain agent → research + TDD + quality + sync
-      3. Per-agent judge → rate 1-5, write mini-retro
-      4. Accept (≥4) or reiterate (max 3)
-      5. Git commit → close issue → /checkpoint
-      6. /learn if new insight discovered
+15. For each GitHub Issue (in dependency order):
 
-15. After each phase:
-    - Run `/review` on the phase's code (inline staff-engineer review)
-    - If frontend phase → also run `/design-audit` on templates
-    - Git push → PR → /gate phase-N
+    **THE FORGE CELL (7 steps — NEVER skip any):**
+
+    Step 1: CONTEXT LOAD
+      - @context-loader-agent fetches library docs via context7
+      - Load relevant rules/ files for this domain
+
+    Step 2: AGENT RESEARCH (self-discovery)
+      - Selected agent reads: spec [REQ-xxx], existing tests, current code, rules/, API contracts
+      - Agent identifies: gaps, missing requirements, improvements
+      - If new insight → flag for spec/test/code update
+
+    Step 3: TDD IMPLEMENTATION
+      - a) Write TEST first → references [REQ-xxx]
+      - b) Run test → MUST FAIL (proves test is real)
+      - c) Write CODE → references [REQ-xxx]
+      - d) Run test → MUST PASS
+      - e) Run ALL tests → no regressions
+
+    Step 4: QUALITY CHECKS
+      - black + ruff (auto via PostToolUse hook)
+      - Run full test suite
+      - If FAIL → /investigate (root cause BEFORE fix)
+      - → @root-cause-analyst reflexion (max 3 attempts)
+      - → Still fails? → STOP and ask user
+
+    Step 5: SYNC CHECK (bidirectional)
+      - New code? → verify [REQ-xxx] exists in SPEC
+      - New behavior? → verify test exists
+      - Gap found? → add to SPEC + add test + update code
+      - Run traceability: 100% coverage, 0 orphans, 0 drift
+
+    Step 6: PER-AGENT JUDGE (NEVER SKIP)
+      - **REVIEW:** Domain-specific judge evaluates:
+        - □ Output matches spec [REQ-xxx]?
+        - □ Tests pass?
+        - □ Architecture rules followed?
+        - □ API contracts match design doc Section 4?
+        - □ All documents in sync?
+        - □ No security issues?
+      - Rate quality: 1-5
+      - Write mini-retrospective to: docs/retros/{agent}-{issue}.md
+      - Rating ≥4 → ACCEPT
+      - Rating <4 → REITERATE same agent with judge's feedback (max 3)
+      - Judge's retro feeds into next attempt (agent reads what went wrong)
+
+    Step 7: COMMIT + LEARN
+      - Git commit with conventional message
+      - GitHub: close issue
+      - /checkpoint: evaluate agent output quality
+      - If agent discovered improvements → /learn (save to playbook)
+
+16. After each implementation phase (group of related issues):
+    - **REVIEW:** Run `/review` on the phase's code
+      - Staff-engineer level: completeness, security, architecture, edge cases
+      - Fix-First mode: auto-fix obvious issues, flag design decisions
+      - If issues found → fix → re-run /review until CLEAN
+    - If frontend phase → **REVIEW:** Run `/design-audit` on templates
+      - 7-pass audit: info architecture, states, journey, consistency, responsive, accessibility, edge cases
+      - Score must be ≥50/70
+      - If <50 → fix top issues → re-audit
+    - Git push → create PR
+    - **GATE:** `/gate phase-N`
+      - CodeRabbit reviews → fix ALL suggestions → 0 remaining → PASS
+
+---
 
 ### Phase 4: Validate
 
-16. Run `/audit-patterns full` → must be >90%
-17. Run `/sc:test --coverage`
-18. Run traceability check → 100% coverage, 0 orphans, 0 drift
-19. Run `/security-scan` → OWASP Top 10 + STRIDE threat model
-20. Run `/design-audit` on all frontend pages (if UI exists)
-21. Run `/gate stage-4`
+17. Run `/audit-patterns full` → must be >90%
+    - If <90% → fix top 5 failures → re-audit
 
-### Phase 5: Review
+18. Run `/sc:test --coverage`
+    - Gate tests (blocking): unit + integration → must all pass
+    - Periodic tests (non-blocking): E2E, performance
 
-21. Run `/retro` → retrospective
-22. Delta-update playbook (helpful/harmful counters)
-23. Run `/prune` → remove bad rules
-24. Run `/evolve` → cluster strategies into skills
-25. Run `/gate stage-5` → final PR → merge
+19. Run traceability check (scripts/traceability.sh)
+    - 100% coverage, 0 orphans, 0 drift
+    - If gaps → fix → re-check
+
+20. Run `/security-scan` → OWASP Top 10 + STRIDE threat model
+    - **REVIEW:** @security-engineer validates findings
+    - CRITICAL/HIGH findings → must fix before proceeding
+    - MEDIUM/LOW → create GitHub Issues for future fix
+
+21. Run `/design-audit` on all frontend pages (if UI exists)
+    - **REVIEW:** Score must be ≥50/70
+    - If <50 → fix top issues → re-audit
+
+22. **GATE:** `/gate stage-4`
+    - Git push → create PR
+    - CodeRabbit reviews → fix ALL suggestions → 0 remaining → PASS
+
+---
+
+### Phase 5: Review + Learn
+
+23. Run `/retro` → retrospective
+    - What went well (with evidence)
+    - What could improve (with root cause + fix)
+    - Lessons learned → feed to playbook
+
+24. **REVIEW:** @playbook-curator delta-updates playbook
+    - Increment helpful/harmful counters based on retro outcomes
+    - Add new strategies from lessons learned
+    - NEVER rewrite — only delta-update
+
+25. Run `/prune` → remove rules where harmful > helpful
+    - Pruned entries → playbook/archived.md (never deleted)
+
+26. Run `/evolve` → cluster strong strategies (helpful >3) into reusable skills
+    - 3+ related strategies → new skill file in rules/ or agents/stacks/
+
+27. **GATE:** `/gate stage-5`
+    - Git push → create FINAL PR
+    - CodeRabbit reviews → fix ALL suggestions → 0 remaining
+    - MERGE → project complete
+
+---
+
+### Phase 6: Iterate
+
+28. Collect feedback → new GitHub Issues
+29. Bug found → /investigate FIRST (root cause before fix)
+30. Fix → grows system:
+    - New code → spec updated [REQ-xxx]
+    - New test added
+    - Playbook updated (/learn)
+31. Loop to Phase 1 (new features) or Phase 3 Step 15 (fixes)
+
+---
 
 ### Output
 
@@ -112,6 +271,9 @@ Forge complete.
 - Coverage: [%]
 - Traceability: [%] REQ coverage
 - Audit: [%] pattern pass rate
+- Security: [risk level]
+- Design: [score]/70
 - PR: #[number] merged
+- Reviews passed: [count] (per-agent judges + /review + CodeRabbit)
 - Playbook: [count] strategies learned
 ```
