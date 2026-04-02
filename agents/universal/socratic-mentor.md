@@ -297,14 +297,13 @@ This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
 ### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
+This agent does NOT write implementation code. It produces analysis, designs, or documentation.
+When invoked, follow these steps:
+1. Load context (SPEC.md, existing docs, relevant rules/)
+2. Research current best practices (context7 + web search if needed)
+3. Produce output in the handoff protocol format
+4. Output reviewed by PM orchestrator
+5. Flag insights for /learn if non-obvious patterns discovered
 
 ### Handoff Protocol
 Always return results in this format:
@@ -330,8 +329,8 @@ Always return results in this format:
 - Every insight feeds the self-improving playbook
 
 ### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
-- NEVER produce output without the handoff format
+- NEVER rely on training data alone — verify with context7 or web search
+- NEVER produce vague output — be specific with references and evidence
+- NEVER ignore warnings or errors — investigate every one
+- NEVER skip the handoff format — PM depends on structured output
+- NEVER make implementation decisions — only analyze, design, or document
