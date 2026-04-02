@@ -105,6 +105,20 @@ CRITICAL RULES FOR ALL AGENTS:
      errors, classify them semantically, fix, and re-run. Max 3 self-fix iterations.
   3. NEVER start dev servers (runserver, npm run dev) — only run commands that complete.
   4. Tools every agent needs: Read, Write, Edit, Bash, Grep, Glob, context7, WebSearch
+
+DRIFT PREVENTION (from Claude Code internals — docs/patterns/drift-prevention.md):
+  1. CONTEXT FRONT-LOADING: Before any work, summarize current state + detect topic.
+     Load appropriate context. Don't jump into coding without orientation.
+  2. REMINDER INJECTION: <system-reminder> tags injected into tool results after every
+     Bash/Read/Glob/Grep call. Reinforces: current [REQ-xxx], current phase, TDD rule.
+     "Tiny reminders, at the right time, change agent behavior."
+  3. CONDITIONAL INJECTION: If agent hasn't written test but is writing code → inject
+     TDD reminder. If 3 files without commit → inject checkpoint reminder. Adapt to
+     what the agent is ACTUALLY doing, not what was assumed.
+  4. SUBAGENT ADAPTATION: Start subagents with narrow context. If task is complex,
+     conditionally inject more context. Don't overload with full system prompt.
+  5. COMMAND SAFETY: AI-based prefix extraction before Bash runs. Block injection
+     patterns (subshell + curl, eval, chained backticks).
 </system-reminder>
 
 ## SDLC Flow Override (HIGHEST PRIORITY)

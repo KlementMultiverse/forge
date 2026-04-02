@@ -16,6 +16,13 @@
         "message": "Skipping hooks/signing is blocked. Fix the underlying issue instead."
       },
       {
+        "description": "Command injection detection — block suspicious bash patterns",
+        "matcher": "Bash",
+        "pattern": "\\$\\(.*curl|`.*curl|;\\s*curl|\\|\\s*base64|eval\\s|\\$\\(.*\\)|`[^`]*`.*`",
+        "action": "deny",
+        "message": "Potential command injection detected. Bash command contains suspicious patterns (subshell + network, eval, chained backticks). Review and simplify the command."
+      },
+      {
         "description": "Block dev server starts (agents should never start long-running processes)",
         "matcher": "Bash",
         "pattern": "runserver|npm run dev|yarn dev|bun run dev|flask run|uvicorn.*--reload",
@@ -110,6 +117,20 @@
         "check": "commit_message_format",
         "action": "warn",
         "message": "Commit message must follow conventional format: type(scope): description (feat, fix, docs, refactor, test, chore)"
+      },
+      {
+        "description": "Drift prevention — reinforce current task context after every Bash/Read",
+        "matcher": "Bash|Read|Glob|Grep",
+        "action": "inject_reminder",
+        "message": "<system-reminder>Current task: check your [REQ-xxx]. Phase: check SDLC stage. Rules: TDD first, handoff format, /learn insights. NEVER code from training data — verify with context7.</system-reminder>"
+      },
+      {
+        "description": "TDD drift check — warn if code written without test",
+        "matcher": "Write|Edit",
+        "pattern": "apps/*/models.py|apps/*/api.py|apps/*/services.py",
+        "check": "no_recent_test_write",
+        "action": "inject_reminder",
+        "message": "<system-reminder>TDD CHECK: Did you write the TEST first? If not, write the test NOW before continuing with implementation code.</system-reminder>"
       }
     ],
     "SessionStart": [
@@ -135,6 +156,12 @@
         "description": "Report session context to user",
         "action": "remind",
         "message": "Session started. Loaded: playbook, rules, ethos. Run /sc:load for full context restoration."
+      },
+      {
+        "description": "Context front-loading — summarize current state before any work",
+        "action": "run",
+        "command": "Summarize current project state in under 50 characters. Detect: is this a new topic or continuation of previous work? Load appropriate context.",
+        "message": "<system-reminder>CONTEXT FRONT-LOAD: Before doing ANY work, orient yourself. What project? What phase? What was last done? What's next? Read CLAUDE.md and last checkpoint.</system-reminder>"
       }
     ],
     "Stop": [
