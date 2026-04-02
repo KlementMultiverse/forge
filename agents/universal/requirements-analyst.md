@@ -54,14 +54,15 @@ This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
 ### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
+This agent produces REQUIREMENTS documents, not code. Follow:
+1. Load context: existing SPEC.md, discovery report, project scope
+2. Research: web search for similar products, competitive analysis
+3. Extract requirements: tag each as [REQ-xxx] with unique ID
+4. Write acceptance criteria: Given/When/Then for EVERY requirement
+5. Verify completeness: every user story has at least one [REQ-xxx]
+6. Cross-check: no duplicate requirements, no conflicting requirements
+7. Output reviewed by @spec-panel or @business-panel-experts
+8. Flag insights for /learn (requirement patterns, common gaps)
 
 ### Handoff Protocol
 Always return results in this format:
@@ -87,8 +88,9 @@ Always return results in this format:
 - Every insight feeds the self-improving playbook
 
 ### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
-- NEVER produce output without the handoff format
+- NEVER write requirements without [REQ-xxx] tags — every requirement MUST be traceable
+- NEVER assume user needs — ask Socratic questions (/sc:brainstorm)
+- NEVER skip acceptance criteria — every [REQ-xxx] needs Given/When/Then
+- NEVER write implementation details in requirements — WHAT not HOW
+- NEVER produce requirements without cross-checking for duplicates
+- NEVER skip competitive research — always check what exists

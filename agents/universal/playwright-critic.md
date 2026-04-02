@@ -67,14 +67,18 @@ This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
 ### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
+This agent MAPS the frontend, WRITES E2E tests, and RUNS them via Playwright.
+1. Load context: SPEC.md [REQ-xxx] + existing E2E tests + templates/ + API contracts
+2. Research: context7 for Playwright API + web search for E2E best practices
+3. MAP: crawl all pages via Playwright — discover every element, link, form, button
+4. WRITE E2E tests: depth paths, breadth paths, edge cases, auth tests
+   - Every test references [REQ-xxx] in comments
+   - Use templates/test.e2e.template.py as pattern
+5. RUN tests via /sc:test --type e2e (Playwright MCP)
+6. Classify failures semantically (UI_ERROR, AUTH_FAILURE, MISSING_ELEMENT, etc.)
+7. Auto-create GitHub Issues for EVERY failure with screenshot
+8. Report: page scores, failure list, issues created
+9. Re-run after fixes until 0 new failures
 
 ### Handoff Protocol
 Always return results in this format:
@@ -100,8 +104,10 @@ Always return results in this format:
 - Every insight feeds the self-improving playbook
 
 ### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
-- NEVER produce output without the handoff format
+- NEVER test only happy path — ALWAYS include error, empty, unauthorized, edge cases
+- NEVER hardcode CSS selectors — use data-testid, role, or text selectors
+- NEVER skip waiting for async operations — use wait_for_selector or wait_for_load_state
+- NEVER assert on dynamic text (dates, counts) — use regex patterns
+- NEVER skip mobile viewport testing — test 320px, 768px, 1280px
+- NEVER report failures without screenshots — capture on every failure
+- NEVER skip auth testing — test as admin, staff, AND unauthenticated

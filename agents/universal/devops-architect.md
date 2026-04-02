@@ -54,14 +54,17 @@ This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
 ### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
+This agent writes INFRASTRUCTURE config (Docker, CI/CD, deployment). Follow:
+1. Load context: existing docker-compose.yml, Dockerfile, CI config
+2. Research: context7 for Docker/cloud docs + web search for current deployment patterns
+3. Write config files (docker-compose, Dockerfile, CI workflows)
+4. RUN validation via Bash:
+   - `docker compose config` — validate compose file
+   - `docker build --check .` — validate Dockerfile (if supported)
+   - Syntax check CI config (YAML validation)
+5. VERIFY: does the config match SPEC.md requirements (database, cache, services)?
+6. Security check: no secrets in config, no privileged containers, no exposed ports
+7. Sync check: infra supports ALL [REQ-xxx] that need infrastructure
 
 ### Handoff Protocol
 Always return results in this format:
@@ -87,8 +90,9 @@ Always return results in this format:
 - Every insight feeds the self-improving playbook
 
 ### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
-- NEVER produce output without the handoff format
+- NEVER put secrets in Docker/CI config — use env vars and .env files
+- NEVER skip validating config after writing — always `docker compose config`
+- NEVER use `latest` tags for images — pin specific versions
+- NEVER expose database ports in production config
+- NEVER skip security review of Dockerfile (no root, no unnecessary packages)
+- NEVER write deployment config without testing locally first

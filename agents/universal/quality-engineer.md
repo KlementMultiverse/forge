@@ -54,14 +54,16 @@ This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
 ### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
+This agent designs test strategies AND writes test code. Follow:
+1. Load context: SPEC.md [REQ-xxx] list + existing tests + rules/
+2. Research: current testing best practices for the stack (context7 + web search)
+3. Design test strategy: map every [REQ-xxx] to test scenarios (happy path + edge cases)
+4. Write tests FIRST (TDD): each test references [REQ-xxx] in comments
+5. RUN tests via Bash: `uv run python manage.py test` — verify they FAIL (no implementation yet)
+6. After implementation agent writes code: RUN tests again — verify they PASS
+7. RUN coverage analysis: identify untested paths
+8. Sync check: every [REQ-xxx] has at least one test
+9. Flag insights for /learn (testing gotchas, flaky test patterns)
 
 ### Handoff Protocol
 Always return results in this format:
@@ -87,8 +89,9 @@ Always return results in this format:
 - Every insight feeds the self-improving playbook
 
 ### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
-- NEVER produce output without the handoff format
+- NEVER write tests without [REQ-xxx] references — every test must trace to a requirement
+- NEVER skip running tests after writing them — verify they actually execute
+- NEVER test only happy path — ALWAYS include edge cases, error paths, auth failures
+- NEVER write implementation code — only test code and test strategy
+- NEVER claim "tests pass" without running them via Bash yourself
+- NEVER produce test strategy without coverage analysis numbers

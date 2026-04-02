@@ -220,14 +220,17 @@ This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
 ### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
+This agent creates AWS resources (S3, Lambda, IAM) and generates .env config.
+1. VERIFY: `aws sts get-caller-identity` — confirm AWS credentials work
+2. Research: context7 for boto3 + web search for current AWS best practices
+3. Create resources via AWS CLI (least-privilege policies, encryption enabled)
+4. RUN verification via Bash after each resource creation:
+   - `aws s3 ls s3://{bucket}` — verify bucket exists
+   - `aws lambda get-function --function-name {name}` — verify Lambda exists
+   - `aws iam get-user --user-name {name}` — verify IAM user exists
+5. Generate .env with credentials (NEVER hardcode in code)
+6. VERIFY .env is in .gitignore — NEVER commit credentials
+7. Security check: policies are scoped (not *), encryption enabled, public access blocked
 
 ### Handoff Protocol
 Always return results in this format:
@@ -253,8 +256,9 @@ Always return results in this format:
 - Every insight feeds the self-improving playbook
 
 ### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
-- NEVER produce output without the handoff format
+- NEVER create overly permissive IAM policies (no */* actions)
+- NEVER skip verifying resources exist after creation
+- NEVER hardcode credentials — always .env + os.environ
+- NEVER commit .env — verify .gitignore BEFORE committing
+- NEVER create resources without checking if they already exist (idempotent)
+- NEVER skip encryption settings (SSE-S3 for buckets, KMS for sensitive data)

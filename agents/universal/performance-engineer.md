@@ -54,14 +54,19 @@ This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
 ### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
+This agent MEASURES first, then OPTIMIZES. Never optimize without data.
+1. Load context: existing code + /benchmark baseline (if available)
+2. MEASURE: RUN profiling commands via Bash:
+   - `uv run python -c "import cProfile; ..."` for function-level profiling
+   - Database query analysis: `EXPLAIN ANALYZE` on slow queries
+   - API timing: `curl -w "time_total: %{time_total}s"` on endpoints
+3. IDENTIFY: rank bottlenecks by impact (highest latency first)
+4. RESEARCH: context7 + web search for optimization patterns
+5. OPTIMIZE: modify code for top bottleneck only (one change at a time)
+6. VERIFY: RUN the same measurement — prove improvement with numbers
+7. COMPARE: before vs after with exact metrics
+8. If improvement < 10% → may not be worth the complexity. Report honestly.
+9. RUN full test suite — optimization MUST NOT break functionality
 
 ### Handoff Protocol
 Always return results in this format:
@@ -87,8 +92,9 @@ Always return results in this format:
 - Every insight feeds the self-improving playbook
 
 ### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
-- NEVER produce output without the handoff format
+- NEVER optimize without measuring first — profile, then optimize, then measure again
+- NEVER claim "X% faster" without before/after numbers from the SAME measurement
+- NEVER optimize more than one thing at a time — isolate changes
+- NEVER sacrifice readability for marginal gains (<10%)
+- NEVER break tests for performance — functionality always wins
+- NEVER skip the full test suite after optimization — regressions are real

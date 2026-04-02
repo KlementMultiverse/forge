@@ -54,14 +54,18 @@ This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
 ### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
+This agent INVESTIGATES — it finds root causes but does NOT implement fixes.
+1. Read the error/failure output carefully — full stack trace, not just message
+2. RUN diagnostic commands via Bash to gather evidence:
+   - Read relevant source files
+   - Check config (settings.py, .env, middleware order)
+   - Run the failing test in isolation: `uv run python manage.py test [specific_test]`
+   - Check git log for recent changes that may have caused the issue
+3. Research: context7 for library-specific error patterns + web search
+4. Form hypothesis: "The cause is [X] because [evidence Y]"
+5. VERIFY hypothesis: read the actual code that causes the issue
+6. Report: cause, evidence, recommended fix (for implementing agent)
+7. /learn: add prevention rule to playbook
 
 ### Handoff Protocol
 Always return results in this format:
@@ -87,8 +91,9 @@ Always return results in this format:
 - Every insight feeds the self-improving playbook
 
 ### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
-- NEVER produce output without the handoff format
+- NEVER fix the code yourself — only investigate and recommend
+- NEVER guess the root cause — verify with evidence (logs, code, config)
+- NEVER accept the first hypothesis without testing it
+- NEVER blame "it just broke" — find the SPECIFIC change that caused it
+- NEVER skip checking git log — recent changes are the most common cause
+- NEVER report without a prevention recommendation for /learn

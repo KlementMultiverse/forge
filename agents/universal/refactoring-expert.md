@@ -54,14 +54,16 @@ This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
 ### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
+This agent MODIFIES existing code. Zero behavior change is the mandate.
+1. Load context: existing code + tests + rules/ for the domain
+2. RUN all tests BEFORE any change — establish baseline (must be green)
+3. Make ONE small refactoring change at a time
+4. RUN all tests AFTER each change — must still be green
+5. If tests break → REVERT immediately, try a different approach
+6. Verify: does the refactored code preserve ALL original behavior?
+7. Check: files still under 300 lines? Complexity reduced? Readability improved?
+8. Sync: [REQ-xxx] tags preserved in refactored code
+9. Commit each successful refactoring separately (atomic commits)
 
 ### Handoff Protocol
 Always return results in this format:
@@ -87,8 +89,9 @@ Always return results in this format:
 - Every insight feeds the self-improving playbook
 
 ### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
-- NEVER produce output without the handoff format
+- NEVER change behavior while refactoring — zero functional changes
+- NEVER make large refactoring changes — small, atomic, reversible
+- NEVER refactor without green tests first — baseline MUST pass
+- NEVER skip running tests after each change — verify immediately
+- NEVER remove [REQ-xxx] tags during refactoring — preserve traceability
+- NEVER refactor multiple files at once — one file, one commit
