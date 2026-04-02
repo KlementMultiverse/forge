@@ -113,44 +113,48 @@ Do NOT skip any of these 5 fields. Do NOT use a different format.
 
 <system-reminder>
 This agent operates within the Forge framework. These rules are MANDATORY.
+Use the Handoff Protocol defined above (5 fields) — NOT a different format.
 </system-reminder>
 
-### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
-
-### Handoff Protocol
-Always return results in this format:
-```
-## [Task] Completed
-### Summary: [2-3 sentences]
-### Requirements Covered: [REQ-xxx] list
-### Quality: Tests [pass/fail], Lint [clean/issues]
-### Delegation Hints: [next agent to call]
-### Risks/Blockers: [any issues]
-### Files Created/Modified: [list]
-```
+### Forge Cell for Django Ninja
+When implementing API endpoints, follow this EXACT sequence:
+1. **CONTEXT**: `resolve-library-id("vitalik/django-ninja")` → `query-docs` (MANDATORY)
+2. **RESEARCH**: web search "Django Ninja [feature] best practices [current year]"
+   Compare approach with design doc Section 4 API contracts
+3. **TDD**: Write test FIRST → RUN via Bash:
+   ```bash
+   uv run python manage.py test apps.{app}.tests -k "test_{endpoint}"
+   # Must FAIL — proves test is real
+   ```
+4. **IMPLEMENT**: Write endpoint → RUN test again:
+   ```bash
+   uv run python manage.py test apps.{app}.tests -k "test_{endpoint}"
+   # Must PASS
+   uv run python manage.py test  # ALL tests — no regressions
+   ```
+5. **VERIFY**: Quick smoke check via Bash:
+   ```bash
+   uv run python -c "from apps.{app}.api import api; print([r.path for r in api.urls])"
+   black apps/{app}/api.py && ruff check apps/{app}/api.py
+   ```
+6. **SYNC**: Every endpoint references [REQ-xxx]. Every test references [REQ-xxx].
+7. **HANDOFF**: Use the 5-field Handoff Protocol above. Include test output.
 
 ### Failure Escalation
-- Max 3 self-fix attempts per issue
-- After 2 failed corrections → STOP, document what was tried, ask user
-- Use /investigate for root cause before any fix
-- NEVER retry the same approach — try something DIFFERENT
+- Import error → check: `from ninja import NinjaAPI, Schema` (NOT rest_framework)
+- Test failure → RUN just the failing test, read error, classify (AUTH_ERROR, VALIDATION_ERROR, etc.)
+- Max 3 self-fix attempts → /investigate → escalate if still failing
+- CSRF error → check: SessionAuth has csrf=True by default. Do NOT pass csrf to NinjaAPI constructor.
 
 ### Learning
-- If you discover a non-obvious pattern → /learn (save to playbook)
-- If you hit a gotcha not in the rules → /learn
+- If you discover a Django Ninja gotcha not in rules/django.md → /learn
+- If context7 docs differ from training data → /learn (the docs are correct)
 - Every insight feeds the self-improving playbook
 
-### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
-- NEVER produce output without the handoff format
+### Anti-Patterns (Django Ninja specific)
+- NEVER import rest_framework — this is the #1 failure mode
+- NEVER use NinjaAPI(csrf=True) — csrf is per-auth-class (SessionAuth.csrf=True by default)
+- NEVER skip context7 docs — Django Ninja API changes between versions
+- NEVER write an endpoint without error handling (401, 400, 403, 409)
+- NEVER skip running tests via Bash after writing code
+- NEVER create endpoints not in the design doc Section 4 API contracts

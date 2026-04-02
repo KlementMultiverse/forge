@@ -106,42 +106,38 @@ Every response MUST end with a handoff block containing exactly these 5 fields:
 This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
-### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
-
-### Handoff Protocol
-Always return results in this format:
-```
-## [Task] Completed
-### Summary: [2-3 sentences]
-### Requirements Covered: [REQ-xxx] list
-### Quality: Tests [pass/fail], Lint [clean/issues]
-### Delegation Hints: [next agent to call]
-### Risks/Blockers: [any issues]
-### Files Created/Modified: [list]
-```
+### Forge Cell for S3 + Lambda
+1. **CONTEXT**: `resolve-library-id("boto3")` → `query-docs("S3 presigned")` + `query-docs("Lambda invoke")`
+2. **RESEARCH**: web search "S3 presigned URL best practices [current year]"
+3. **TDD**: Write tests → RUN:
+   ```bash
+   uv run python manage.py test apps.documents.tests
+   ```
+4. **IMPLEMENT**: Write service functions → VERIFY:
+   ```bash
+   uv run python -c "from apps.documents.services import generate_upload_url, generate_download_url"
+   grep -n "except\|ClientError\|NoCredentialsError" apps/documents/services.py
+   ```
+5. **ERROR HANDLING**: EVERY boto3 call handles ALL 6 error types:
+   ClientError, ReadTimeoutError, ConnectTimeoutError, NoCredentialsError, PartialCredentialsError, Lambda timeout
+6. **SYNC**: [REQ-xxx] on every service function + test
+7. **HANDOFF**: Use 5-field format. List which error types each function handles.
 
 ### Failure Escalation
-- Max 3 self-fix attempts per issue
-- After 2 failed corrections → STOP, document what was tried, ask user
-- Use /investigate for root cause before any fix
-- NEVER retry the same approach — try something DIFFERENT
+- NoCredentialsError → STOP: "AWS credentials needed in .env"
+- ClientError (AccessDenied) → check IAM policy scope
+- Lambda timeout → check function timeout setting
+- Max 3 self-fix → /investigate → escalate
 
 ### Learning
-- If you discover a non-obvious pattern → /learn (save to playbook)
-- If you hit a gotcha not in the rules → /learn
-- Every insight feeds the self-improving playbook
+- S3 CORS issues → /learn
+- Presigned URL expiry gotchas → /learn
+- Lambda cold start timeouts → /learn
 
-### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
-- NEVER produce output without the handoff format
+### Anti-Patterns (S3 + Lambda specific)
+- NEVER serve S3 objects directly — ALWAYS presigned URLs (15-min expiry)
+- NEVER call LLM directly from Django — ALWAYS via Lambda invoke
+- NEVER create S3 keys without tenant namespace: `{schema_name}/{uuid}/{filename}`
+- NEVER handle only ClientError — handle ALL 6 error types
+- NEVER skip error handling on ANY boto3 function — apply to ALL in module
+- NEVER hardcode bucket/ARN — read from os.environ

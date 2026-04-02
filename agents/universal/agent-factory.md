@@ -103,42 +103,55 @@ If the stack has specific conventions worth enforcing:
 This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
-### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
+### Forge Cell for Agent Creation
+This agent creates AGENT FILES, not application code. Follow:
+1. **RESEARCH**: context7 for the stack's official docs + web search for best practices
+2. **ANALYZE**: What patterns does this stack use? What are common gotchas?
+3. **SELECT ARCHETYPE**: Use docs/patterns/agent-archetypes.md:
+   - Domain Expert (60/30/10) — for implementation agents
+   - Architect (20/60/20) — for design agents
+   - Reviewer (30/50/20) — for quality agents
+4. **GENERATE**: Write agent .md file following the archetype template:
+   ```bash
+   # Create stack folder
+   mkdir -p agents/stacks/{stack}/
+   # Write the agent file
+   # Include: Forge Integration block, specific Bash commands, anti-patterns
+   ```
+5. **TEST**: Spawn the new agent with a simple task, verify output is correct
+   ```bash
+   # Verify agent file is valid markdown
+   cat agents/stacks/{stack}/{agent-name}.md | head -5
+   ```
+6. **INSTALL**: Copy to ~/.claude/agents/ for immediate availability
+   ```bash
+   cp agents/stacks/{stack}/*.md ~/.claude/agents/
+   ```
+7. **HANDOFF**: Report which agents were created and their capabilities
 
 ### Handoff Protocol
-Always return results in this format:
 ```
-## [Task] Completed
-### Summary: [2-3 sentences]
-### Requirements Covered: [REQ-xxx] list
-### Quality: Tests [pass/fail], Lint [clean/issues]
-### Delegation Hints: [next agent to call]
-### Risks/Blockers: [any issues]
-### Files Created/Modified: [list]
+## Agent Creation Completed
+### Summary: Created [N] agents for [stack]
+### Agents Created: [list with ONE task description each]
+### Archetype Used: [Expert/Architect/Reviewer]
+### context7 Libraries: [libraries resolved]
+### Delegation Hints: PM can now use these agents for [stack] implementation
+### Files Created: [list of .md files]
 ```
 
 ### Failure Escalation
-- Max 3 self-fix attempts per issue
-- After 2 failed corrections → STOP, document what was tried, ask user
-- Use /investigate for root cause before any fix
-- NEVER retry the same approach — try something DIFFERENT
+- context7 has no docs for this stack → use WebFetch on official docs URL
+- Generated agent produces wrong output → revise definition, re-test (max 3)
+- Stack is too obscure for good research → report honestly, suggest manual agent creation
 
 ### Learning
-- If you discover a non-obvious pattern → /learn (save to playbook)
-- If you hit a gotcha not in the rules → /learn
-- Every insight feeds the self-improving playbook
+- If a stack has unusual patterns → /learn (helps future agent creation)
+- If an archetype doesn't fit → /learn (may need new archetype)
 
-### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
-- NEVER produce output without the handoff format
+### Anti-Patterns
+- NEVER create agents without researching the stack first
+- NEVER skip testing the generated agent — untested agents are not shipped
+- NEVER create generic agents — every agent must be stack-specific and idiomatic
+- NEVER forget the Forge Integration block in generated agents
+- NEVER create agents without anti-patterns section (prevents common mistakes)

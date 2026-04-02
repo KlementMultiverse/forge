@@ -85,42 +85,46 @@ CRITICAL RULES — violating any of these breaks multi-tenancy:
 This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
-### Forge Cell Compliance
-When this agent is invoked during implementation (Phase 3), follow the 9-step Forge Cell:
-1. Context loaded (library docs via context7 + domain rules)
-2. Research completed (web search for best practices + alternatives compared)
-3. TDD implementation (test first → run → code → run → verify all)
-4. Self-executing: RUN code via Bash after writing, classify errors semantically
-5. Sync check: verify [REQ-xxx] exists in spec, test exists for new behavior
-6. Output reviewed by per-agent domain judge (rated 1-5, accept ≥4)
-7. Commit + /learn if new insight discovered
-
-### Handoff Protocol
-Always return results in this format:
-```
-## [Task] Completed
-### Summary: [2-3 sentences]
-### Requirements Covered: [REQ-xxx] list
-### Quality: Tests [pass/fail], Lint [clean/issues]
-### Delegation Hints: [next agent to call]
-### Risks/Blockers: [any issues]
-### Files Created/Modified: [list]
-```
+### Forge Cell for django-tenants
+1. **CONTEXT**: `resolve-library-id("django-tenants")` + `resolve-library-id("django-tenant-users")` → `query-docs`
+2. **RESEARCH**: web search "django-tenants schema isolation [current year]"
+3. **TDD**: Write test using `TenantTestCase` (NOT `TestCase` for tenant apps):
+   ```bash
+   uv run python manage.py test apps.{app}.tests
+   ```
+4. **IMPLEMENT**: Write models/middleware → RUN migrations:
+   ```bash
+   uv run python manage.py makemigrations
+   uv run python manage.py migrate_schemas --shared  # for shared apps
+   uv run python manage.py migrate_schemas --tenant   # for tenant apps
+   # NEVER bare 'migrate'
+   ```
+5. **VERIFY**: Check middleware order + schema isolation:
+   ```bash
+   uv run python -c "
+   from django.conf import settings
+   assert settings.MIDDLEWARE[0] == 'django_tenants.middleware.main.TenantMainMiddleware'
+   print('Middleware OK: TenantMainMiddleware at position 0')
+   "
+   ```
+6. **SYNC**: [REQ-xxx] tags in models + tests + SPEC
+7. **HANDOFF**: Use the 5-field format from above. Include migration output.
 
 ### Failure Escalation
-- Max 3 self-fix attempts per issue
-- After 2 failed corrections → STOP, document what was tried, ask user
-- Use /investigate for root cause before any fix
-- NEVER retry the same approach — try something DIFFERENT
+- Migration error → check SHARED_APPS vs TENANT_APPS (model in wrong category?)
+- Schema not found → verify `migrate_schemas --shared` ran first
+- TenantMainMiddleware error → MUST be MIDDLEWARE[0], check settings.py
+- Max 3 self-fix attempts → /investigate → escalate
 
 ### Learning
-- If you discover a non-obvious pattern → /learn (save to playbook)
-- If you hit a gotcha not in the rules → /learn
-- Every insight feeds the self-improving playbook
+- If django-tenants has version-specific behavior → /learn
+- If migration order matters (shared before tenant) → /learn
+- If cache key isolation fails → /learn (must use django_tenants.cache.make_key)
 
-### Anti-Patterns (NEVER do these)
-- NEVER code from training data alone — always verify with context7 first
-- NEVER skip running the code after writing it
-- NEVER ignore warnings — investigate every one
-- NEVER retry without understanding WHY it failed
-- NEVER produce output without the handoff format
+### Anti-Patterns (django-tenants specific)
+- NEVER use `django.db.backends.postgresql` — MUST be `django_tenants.postgresql_backend`
+- NEVER run bare `migrate` — MUST be `migrate_schemas --shared` or `--tenant`
+- NEVER put TenantMainMiddleware anywhere except position 0
+- NEVER use raw cache keys — MUST use `django_tenants.cache.make_key`
+- NEVER create S3 keys without tenant namespace: `{schema_name}/{uuid}/{filename}`
+- NEVER skip verifying middleware order after writing settings.py
