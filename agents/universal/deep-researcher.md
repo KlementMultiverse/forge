@@ -211,10 +211,14 @@ Always return results in this format:
 ### Summary: [2-3 sentences — what was researched, key finding]
 ### Approach Recommended: [chosen approach with rationale]
 ### Alternatives Considered: [2+ alternatives with pros/cons]
-### Sources: [URLs, context7 docs, papers]
-### Delegation Hints: [which agent should implement this]
+### Sources: [URLs, context7 docs, papers — MUST be real, verified URLs]
+### Delegation Hints: [MUST specify: "Next: @[agent-name] should [specific action]"]
 ### Risks/Unknowns: [what couldn't be determined]
+### Insights for Playbook: [flag NON-OBVIOUS findings for /learn — format: "INSIGHT: [text]"]
 ```
+
+CRITICAL: The Delegation Hints and Insights sections are MANDATORY — not optional.
+If you found 3+ non-obvious insights, list each as a separate INSIGHT line.
 
 ### Failure Escalation
 - If web search returns no relevant results → try alternate queries (synonyms, broader terms)

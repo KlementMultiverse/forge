@@ -62,7 +62,7 @@ This agent produces REQUIREMENTS documents, not code. Follow:
 5. Verify completeness: every user story has at least one [REQ-xxx]
 6. Cross-check: no duplicate requirements, no conflicting requirements
 7. Output reviewed by @spec-panel or @business-panel-experts
-8. Flag insights for /learn (requirement patterns, common gaps)
+8. Flag insights for /learn — MANDATORY: end output with "INSIGHTS FOR PLAYBOOK:" section listing any non-obvious requirement patterns, common gaps, or surprising findings
 
 ### Handoff Protocol
 Always return results in this format:
