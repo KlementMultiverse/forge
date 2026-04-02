@@ -71,9 +71,12 @@ This agent MAPS the frontend, WRITES E2E tests, and RUNS them via Playwright.
 1. Load context: SPEC.md [REQ-xxx] + existing E2E tests + templates/ + API contracts
 2. Research: context7 for Playwright API + web search for E2E best practices
 3. MAP: crawl all pages via Playwright — discover every element, link, form, button
-4. WRITE E2E tests: depth paths, breadth paths, edge cases, auth tests
+4. WRITE EXECUTABLE E2E tests (not just descriptions — actual runnable Python code):
    - Every test references [REQ-xxx] in comments
    - Use templates/test.e2e.template.py as pattern
+   - Output MUST be a .py file that can be run with `uv run pytest tests/e2e/ -v`
+   - Include: depth paths, breadth paths, edge cases, auth tests
+   - NEVER describe tests without writing executable code for them
 5. RUN tests via /sc:test --type e2e (Playwright MCP)
 6. Classify failures semantically (UI_ERROR, AUTH_FAILURE, MISSING_ELEMENT, etc.)
 7. Auto-create GitHub Issues for EVERY failure with screenshot
