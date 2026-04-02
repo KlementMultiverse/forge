@@ -66,6 +66,18 @@ STAGE 6: ITERATE
 4. [Rule]
 5. [Rule]
 
+## Context Loading Matrix
+
+| If Doing | Load File |
+|----------|-----------|
+| All rules | docs/constitution.md |
+| Architecture work | docs/design-doc.md |
+| Implementation | rules/{stack}.md + playbook/strategies.md |
+| Security review | rules/security.md |
+| Frontend work | templates/test.e2e.template.py |
+| Validation | rules/universal.md (Validation Tiers section) |
+| Retro/learning | playbook/strategies.md + playbook/mistakes.md |
+
 ## Lessons Learned
 
 [Initially empty. Grows with every /retro. Format:]
