@@ -86,6 +86,25 @@ DOCS:
   docs/prompting-techniques.md — 7 techniques
   docs/ethos.md — 3 builder principles
   docs/constitution.md — 10 governance articles
+
+PATTERNS (9 docs — critical execution patterns):
+  coordinator.md — synthesize before delegating
+  self-improving.md — playbook with helpful/harmful counters
+  context-management.md — 40-60% utilization, rule of two
+  agentic-loop.md — bounded recoverable execution
+  handoff-protocol.md — standardized agent output format
+  cdae.md — 5-layer enforcement (contracts → hooks → routing → judges → gates)
+  agent-archetypes.md — 5 templates (expert, architect, reviewer, orchestrator, enforcer)
+  research-first.md — EVERY agent researches before implementing (context7 + web search + alternatives)
+  self-executing.md — agents RUN their own code via Bash, classify errors, fix, verify
+
+CRITICAL RULES FOR ALL AGENTS:
+  1. RESEARCH FIRST: Every agent fetches context7 docs + web searches for best practices
+     + compares alternatives BEFORE writing any code. No coding from training data alone.
+  2. SELF-EXECUTING: Agents RUN their code via Bash tool after writing it, check for
+     errors, classify them semantically, fix, and re-run. Max 3 self-fix iterations.
+  3. NEVER start dev servers (runserver, npm run dev) — only run commands that complete.
+  4. Tools every agent needs: Read, Write, Edit, Bash, Grep, Glob, context7, WebSearch
 </system-reminder>
 
 ## SDLC Flow Override (HIGHEST PRIORITY)

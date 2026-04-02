@@ -164,26 +164,35 @@ Everything else runs autonomously.
       - Simple issues → skip to Step 1
       - Complex issues → decompose → execute subtasks sequentially
 
-    Step 1: CONTEXT LOAD
-      - @context-loader-agent fetches library docs via context7
+    Step 1: CONTEXT LOAD + LIBRARY RESEARCH
+      - @context-loader-agent fetches library docs via context7 MCP
       - Load relevant rules/ files for this domain
+      - context7: resolve-library-id + query-docs for EVERY library used
 
-    Step 2: AGENT RESEARCH (self-discovery)
+    Step 2: AGENT RESEARCH (self-discovery + trends + alternatives)
       - Selected agent reads: spec [REQ-xxx], existing tests, current code, rules/, API contracts
       - Agent identifies: gaps, missing requirements, improvements
+      - **WEB SEARCH:** best practices for this feature in current year
+      - **ALTERNATIVES:** compare 2+ approaches, choose best with rationale
+      - **TRENDS:** check for new libraries, deprecations, pattern changes
+      - Output: research brief (approach chosen, alternatives, sources)
       - If new insight → flag for spec/test/code update
 
-    Step 3: TDD IMPLEMENTATION
+    Step 3: TDD IMPLEMENTATION (self-executing — agent RUNS its own code)
       - a) Write TEST first → references [REQ-xxx]
-      - b) Run test → MUST FAIL (proves test is real)
+      - b) **RUN test via Bash** → MUST FAIL (proves test is real)
       - c) Write CODE → references [REQ-xxx]
-      - d) Run test → MUST PASS
-      - e) Run ALL tests → no regressions
+      - d) **RUN test via Bash** → MUST PASS
+      - e) **RUN ALL tests via Bash** → no regressions
+      - f) **RUN quick verification** (import check, model field check, route check)
+      - On ANY failure: classify error semantically (TEST_FAILURE, IMPORT_ERROR, etc.)
+        → fix based on error type → re-run (max 3 self-fix iterations)
 
-    Step 4: BUILD + QUALITY
-      - Run `/sc:build` to compile/package if needed
-      - black + ruff (auto via PostToolUse hook)
-      - Run full test suite
+    Step 4: BUILD + QUALITY (self-verifying)
+      - **RUN** `/sc:build` to compile/package if needed
+      - **RUN** black + ruff (auto via PostToolUse hook)
+      - **RUN** full test suite via Bash
+      - **CLASSIFY** any errors semantically (don't just report exit code)
       - If FAIL:
         → Run `/sc:troubleshoot` first (diagnosis before fix)
         → Then `/investigate` (root cause analysis)
