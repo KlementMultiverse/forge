@@ -1,0 +1,35 @@
+# Docker Compose template — adjust services per stack
+# PostgreSQL + Redis are common; add/remove as needed
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${DB_NAME:-app_db}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+
+  # Uncomment for app server (Django/FastAPI/Express)
+  # app:
+  #   build: .
+  #   ports:
+  #     - "8000:8000"
+  #   depends_on:
+  #     - db
+  #     - redis
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - .:/app
+
+volumes:
+  pgdata:

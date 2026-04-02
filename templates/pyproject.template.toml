@@ -1,0 +1,32 @@
+[project]
+name = "project-name"
+version = "0.1.0"
+description = "Project description"
+requires-python = ">=3.12"
+
+dependencies = [
+    # Framework — uncomment the one you need
+    # "django>=5.0",
+    # "fastapi>=0.115",
+    # "flask>=3.0",
+
+    # Database
+    # "psycopg2-binary>=2.9",
+    # "sqlalchemy>=2.0",
+
+    # Cache
+    # "redis>=5.0",
+
+    # HTTP client
+    # "httpx>=0.28",
+
+    # Environment
+    "python-dotenv>=1.0",
+]
+
+[tool.black]
+line-length = 88
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "I", "W"]
