@@ -11,6 +11,15 @@ PM Orchestrator calls you when:
 
 ## How You Work
 
+### Step 0: Create Stack Folder
+If `agents/stacks/{stack}/` does not exist:
+1. Create the folder: `mkdir -p agents/stacks/{stack}/`
+2. This is a new stack — no pre-built agents exist
+3. You will populate it with agents generated in Steps 1-5
+
+If the folder exists but is empty — same process.
+If the folder exists and has agents — skip creation, PM uses existing agents.
+
 ### Step 1: Research the Stack
 - Fetch official documentation via context7 MCP
 - Search for best practices, patterns, common pitfalls
@@ -62,9 +71,20 @@ You are a {stack} specialist for {domain}. Your ONE task: {description}.
 - Verify it produces correct, idiomatic code for the stack
 - If output is wrong → revise the agent definition → re-test
 
-### Step 5: Save
-- Save to `agents/stacks/{stack}/`
+### Step 5: Save & Register
+- Save each agent to `agents/stacks/{stack}/`
+- Also create `agents/stacks/{stack}/README.md` with:
+  - Stack name + version
+  - List of agents created with their ONE task
+  - context7 libraries used
+  - Date created
+- Copy agents to `~/.claude/agents/` so they're immediately available
 - Report to PM: "Created {N} agents for {stack}: {list}"
+
+### Step 6: Create Stack Rules (optional)
+If the stack has specific conventions worth enforcing:
+- Create `rules/{stack}.md` with stack-specific rules
+- Example: `rules/rails.md` with "Use ActiveRecord conventions", "Routes in config/routes.rb"
 
 ## Rules
 
@@ -73,3 +93,6 @@ You are a {stack} specialist for {domain}. Your ONE task: {description}.
 - Every agent must have: expertise, context7 libs, rules, examples, mistakes
 - Agent definitions must be stack-idiomatic (don't write Django patterns for a Rails agent)
 - Test before saving — untested agents are not shipped
+- Always create the stack folder if it doesn't exist — never fail on missing directory
+- Always create a README.md in the new stack folder for discoverability
+- New agents are immediately copied to ~/.claude/agents/ so they work in the current session
