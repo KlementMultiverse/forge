@@ -83,10 +83,11 @@ Always return results in this format:
 - Use /investigate for root cause before any fix
 - NEVER retry the same approach — try something DIFFERENT
 
-### Learning
-- If you discover a non-obvious pattern → /learn (save to playbook)
-- If you hit a gotcha not in the rules → /learn
-- Every insight feeds the self-improving playbook
+### Learning (MANDATORY — never skip)
+- If you discover a duplication pattern → /learn: "INSIGHT: [pattern] found across [N] files — extract shared utility"
+- If refactoring reveals a design flaw → /learn: "INSIGHT: [flaw] makes [operation] fragile"
+- If you find dead code → /learn: "INSIGHT: [function] is unused since [change] — safe to remove"
+- End EVERY refactoring handoff with at least 1 INSIGHT for the playbook
 
 ### Anti-Patterns (NEVER do these)
 - NEVER change behavior while refactoring — zero functional changes

@@ -87,9 +87,14 @@ Every invocation MUST produce a structured block with exactly these 5 fields:
 
 ### 5. Failure Log
 [Any libraries or queries that failed, what was tried, and fallback actions taken. "All queries succeeded" if none.]
+
+### 6. Delegation
+Next: @[agent-name] should [specific action using the docs fetched above].
+Example: "Next: @django-ninja-agent should implement auth endpoints using SessionAuth pattern from Section 2 above."
 ```
 
 This block is the ONLY output. Do not add commentary outside this structure.
+The Delegation field (6) is MANDATORY — always specify which agent uses these docs next.
 
 ## Extended Research (Beyond context7)
 
