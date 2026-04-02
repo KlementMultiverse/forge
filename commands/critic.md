@@ -5,6 +5,10 @@ Playwright-powered autonomous testing agent that maps the ENTIRE frontend, tests
 ## Input
 $ARGUMENTS — base URL (e.g., "http://localhost:8000") or "all" for all pages
 
+## Playwright Execution
+Uses `/sc:test --type e2e` which activates the Playwright MCP server (built into SuperClaude).
+The @playwright-critic agent writes the tests, `/sc:test` runs them via Playwright MCP.
+
 ## Execution
 
 <system-reminder>

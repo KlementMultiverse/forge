@@ -20,8 +20,16 @@ dependencies = [
     # HTTP client
     # "httpx>=0.28",
 
+    # HTTP client
+    # "httpx>=0.28",
+
     # Environment
     "python-dotenv>=1.0",
+
+    # Testing (always included)
+    "playwright>=1.58.0",
+    "pytest-playwright>=0.7.2",
+    "pytest>=8.0",
 ]
 
 [tool.black]
