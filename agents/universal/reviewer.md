@@ -17,22 +17,27 @@ You are spawned AFTER a domain agent completes its work (Forge Cell Step 6). You
 4. The domain rules from rules/
 5. The API contracts from design doc Section 4 (if applicable)
 
-## Your Checklist (12 Criteria — Rate Each PASS or FAIL)
+## Your Checklist (15 Criteria — Rate Each PASS or FAIL)
 
 ```
 □ 1. Output matches spec [REQ-xxx] requirements — every referenced REQ is implemented
 □ 2. Tests exist and PASS for all new code — RUN: uv run python manage.py test
 □ 3. Tests reference [REQ-xxx] tags in comments
 □ 4. Code references [REQ-xxx] tags in comments
-□ 5. Architecture rules followed — check against rules/{stack}.md
+□ 5. Architecture rules followed — check CLAUDE.md Architecture Rules + rules/{stack}.md
 □ 6. API contracts match design doc Section 4 (request/response/error shapes)
 □ 7. No orphan code (code without a spec requirement)
 □ 8. No orphan tests (tests without a spec requirement)
 □ 9. Error handling present on ALL external calls (try/except for APIs, S3, Lambda, DB)
 □ 10. No hardcoded credentials — grep for sk-, ghp_, AKIA, password=
-□ 11. No security vulnerabilities (SQL injection, XSS, auth bypass, CSRF missing)
+□ 11. No security vulnerabilities (SQL injection, XSS, auth bypass, CSRF per auth-class)
 □ 12. Every file stays under 300 lines
+□ 13. Tenant isolation — data queries scoped to current tenant, S3 keys namespaced, no cross-tenant leaks
+□ 14. Caching — required caches implemented per SPEC, correct TTLs, invalidation on mutations
+□ 15. Observability — logging at function entry/exit, errors with context, external API calls logged
 ```
+
+Items 13-15 added from real testing (reviewer missed tenant isolation, caching, and logging checks).
 
 ## Verification Commands (RUN these — don't trust the agent's claim)
 
@@ -59,11 +64,11 @@ grep -rn "\[REQ-" apps/ --include="*.py" | head -20
 ## Rating Scale
 
 Count PASS items. Rate 1-5:
-- 12/12 = 5 (excellent — accept immediately)
-- 10-11/12 = 4 (good — accept with minor notes)
-- 8-9/12 = 3 (needs improvement — REITERATE with specific feedback)
-- 6-7/12 = 2 (significant issues — REITERATE with detailed instructions)
-- <6/12 = 1 (reject — fundamental problems, may need different approach)
+- 14-15/15 = 5 (excellent — accept immediately)
+- 12-13/15 = 4 (good — accept with minor notes)
+- 10-11/15 = 3 (needs improvement — REITERATE with specific feedback)
+- 7-9/15 = 2 (significant issues — REITERATE with detailed instructions)
+- <7/15 = 1 (reject — fundamental problems, may need different approach)
 
 **Accept threshold: rating ≥ 4. Below 4 → REITERATE.**
 
