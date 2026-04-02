@@ -186,10 +186,17 @@ Everything else runs autonomously.
       - Staff-engineer level: completeness, security, architecture, edge cases
       - Fix-First mode: auto-fix obvious issues, flag design decisions
       - If issues found → fix → re-run /review until CLEAN
-    - If frontend phase → **REVIEW:** Run `/design-audit` on templates
-      - 7-pass audit: info architecture, states, journey, consistency, responsive, accessibility, edge cases
-      - Score must be ≥50/70
-      - If <50 → fix top issues → re-audit
+    - If frontend phase:
+      - **REVIEW:** Run `/design-audit` on templates
+        - 7-pass audit: info architecture, states, journey, consistency, responsive, accessibility, edge cases
+        - Score must be ≥50/70. If <50 → fix → re-audit
+      - **CRITIC:** Run `/critic` on frontend pages
+        - Maps ALL elements (buttons, forms, links, events)
+        - Tests ALL paths (depth + breadth + edge cases)
+        - Auto-creates GitHub Issues for EVERY failure
+        - Each issue triggers internal fix cycle:
+          spec updated → test updated → code fixed → re-verified
+        - Repeats until 0 new failures
     - Git push → create PR
     - **GATE:** `/gate phase-N`
       - CodeRabbit reviews → fix ALL suggestions → 0 remaining → PASS
@@ -218,7 +225,14 @@ Everything else runs autonomously.
     - **REVIEW:** Score must be ≥50/70
     - If <50 → fix top issues → re-audit
 
-22. **GATE:** `/gate stage-4`
+22. Run `/critic` — FULL autonomous frontend test (if UI exists)
+    - Maps entire frontend graph (pages, elements, paths)
+    - Tests every depth path, breadth path, and edge case
+    - Auto-creates issues for failures → internal fix cycle
+    - Repeats until 0 new failures found
+    - All fixes sync spec↔test↔code via [REQ-xxx]
+
+23. **GATE:** `/gate stage-4`
     - Git push → create PR
     - CodeRabbit reviews → fix ALL suggestions → 0 remaining → PASS
 
