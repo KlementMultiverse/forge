@@ -35,11 +35,17 @@ Everything else runs autonomously.
    - Output: SPEC.md with all [REQ-xxx] tags
    - Judge: @requirements-analyst verifies completeness
 
-5. Run `/bootstrap` to scaffold the project
+5. Run `/challenge` on the generated SPEC.md
+   - 6 forcing questions: demand reality, status quo, specificity, scope, observation, future-fit
+   - Verdict: PROCEED / REFINE / RETHINK
+   - If REFINE → update SPEC.md with recommendations → re-run /challenge
+   - If RETHINK → STOP and ask user
+
+6. Run `/bootstrap` to scaffold the project
    - Creates: project folder, CLAUDE.md, git init, dependencies, docker
    - Push to GitHub
 
-6. Run `/gate phase-0`
+7. Run `/gate phase-0`
 
 ### Phase 1: Specify
 
@@ -74,15 +80,19 @@ Everything else runs autonomously.
       5. Git commit → close issue → /checkpoint
       6. /learn if new insight discovered
 
-15. After each phase: git push → PR → /gate phase-N
+15. After each phase:
+    - Run `/review` on the phase's code (inline staff-engineer review)
+    - If frontend phase → also run `/design-audit` on templates
+    - Git push → PR → /gate phase-N
 
 ### Phase 4: Validate
 
 16. Run `/audit-patterns full` → must be >90%
 17. Run `/sc:test --coverage`
 18. Run traceability check → 100% coverage, 0 orphans, 0 drift
-19. Run @security-engineer audit
-20. Run `/gate stage-4`
+19. Run `/security-scan` → OWASP Top 10 + STRIDE threat model
+20. Run `/design-audit` on all frontend pages (if UI exists)
+21. Run `/gate stage-4`
 
 ### Phase 5: Review
 
