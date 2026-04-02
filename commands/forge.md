@@ -72,7 +72,14 @@ Everything else runs autonomously.
    - Push to GitHub
    - Git: commit "init: scaffold project"
 
-7. **GATE:** `/gate phase-0`
+7. Run `/sc:index-repo` on the new project
+   - Generates PROJECT_INDEX.md (94% token savings per session)
+   - Every future agent loads the index instead of scanning the full repo
+
+8. Run `/sc:load` to initialize session context
+   - Load project state, playbook, rules into session memory
+
+9. **GATE:** `/gate phase-0`
    - Git push → create PR
    - CodeRabbit reviews → fix ALL suggestions → 0 remaining → PASS
    - If CodeRabbit has suggestions → fix → push → wait for re-review → repeat
@@ -118,9 +125,17 @@ Everything else runs autonomously.
       - Parallel markers [P] correct? (no write conflicts)
     - If review fails → fix task ordering → re-review
 
-13. Run `/checkpoint` for each output
+13. Run `/sc:estimate` on each phase
+    - Effort estimation with confidence intervals
+    - Risk assessment per phase
 
-14. **GATE:** `/gate stage-2`
+14. Run `/sc:workflow` to validate the implementation plan
+    - Structured workflow validation from PRD
+    - Confirms dependency ordering and parallel safety
+
+15. Run `/checkpoint` for each output
+
+16. **GATE:** `/gate stage-2`
     - Git push → create PR
     - CodeRabbit reviews → fix ALL suggestions → 0 remaining → PASS
 
@@ -130,7 +145,14 @@ Everything else runs autonomously.
 
 15. For each GitHub Issue (in dependency order):
 
-    **THE FORGE CELL (7 steps — NEVER skip any):**
+    **THE FORGE CELL (9 steps — NEVER skip any):**
+
+    Every agent runs through `/run-with-checkpoint` (auto-checkpointing wrapper).
+
+    Step 0: TASK DECOMPOSITION
+      - Run `/sc:spawn` to break complex issues into subtasks
+      - Simple issues → skip to Step 1
+      - Complex issues → decompose → execute subtasks sequentially
 
     Step 1: CONTEXT LOAD
       - @context-loader-agent fetches library docs via context7
@@ -148,12 +170,15 @@ Everything else runs autonomously.
       - d) Run test → MUST PASS
       - e) Run ALL tests → no regressions
 
-    Step 4: QUALITY CHECKS
+    Step 4: BUILD + QUALITY
+      - Run `/sc:build` to compile/package if needed
       - black + ruff (auto via PostToolUse hook)
       - Run full test suite
-      - If FAIL → /investigate (root cause BEFORE fix)
-      - → @root-cause-analyst reflexion (max 3 attempts)
-      - → Still fails? → STOP and ask user
+      - If FAIL:
+        → Run `/sc:troubleshoot` first (diagnosis before fix)
+        → Then `/investigate` (root cause analysis)
+        → @root-cause-analyst reflexion (max 3 attempts)
+        → Still fails? → STOP and ask user
 
     Step 5: SYNC CHECK (bidirectional)
       - New code? → verify [REQ-xxx] exists in SPEC
@@ -205,10 +230,14 @@ Everything else runs autonomously.
 
 ### Phase 4: Validate
 
-17. Run `/audit-patterns full` → must be >90%
+17. Run `/sc:analyze` on full codebase
+    - Quality, security, performance, architecture analysis
+    - Identifies issues before formal audit
+
+18. Run `/audit-patterns full` → must be >90%
     - If <90% → fix top 5 failures → re-audit
 
-18. Run `/sc:test --coverage`
+19. Run `/sc:test --coverage`
     - Gate tests (blocking): unit + integration → must all pass
     - Periodic tests (non-blocking): E2E, performance
 
@@ -240,12 +269,26 @@ Everything else runs autonomously.
 
 ### Phase 5: Review + Learn
 
-23. Run `/retro` → retrospective
+23. Run `/sc:cleanup` on full codebase
+    - Remove dead code, unused imports, optimize structure
+    - @refactoring-expert handles complex refactors
+
+24. Run `/sc:improve` on critical paths
+    - Systematic quality + performance improvements
+    - Auto-fix style issues, flag architectural changes for approval
+
+25. Run `/retro` → retrospective
     - What went well (with evidence)
     - What could improve (with root cause + fix)
     - Lessons learned → feed to playbook
 
-24. **REVIEW:** @playbook-curator delta-updates playbook
+26. Run `/sc:reflect` to validate task completion
+    - Verify all requirements met, all issues closed
+
+27. Run `/sc:document` to generate/update project docs
+    - API documentation, component docs, user guides
+
+28. **REVIEW:** @playbook-curator delta-updates playbook
     - Increment helpful/harmful counters based on retro outcomes
     - Add new strategies from lessons learned
     - NEVER rewrite — only delta-update
@@ -256,7 +299,15 @@ Everything else runs autonomously.
 26. Run `/evolve` → cluster strong strategies (helpful >3) into reusable skills
     - 3+ related strategies → new skill file in rules/ or agents/stacks/
 
-27. **GATE:** `/gate stage-5`
+27. Run `/autoresearch` on agent prompts that scored <100% in checkpoints
+    - Self-improving prompt loop — mutates prompts to fix identified issues
+    - Makes next build better
+
+28. Run `/sc:save` to persist session context
+    - Cross-session memory via playbook + checkpoint files
+    - Next session starts informed
+
+29. **GATE:** `/gate stage-5`
     - Git push → create FINAL PR
     - CodeRabbit reviews → fix ALL suggestions → 0 remaining
     - MERGE → project complete
