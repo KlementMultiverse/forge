@@ -112,7 +112,12 @@ Everything else runs autonomously.
 
 ### Phase 2: Architect
 
-11. Run @api-architect to design API contracts
+11. Run `/plan-review` on the proposal
+    - Product scope: right thing to build? (@business-panel-experts)
+    - Architecture: right approach? (@system-architect + @security-engineer)
+    - Verdict: BUILD AS-IS / REDUCE SCOPE / NEEDS CHANGES
+
+12. Run @api-architect to design API contracts
     - Technology-agnostic contracts for EVERY endpoint
     - Exact request/response/error shapes
     - Both backend and frontend agents read SAME contract
@@ -231,6 +236,7 @@ Everything else runs autonomously.
       - Fix-First mode: auto-fix obvious issues, flag design decisions
       - If issues found → fix → re-run /review until CLEAN
     - If frontend phase:
+      - Run `/design-system` to create/verify design tokens (first frontend phase only)
       - **REVIEW:** Run `/design-audit` on templates
         - 7-pass audit: info architecture, states, journey, consistency, responsive, accessibility, edge cases
         - Score must be ≥50/70. If <50 → fix → re-audit
@@ -280,7 +286,20 @@ Everything else runs autonomously.
     - Repeats until 0 new failures found
     - All fixes sync spec↔test↔code via [REQ-xxx]
 
-23. **GATE:** `/gate stage-4`
+23. Run `/benchmark` — establish performance baseline
+    - API response times, database query counts, page load times
+    - Compare with targets: <200ms API, <3s page load
+
+24. Run `/codex` — multi-model cross-review (OPTIONAL — requires secondary model API key)
+    - Skip if no API key available
+    - When available: second opinion catches blind spots single model misses
+
+25. Run `/qa-report` — pure bug reporting (no fixes)
+    - Find ALL remaining bugs across frontend, API, security, data
+    - Auto-create GitHub Issues for each bug
+    - Bugs fixed through normal Forge Cell flow
+
+26. **GATE:** `/gate stage-4`
     - Git push → create PR
     - CodeRabbit reviews → fix ALL suggestions → 0 remaining → PASS
 
@@ -329,7 +348,16 @@ Everything else runs autonomously.
 29. **GATE:** `/gate stage-5`
     - Git push → create FINAL PR
     - CodeRabbit reviews → fix ALL suggestions → 0 remaining
-    - MERGE → project complete
+    - MERGE
+
+30. Run `/ship` — full release engineering
+    - Sync main, verify tests, audit, push, merge, deploy
+    - One command: code complete → verified in production
+
+31. Run `/canary` — post-deploy monitoring (30 min)
+    - Health checks every 5 minutes
+    - API latency, error rates, page loads
+    - If issues found → auto-create GitHub Issues → fix cycle
 
 ---
 
