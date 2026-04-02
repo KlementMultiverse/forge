@@ -2,14 +2,35 @@
   "hooks": {
     "PreToolUse": [
       {
-        "description": "Block destructive file operations without confirmation",
+        "description": "Block destructive operations",
         "matcher": "Bash",
-        "pattern": "rm -rf|git reset --hard|git push --force|drop table|truncate",
+        "pattern": "rm -rf|git reset --hard|git push --force|git checkout \\.|git clean -f|drop table|truncate",
         "action": "deny",
         "message": "Destructive operation blocked by Forge safety hook. Use /careful mode or confirm explicitly."
       },
       {
-        "description": "Enforce file size limit",
+        "description": "Block --no-verify on git commits",
+        "matcher": "Bash",
+        "pattern": "--no-verify|--no-gpg-sign",
+        "action": "deny",
+        "message": "Skipping hooks/signing is blocked. Fix the underlying issue instead."
+      },
+      {
+        "description": "Detect hardcoded secrets before they enter code",
+        "matcher": "Write|Edit",
+        "pattern": "sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|AKIA[A-Z0-9]{16}|password\\s*=\\s*['\"][^'\"]+['\"]",
+        "action": "deny",
+        "message": "Potential secret detected in code. Use environment variables instead."
+      },
+      {
+        "description": "Block writes to config protection files without confirmation",
+        "matcher": "Write|Edit",
+        "pattern": ".ruff.toml|.eslintrc|biome.json|pyproject.toml",
+        "action": "warn",
+        "message": "Modifying project config file. Verify this is intentional."
+      },
+      {
+        "description": "Warn on file size limit",
         "matcher": "Write",
         "check": "line_count > 300",
         "action": "warn",
@@ -18,24 +39,64 @@
     ],
     "PostToolUse": [
       {
+        "description": "Auto-format Python files after write",
+        "matcher": "Write|Edit",
+        "pattern": "*.py",
+        "command": "black {file} --quiet && ruff check {file} --fix --quiet",
+        "action": "run",
+        "message": "Auto-formatted with black + ruff"
+      },
+      {
         "description": "Auto-checkpoint after file write",
         "matcher": "Write|Edit",
         "action": "log",
         "message": "File modified — checkpoint available for rollback"
       },
       {
-        "description": "Run sync check after code changes",
+        "description": "Remind sync check after code changes",
         "matcher": "Write|Edit",
         "pattern": "*.py|*.ts|*.js",
         "action": "remind",
-        "message": "Code changed — run traceability check to verify [REQ-xxx] sync"
+        "message": "Code changed — verify [REQ-xxx] traceability (spec↔test↔code sync)"
+      },
+      {
+        "description": "Check for zero-debt violations after write",
+        "matcher": "Write|Edit",
+        "pattern": "*.py",
+        "check": "grep -n 'TODO\\|FIXME\\|HACK' {file}",
+        "action": "warn",
+        "message": "Technical debt marker found. Implement now or create a GitHub Issue — no TODOs in committed code."
       }
     ],
     "SessionStart": [
       {
         "description": "Load playbook and rules at session start",
         "action": "load",
-        "files": ["playbook/strategies.md", "rules/universal.md"]
+        "files": [
+          "playbook/strategies.md",
+          "rules/universal.md",
+          "docs/ethos.md"
+        ]
+      },
+      {
+        "description": "Load last checkpoint if available",
+        "action": "load",
+        "files": ["docs/checkpoints/INDEX.md"],
+        "optional": true
+      }
+    ],
+    "Stop": [
+      {
+        "description": "Auto-save session summary on exit",
+        "action": "remind",
+        "message": "Session ending — consider running /learn to save any new insights to the playbook."
+      }
+    ],
+    "PreCompact": [
+      {
+        "description": "Save state before context compression",
+        "action": "remind",
+        "message": "Context compacting — verify important context (current task, spec section, test status) is preserved."
       }
     ]
   }
