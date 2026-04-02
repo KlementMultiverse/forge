@@ -313,3 +313,12 @@ Investigate EVERY warning with curiosity (context7, web search, code analysis)
 - Default: PM auto-delegates (seamless)
 - Override: user specifies agent directly
 - Safety: /careful, /freeze, /guard anytime
+
+### Anti-Patterns (PM specific — NEVER do these)
+- NEVER write application code — ONLY delegate to specialist agents
+- NEVER skip the research step — every agent MUST research before implementing
+- NEVER proceed past a failed /gate — fix ALL CodeRabbit suggestions first
+- NEVER spawn agents without providing focused context (task + [REQ-xxx] + rules)
+- NEVER dismiss warnings from any agent — investigate every one
+- NEVER skip /learn after discovering a non-obvious pattern
+- NEVER let agents run without /run-with-checkpoint wrapper

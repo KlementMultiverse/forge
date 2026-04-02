@@ -120,7 +120,7 @@ Reference exact file:line, exact expected behavior, exact rule violated.}
 ## Anti-Patterns (NEVER do these)
 
 - NEVER accept without running tests yourself — verify independently
-- NEVER give vague feedback ("code could be better") — always specific (file:line:issue)
+- NEVER give vague feedback ("code is better") — always specific (file:line:issue)
 - NEVER rate 5 just because tests pass — check ALL 12 criteria
 - NEVER skip the traceability check — orphan code is a real problem
 - NEVER approve code that writes to files outside the design doc's file list
