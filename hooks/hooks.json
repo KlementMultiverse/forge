@@ -1,0 +1,42 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "description": "Block destructive file operations without confirmation",
+        "matcher": "Bash",
+        "pattern": "rm -rf|git reset --hard|git push --force|drop table|truncate",
+        "action": "deny",
+        "message": "Destructive operation blocked by Forge safety hook. Use /careful mode or confirm explicitly."
+      },
+      {
+        "description": "Enforce file size limit",
+        "matcher": "Write",
+        "check": "line_count > 300",
+        "action": "warn",
+        "message": "File exceeds 300-line limit. Consider splitting into smaller modules."
+      }
+    ],
+    "PostToolUse": [
+      {
+        "description": "Auto-checkpoint after file write",
+        "matcher": "Write|Edit",
+        "action": "log",
+        "message": "File modified — checkpoint available for rollback"
+      },
+      {
+        "description": "Run sync check after code changes",
+        "matcher": "Write|Edit",
+        "pattern": "*.py|*.ts|*.js",
+        "action": "remind",
+        "message": "Code changed — run traceability check to verify [REQ-xxx] sync"
+      }
+    ],
+    "SessionStart": [
+      {
+        "description": "Load playbook and rules at session start",
+        "action": "load",
+        "files": ["playbook/strategies.md", "rules/universal.md"]
+      }
+    ]
+  }
+}
