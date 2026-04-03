@@ -22,6 +22,23 @@ The UserPromptSubmit hook already ran and injected one of:
 
 Read the hook output. Then route to the correct case below.
 
+### STEP 1: READ FORGE.md (if exists)
+
+If FORGE.md exists in the project:
+1. Read it
+2. Find the first QUEUED item
+3. Set it to ACTIVE
+4. Route to the correct flow based on `type`:
+   - NEW_PROJECT → CASE 1
+   - FEATURE → CASE 3
+   - BUG → CASE 4
+   - IMPROVEMENT → CASE 5
+5. If no QUEUED items → ask user what to do
+
+If FORGE.md does NOT exist:
+1. Route based on hook detection (current behavior)
+2. Create FORGE.md during execution
+
 If hook output is missing or ambiguous, run detection manually:
 ```
 1. CLAUDE.md? NO. Code exists? NO.              → CASE 1 (greenfield — new project)
@@ -168,21 +185,104 @@ Execute the full SDLC pipeline. Every step is logged to timeline.
 21. **GATE:** `/gate stage-2`
     - Log to timeline
 
-**Phase 3: Implement (per issue, Forge Cell)**
-22. For each GitHub Issue in dependency order:
-    - Step 0: Task design doc (MANDATORY before code)
-    - Step 1: @context-loader-agent fetches library docs
-    - Step 2: Domain agent RESEARCH
-    - Step 3: TDD (test first -> fail -> code -> pass -> all tests)
-    - Step 4: Quality (black + ruff + full test suite)
-    - Step 5: Sync check (spec<->test<->code)
-    - Step 6: Per-agent judge (rate 1-5, accept >=4)
-    - Step 7: Commit -> close issue -> /checkpoint -> /learn
-    - Log EACH step to timeline
+**Phase 3: IMPLEMENT (per issue — strict agent separation)**
+
+<system-reminder>
+STRICT AGENT SEPARATION — MANDATORY:
+- SPEC agent and CODE agent are DIFFERENT agents
+- TEST agent and CODE agent are DIFFERENT agents
+- TEST agent reads SPEC (not code) to write tests
+- CODE agent reads SPEC + design doc + test expectations to write code
+- REVIEW agent judges every output independently
+- NO agent does more than ONE job per step
+
+This prevents:
+- Tests that are designed to pass (written after code)
+- Specs that are reverse-engineered from implementation
+- Code that ignores the spec because same agent wrote both
+</system-reminder>
+
+For EACH issue in dependency order:
+
+**Step 0: TASK DESIGN DOC** → @system-architect or @backend-architect
+  - Reads: SPEC.md [REQ-xxx] for this issue + design-doc Section 4
+  - Writes: docs/forge-trace/{NNN}-design/output.md
+  - Contains: files to change, model fields, API contract, error format
+  - Verified by: @reviewer (rate 1-5, reject <4)
+
+**Step 1: CONTEXT LOAD** → @context-loader-agent
+  - Fetches: library docs via context7 MCP for this issue's stack
+  - Writes: docs/forge-trace/{NNN}-context/output.md
+  - This is NOT optional. Code quality depends on current docs.
+
+**Step 2: WRITE SPEC ENTRY** → @requirements-analyst
+  - Reads: task design doc + existing SPEC.md
+  - Writes: adds/updates [REQ-xxx] in SPEC.md with acceptance criteria
+  - Each REQ has: Given/When/Then acceptance criteria
+  - Verified by: @reviewer
+
+**Step 3: WRITE TESTS** → @quality-engineer
+  - Reads: SPEC.md [REQ-xxx] (NOT the code — code doesn't exist yet)
+  - Reads: task design doc (API contracts, model fields)
+  - Writes: apps/{app}/tests.py
+  - Every test method has [REQ-xxx] in docstring
+  - Tests cover: happy path, error cases, edge cases, auth, validation
+  - Minimum 5 tests per issue (not 1-2 token tests)
+  - RUN tests: `uv run python manage.py test apps.{app}` → MUST FAIL
+  - If tests PASS → something is wrong (code doesn't exist yet!) → investigate
+  - Verified by: @reviewer
+  - Trace: docs/forge-trace/{NNN}-tests/
+
+**Step 4: WRITE CODE** → domain agent (@django-ninja-agent, @backend-architect, etc.)
+  - Reads: SPEC.md [REQ-xxx] + task design doc + test expectations
+  - Reads: context7 docs from Step 1
+  - Writes: models.py, api.py, services.py, schemas.py
+  - Every function/class has [REQ-xxx] in comment
+  - RUN tests: `uv run python manage.py test apps.{app}` → MUST PASS
+  - RUN all tests: `uv run python manage.py test` → no regressions
+  - If tests FAIL → agent fixes (max 3 attempts) → still fails → @root-cause-analyst
+  - Verified by: @reviewer (rate 1-5, reject <4)
+  - Trace: docs/forge-trace/{NNN}-code/
+
+**Step 5: QUALITY** → automated (hook-enforced)
+  - `black . && ruff check . --fix`
+  - This happens automatically via PostToolUse hook
+
+**Step 6: SYNC CHECK** → PM verifies
+  - For EVERY [REQ-xxx] in this issue:
+    - Has entry in SPEC.md? check
+    - Has test in tests.py? check
+    - Has code in models/api/services? check
+  - If ANY gap → STOP and fix before proceeding
+  - Run: `bash scripts/traceability.sh` → must show 100% for this issue's REQs
+  - Trace: docs/forge-trace/{NNN}-sync/
+
+**Step 7: SECURITY** → @security-engineer (quick scan)
+  - Reads: new/changed code from this issue
+  - Checks: input validation, auth, no hardcoded secrets, error exposure
+  - If issues found → fix before commit
+  - Trace: docs/forge-trace/{NNN}-security/
+
+**Step 8: REVIEW** → @reviewer (per-agent judge)
+  - Rates overall output 1-5
+  - Checks: tests cover acceptance criteria, code matches spec, no orphan code
+  - If < 4 → reiterate from Step 4 (max 3)
+  - Writes mini-retro
+  - Trace: docs/forge-trace/{NNN}-review/
+
+**Step 9: COMMIT + LEARN**
+  - `git commit -m "feat({domain}): {description} [REQ-xxx..xxx]"`
+  - Close issue (GitHub or mark DONE in docs/issues/)
+  - Update FORGE.md: move item from Active to Done with traceability links
+  - /checkpoint evaluates
+  - If agent discovered non-obvious pattern → /learn → update playbook
+  - Trace: docs/forge-trace/{NNN}-commit/
+
+  - Log EACH step to timeline
+
 23. After each phase group:
-    - Run `/review`
-    - If frontend: `/design-audit` + `/critic`
-    - **GATE:** `/gate phase-N`
+    - /review (inline code review of ALL changes in this phase)
+    - /gate (PR + CodeRabbit or manual checklist)
     - Log to timeline
 
 **Phase 4: Validate**

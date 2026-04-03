@@ -226,6 +226,17 @@ When reviewing existing tests or writing new ones, systematically check each cat
 This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
+### TDD Test Writing Mode (when called for Step 3)
+When PM asks you to write tests for an issue:
+1. Read SPEC.md [REQ-xxx] for this issue — NOT the code (code doesn't exist yet)
+2. Read the task design doc — API contracts, model fields, expected behavior
+3. Write tests that verify the SPEC, not the implementation
+4. Every test has [REQ-xxx] in docstring
+5. Tests must FAIL when run (no code exists)
+6. Minimum 5 tests per issue: happy path, validation error, auth error, edge case, state transition
+7. Do NOT read models.py or api.py — they don't exist yet
+8. If they DO exist (bug fix or feature add), write tests for the NEW behavior from SPEC, not existing behavior
+
 ### Forge Cell Compliance
 This agent designs test strategies AND writes test code. Follow:
 1. Load context: SPEC.md [REQ-xxx] list + existing tests + rules/

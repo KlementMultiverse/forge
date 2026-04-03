@@ -181,24 +181,63 @@ Phase 2: ARCHITECT
   @api-architect → /design-doc → /plan-tasks
   → /sc:estimate → /sc:workflow → /checkpoint → /gate stage-2
 
-Phase 3: IMPLEMENT (per issue — Forge Cell 9 steps)
+Phase 3: IMPLEMENT (per issue — strict agent separation)
+
+  ### Agent Separation (MANDATORY)
+  These agents MUST be different for each step:
+  - Step 2 (SPEC): @requirements-analyst — writes requirements from user needs
+  - Step 3 (TEST): @quality-engineer — writes tests from SPEC (NOT from code)
+  - Step 4 (CODE): domain agent — writes code from SPEC + design + test expectations
+  - Step 7 (SECURITY): @security-engineer — audits code independently
+  - Step 8 (REVIEW): @reviewer — judges output independently
+
+  NEVER let the code agent write its own tests.
+  NEVER let the code agent write the spec it implements.
+  NEVER let the test agent see the code before writing tests.
+  This separation is what makes the triangle real.
+
   For each issue:
-    Step 0: TASK DESIGN DOC (MANDATORY before any code)
-      → Agent writes mini design doc using templates/task-design-doc.template.md
-      → For MODEL tasks: include model code, field types, constraints, indexes
-      → For API tasks: include router code, Schema classes, endpoint contracts (JSON), error format
-      → For FRONTEND tasks: include template structure, JS interactions, CSS changes
-      → Must include sync check table: [REQ-xxx] → test → code
-      → PM verifies: no ambiguity, no missing schemas, every REQ has planned test
-      → If ambiguity found → resolve BEFORE coding, not during
-    Step 1: @context-loader-agent (fetch library docs)
-    Step 2: Domain agent RESEARCH (read spec, tests, code, rules — find gaps)
-    Step 3: TDD (test first → fail → code → pass → all tests pass)
-    Step 4: /sc:build + quality (black + ruff + tests)
-           If fail → /sc:troubleshoot → /investigate → reflexion max 3
-    Step 5: SYNC CHECK (spec↔test↔code via [REQ-xxx] — 100%, 0 orphans, 0 drift)
-    Step 6: Per-agent JUDGE (rate 1-5, mini-retro, accept ≥4 or reiterate)
-    Step 7: /sc:git commit → close issue → /checkpoint → /learn
+    Step 0: TASK DESIGN DOC → @system-architect or @backend-architect
+      → Reads: SPEC.md [REQ-xxx] for this issue + design-doc Section 4
+      → Writes: docs/forge-trace/{NNN}-design/output.md
+      → Contains: files to change, model fields, API contract, error format
+      → Verified by: @reviewer (rate 1-5, reject <4)
+    Step 1: CONTEXT LOAD → @context-loader-agent
+      → Fetches library docs via context7 MCP for this issue's stack
+      → Writes: docs/forge-trace/{NNN}-context/output.md
+    Step 2: WRITE SPEC ENTRY → @requirements-analyst
+      → Reads: task design doc + existing SPEC.md
+      → Writes: adds/updates [REQ-xxx] with Given/When/Then acceptance criteria
+      → Verified by: @reviewer
+    Step 3: WRITE TESTS → @quality-engineer
+      → Reads: SPEC.md [REQ-xxx] (NOT code — code doesn't exist yet)
+      → Reads: task design doc (API contracts, model fields)
+      → Writes: apps/{app}/tests.py with [REQ-xxx] in docstrings
+      → Minimum 5 tests per issue: happy path, error, edge, auth, validation
+      → RUN tests → MUST FAIL (no code yet)
+      → Verified by: @reviewer
+    Step 4: WRITE CODE → domain agent (@django-ninja-agent, @backend-architect, etc.)
+      → Reads: SPEC.md [REQ-xxx] + task design doc + test expectations
+      → Reads: context7 docs from Step 1
+      → Writes: models.py, api.py, services.py, schemas.py
+      → RUN tests → MUST PASS → RUN all tests → no regressions
+      → If fail → agent fixes (max 3) → still fails → @root-cause-analyst
+      → Verified by: @reviewer (rate 1-5, reject <4)
+    Step 5: QUALITY → automated (hook-enforced)
+      → black . && ruff check . --fix
+    Step 6: SYNC CHECK → PM verifies
+      → Every [REQ-xxx]: has spec entry? has test? has code?
+      → Run: bash scripts/traceability.sh → 100% for this issue's REQs
+    Step 7: SECURITY → @security-engineer (quick scan)
+      → Reads: new/changed code from this issue
+      → Checks: input validation, auth, no hardcoded secrets, error exposure
+    Step 8: REVIEW → @reviewer (per-agent judge)
+      → Rates overall 1-5, checks acceptance criteria coverage
+      → If < 4 → reiterate from Step 4 (max 3)
+      → Writes mini-retro
+    Step 9: COMMIT + LEARN
+      → git commit → close issue → update FORGE.md (Active → Done)
+      → /checkpoint → /learn if non-obvious pattern discovered
     All wrapped in /run-with-checkpoint
 
   After each phase:
