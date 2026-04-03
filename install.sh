@@ -199,6 +199,15 @@ GITIGNORE
         chmod +x "$PROJECT_DIR/scripts/"*.sh 2>/dev/null || true
     fi
 
+    # Create trace directory
+    mkdir -p "$PROJECT_DIR/docs/forge-trace"
+    if [ -f "$FORGE_DIR/templates/forge-trace-index.template.md" ]; then
+        sed "s/{{PROJECT_NAME}}/$(basename $PROJECT_DIR)/g" \
+            "$FORGE_DIR/templates/forge-trace-index.template.md" \
+            > "$PROJECT_DIR/docs/forge-trace/INDEX.md"
+        echo "  Created docs/forge-trace/ (execution trace)"
+    fi
+
     # Create docs structure
     mkdir -p "$PROJECT_DIR/docs/proposals" "$PROJECT_DIR/docs/retrospectives" "$PROJECT_DIR/docs/checkpoints" "$PROJECT_DIR/docs/issues" "$PROJECT_DIR/docs/retros"
 

@@ -417,6 +417,15 @@ After EVERY action, append to docs/forge-timeline.md:
 - BLOCKED entries MUST include reason.
 - Every /gate result logged with pass/fail.
 
+### Execution Trace (MANDATORY)
+After EVERY agent execution, save full trace to docs/forge-trace/:
+1. Create numbered folder: docs/forge-trace/{NNN}-{step-name}/
+2. Save input.md — what was given to the agent (full content)
+3. Save output.md — what came back (full content, files created)
+4. Save meta.md — agent, timestamp, duration, status, links to prev/next
+5. Update docs/forge-trace/INDEX.md — one row per step with links
+This is your debug trail. If something goes wrong, the trace shows exactly where.
+
 ### Anti-Patterns (PM specific — NEVER do these)
 - NEVER write application code — ONLY delegate to specialist agents
 - NEVER skip the research step — every agent MUST research before implementing
