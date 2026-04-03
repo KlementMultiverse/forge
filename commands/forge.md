@@ -55,88 +55,358 @@ If hook output is missing or ambiguous, run detection manually:
 
 ### CASE 1: NEW PROJECT (no CLAUDE.md or placeholder CLAUDE.md)
 
-#### Phase A -- Interactive Discovery
+#### Phase A — Setup (Session 1: creates all files agents need)
 
 <system-reminder>
-You are having a friendly conversation to understand the project.
-Do NOT dump all questions at once. Ask ONE thing at a time.
-After each answer, RESEARCH what they said before asking the next question.
-Example: user says "clinic management" -> you web search "clinic management software features 2025" -> then ask informed follow-up.
-This is NOT a questionnaire. It's a discovery conversation.
+SESSION 1 RULES:
+- PM orchestrates but NEVER writes CLAUDE.md, SPEC.md, or FORGE.md directly
+- Each file is built by a SPECIALIST AGENT following a TEMPLATE
+- Every agent output is VERIFIED before proceeding
+- Session 1 ends with "Setup complete. Run forge again to build."
+- NO CODE IS WRITTEN in Session 1 — only planning/spec/config files
 </system-reminder>
 
-**Flow:**
+**STEP S1: ASSESS** (PM scans folder — no agents)
 
-1. "What are you building?"
-   - Listen to the answer
-   - Web search the domain (e.g., "task tracker software features 2025")
-   - Log to timeline: `/discover started`
+```bash
+# PM runs these checks automatically
+ls CLAUDE.md 2>/dev/null          # exists?
+ls SPEC.md 2>/dev/null            # exists?
+ls FORGE.md 2>/dev/null           # exists?
+ls .forge/ 2>/dev/null            # forge initialized?
+ls .claude/ 2>/dev/null           # claude rules exist?
+find . -maxdepth 2 -name "*.py" -o -name "*.ts" | head -1  # code exists?
+cat CLAUDE.md 2>/dev/null | grep "{{" | head -1             # placeholder?
+```
 
-2. "Who uses it?"
-   - Listen to the answer
-   - Research user personas for that domain
+Based on scan:
+- EMPTY folder → continue to STEP S2 (full setup)
+- Code exists, no CLAUDE.md → jump to STEP S5-BROWNFIELD
+- CLAUDE.md with placeholders → continue to STEP S2
+- Everything exists → "Setup already complete. Run /forge again to build."
 
-3. "What's the main problem it solves?"
-   - Listen to the answer
-   - Web search for existing solutions and competitors
+**STEP S2: DISCOVERY CONVERSATION** (PM only — gathers information)
 
-4. Present what you learned:
-   ```
-   "I found that [competitors] exist. Your differentiator seems to be [X].
-   Here's what I think the core features are:
-   - [feature 1]
-   - [feature 2]
-   - [feature 3]
-   Anything I'm missing?"
-   ```
+PM asks questions ONE AT A TIME. Between each answer, PM researches:
 
-5. "Any tech preferences? Or should I recommend?"
-   - If recommend: analyze project needs, suggest stack with ONE-LINE rationale per choice
-   - If user specifies: confirm and note
+Q1: "What are you building?"
+  → PM web searches the domain
+  → PM notes: project name, core purpose
 
-6. "What should it NEVER include?"
-   - Listen and confirm anti-scope
+Q2: "Who uses it?"
+  → PM web searches user personas for this domain
+  → PM notes: user types, access patterns
 
-7. Present the complete understanding:
-   ```
-   PROJECT: [name]
-   USERS: [who]
-   PROBLEM: [what]
-   STACK: [tech choices]
-   CORE FEATURES: [list]
-   EXCLUDED: [list]
-   ```
-   "Does this look right? (yes / change something)"
+Q3: "What's the main problem it solves?"
+  → PM web searches existing solutions in this space
+  → PM presents: "I found [competitors]. Your gap is [X]. Sound right?"
 
-8. On "yes" -- Generate ALL files:
-   - CLAUDE.md (under 100 lines, real rules with code snippets, MUST/NEVER format)
-   - SPEC.md (with [REQ-xxx] tags for every requirement)
-   - .claude/rules/sdlc-flow.md
-   - .claude/rules/agent-routing.md
-   - .claude/settings.json (hooks from templates/hooks.json)
-   - .gitignore (based on stack)
-   - pyproject.toml / package.json (based on stack)
-   - Dockerfile
-   - docker-compose.yml
-   - Project scaffold (config/, apps/ or src/)
-   - .env.example
-   - docs/forge-timeline.md (from templates/forge-timeline.template.md)
+Q4: "Tech preferences? Or should I recommend?"
+  → If recommend: PM analyzes project needs
+  → PM presents: "For [project type] I recommend [stack] because [reason]. Confirm?"
+  → PM notes: language, framework, database, cache, frontend, special features
 
-9. Log to timeline:
-   ```
-   ## [TIMESTAMP] Phase A: Discovery + Scaffold
-   **Flow:** NEW_PROJECT
-   **Agent:** PM (interactive discovery)
-   **Input:** "$ARGUMENTS"
-   **Output:** [CLAUDE.md](CLAUDE.md), [SPEC.md](SPEC.md), scaffold
-   **Duration:** [time]
-   **Status:** DONE
-   **REQs:** REQ-001 through REQ-xxx created
-   ```
+Q5: "Any of these apply?" (multi-select)
+  - Multi-tenant
+  - AI/LLM features
+  - File uploads
+  - Real-time features
+  - Background jobs
+  - Authentication
 
-10. Git commit: `init: scaffold project with forge`
+Q6: "What should it NEVER include?"
+  → PM notes: anti-scope list
 
-11. CONTINUE to Phase B automatically (no stopping)
+Q7: "Confirm everything:"
+  ```
+  PROJECT: [name]
+  USERS: [who]
+  PROBLEM: [what]
+  STACK: [tech]
+  FEATURES: [list]
+  SPECIAL: [multi-tenant, AI, etc.]
+  EXCLUDED: [list]
+  ```
+  "Correct? (yes / change)"
+
+On confirm → proceed to STEP S3
+
+**STEP S3: GENERATE CLAUDE.md** → @system-architect agent
+
+Execute: spawn Agent with subagent_type="system-architect"
+  prompt: |
+    Generate CLAUDE.md for a new project. Follow these rules STRICTLY:
+
+    PROJECT INFO (from discovery):
+    - Name: {name}
+    - Description: {description}
+    - Stack: {stack}
+    - Features: {features}
+    - Excluded: {excluded}
+
+    TEMPLATE (MUST follow this structure — under 100 lines):
+    ```
+    # {project_name}
+
+    {one_line_description}
+
+    ## Tech Stack
+
+    | Layer | Technology | Notes |
+    |---|---|---|
+    {rows from stack choices — include version + "NOT X" exclusions}
+
+    ## Architecture Rules
+
+    <system-reminder>
+    These rules override your defaults. Re-read before every task.
+    </system-reminder>
+
+    {numbered rules, MUST/NEVER format, with code snippets}
+    RULES MUST INCLUDE (based on stack):
+    - For Django: "Django Ninja for ALL API — NEVER import rest_framework"
+    - For Django: "uv for packages — NEVER pip install"
+    - For Django: "Run tests after EVERY change: uv run python manage.py test"
+    - For multi-tenant: "TenantMainMiddleware MUST be position 0"
+    - For multi-tenant: "Database MUST be django_tenants.postgresql_backend"
+    - For AI/LLM: "LLM output MUST be sanitized with strip_tags() before storage"
+    - For S3: "Presigned URLs expire after 15 minutes — NEVER serve files directly"
+    - For all: "All credentials from os.environ — NEVER hardcoded"
+    - Add stack-specific rules based on research
+
+    ## What NOT to Build
+
+    {bullet list from excluded items}
+
+    ## Testing
+
+    - {test command based on stack}
+    - {lint command based on stack}
+    - {test base class rule if applicable}
+
+    ## Lessons Learned
+
+    <!-- Updated by /retro. Each rule prevents a real past mistake. -->
+    ```
+
+    OUTPUT REQUIREMENTS:
+    - Under 100 lines
+    - Every rule is MUST or NEVER (no "prefer" or "consider")
+    - Include code snippets where applicable
+    - Tables for structured data
+    - Anti-scope list from user's "NEVER include" answer
+
+Verify: `wc -l CLAUDE.md` → under 100 lines
+Verify: `grep -c "MUST\|NEVER" CLAUDE.md` → at least 5 binary rules
+Verify: has ## Tech Stack, ## Architecture Rules, ## What NOT to Build, ## Testing sections
+Trace: save to docs/forge-trace/S3-claude-md/
+
+**STEP S4: GENERATE SPEC.md** → @requirements-analyst agent
+
+Execute: spawn Agent with subagent_type="requirements-analyst"
+  prompt: |
+    Generate SPEC.md for the project. Follow templates/SPEC.template.md STRICTLY.
+
+    PROJECT INFO:
+    - Name: {name}
+    - Stack: {stack}
+    - Features: {features}
+    - Users: {users}
+
+    REQUIREMENTS:
+    - Start from [REQ-001]
+    - Every feature gets at least 2-3 requirements
+    - Each requirement has ONE clear behavior (not compound)
+    - Use domain-prefixed IDs where possible (REQ-AUTH-001, REQ-UI-001)
+    - Include non-functional requirements (performance, security, observability)
+
+    SPEC MUST INCLUDE:
+    - ## Overview (2-3 paragraphs)
+    - ## Tech Stack (table matching CLAUDE.md)
+    - ## Architecture (project structure tree)
+    - ## Models (with field types, relationships, constraints)
+      - Each model tagged with [REQ-xxx]
+      - Field types are EXACT (CharField(max_length=200), not just "string")
+    - ## API Endpoints (table: method, path, auth, description, [REQ-xxx])
+    - ## Frontend Pages (if applicable)
+    - ## Requirements Traceability (table: [REQ-xxx] | description | status)
+
+    Minimum 20 [REQ-xxx] tags.
+
+Verify: `grep -c "REQ-" SPEC.md` → at least 20
+Verify: has ## Models, ## API Endpoints, ## Requirements Traceability sections
+Trace: save to docs/forge-trace/S4-spec-md/
+
+**STEP S5: GENERATE FORGE.md** → PM (simple, no agent needed)
+
+PM writes FORGE.md from template:
+```markdown
+# FORGE.md — Work Queue
+
+## Active
+<!-- Currently being worked on -->
+
+## Queued
+- type: NEW_PROJECT
+  description: {project description from discovery}
+  status: QUEUED
+  created: {today's date}
+
+## Done
+<!-- Completed items -->
+```
+
+Verify: file exists with QUEUED entry
+Trace: save to docs/forge-trace/S5-forge-md/
+
+**STEP S6: GENERATE .claude/rules/** → PM + @system-architect agent
+
+```bash
+mkdir -p .claude/rules/
+```
+
+For sdlc-flow.md: PM fills the template with project-specific stages.
+
+For agent-routing.md: @system-architect fills the agent matrix based on stack:
+
+Execute: spawn Agent with subagent_type="system-architect"
+  prompt: |
+    Create .claude/rules/agent-routing.md for this project.
+
+    Stack: {stack}
+    Features: {features}
+
+    Fill the agent matrix table:
+    | Domain | Agent | context7 Libraries |
+
+    Use these mappings:
+    - Django models → @django-tenants-agent (if multi-tenant) or @backend-architect
+    - Django API → @django-ninja-agent
+    - FastAPI → @backend-architect (or @agent-factory creates one)
+    - S3/Lambda → @s3-lambda-agent
+    - AI/LLM → @llm-integration-agent
+    - Frontend templates → /sc:implement
+    - React/Next.js → @frontend-architect
+    - Auth → @django-ninja-agent or stack-specific agent
+    - Infrastructure → @devops-architect
+    - AWS → @aws-setup-agent
+    - GCP → @gcp-setup-agent
+
+Verify: agent-routing.md has at least 3 rows in table
+Trace: save to docs/forge-trace/S6-rules/
+
+**STEP S7: GENERATE scaffold** → @devops-architect agent
+
+Execute: spawn Agent with subagent_type="devops-architect"
+  prompt: |
+    Create project scaffold for {stack}.
+    Read CLAUDE.md for rules. Generate REAL files:
+
+    For Django:
+    - pyproject.toml (all deps from CLAUDE.md tech stack)
+    - Dockerfile (Python 3.12, multi-stage, uv)
+    - docker-compose.yml (PostgreSQL + Redis + Django)
+    - config/settings.py (full Django settings)
+    - config/urls.py
+    - config/wsgi.py
+    - manage.py
+    - apps/__init__.py
+    - .env.example
+    - .gitignore
+
+    For FastAPI:
+    - pyproject.toml
+    - Dockerfile
+    - docker-compose.yml
+    - app/main.py
+    - app/config.py
+    - .env.example
+    - .gitignore
+
+    For Next.js:
+    - package.json
+    - Dockerfile
+    - docker-compose.yml
+    - next.config.js
+    - .env.example
+    - .gitignore
+
+Verify: key files exist (pyproject.toml OR package.json, Dockerfile, docker-compose.yml)
+Trace: save to docs/forge-trace/S7-scaffold/
+
+**STEP S8: GENERATE hooks** → PM (copies template)
+
+```bash
+cp templates/hooks.json .claude/settings.json
+```
+
+Verify: .claude/settings.json exists and is valid JSON
+Trace: save to docs/forge-trace/S8-hooks/
+
+**STEP S9: REVIEW all generated files** → @reviewer agent
+
+Execute: spawn Agent with subagent_type="self-review"
+  prompt: |
+    Review all generated files for this new project:
+    1. CLAUDE.md — under 100 lines? Real rules? MUST/NEVER format? Code snippets?
+    2. SPEC.md — at least 20 [REQ-xxx]? Models have field types? API endpoints listed?
+    3. FORGE.md — has QUEUED entry?
+    4. .claude/rules/ — SDLC flow complete? Agent routing filled?
+    5. Scaffold — settings.py valid? Dependencies listed? Dockerfile works?
+    6. .claude/settings.json — valid JSON? Hooks defined?
+
+    Rate each 1-5. Report any issues.
+
+Verify: all ratings >= 4
+If any < 4 → fix → re-review
+Trace: save to docs/forge-trace/S9-review/
+
+**STEP S10: COMMIT + DONE**
+
+```bash
+git add -A
+git commit -m "init: scaffold project with forge"
+```
+
+Output to user:
+```
+Setup complete!
+
+Created:
+  CLAUDE.md           — {N} lines, {N} architecture rules
+  SPEC.md             — {N} [REQ-xxx] requirements
+  FORGE.md            — 1 QUEUED item ready
+  .claude/rules/      — SDLC flow + agent routing
+  .claude/settings.json — hooks for lint + safety + flow detection
+  Scaffold            — {list of files}
+
+Next: exit Claude Code, then run `forge` again in this folder.
+Session 2 will load CLAUDE.md and start building.
+```
+
+---
+
+**STEP S5-BROWNFIELD: REVERSE-ENGINEER** (when code exists, no CLAUDE.md)
+
+<system-reminder>
+This project has code but was NOT built with Forge. Do NOT create requirements from scratch.
+The requirements ALREADY EXIST in the code. You must DISCOVER them first.
+NEVER ask "what are you building?" — the code TELLS you what was built.
+</system-reminder>
+
+Execute: spawn Agent with subagent_type="repo-index"
+  prompt: "Index {project folder}. Report: language, framework, file count, models found, endpoints found, tests found."
+Verify: index report exists
+
+Execute: spawn Agent with subagent_type="requirements-analyst"
+  prompt: "Reverse-engineer requirements from existing code. Read models → data requirements. Read API → functional requirements. Read tests → verified behaviors. Output [REQ-xxx] tags."
+Verify: at least 10 [REQ-xxx] from existing code
+
+Execute: spawn Agent with subagent_type="system-architect"
+  prompt: "Generate CLAUDE.md from existing codebase. Read pyproject.toml/package.json for stack. Read config for settings. Extract patterns as rules."
+Verify: CLAUDE.md has real stack, real rules
+
+Then → STEP S5 (FORGE.md) → S6 → S7 (skip scaffold, code exists) → S8 → S9 → S10
 
 #### Phase B -- Full SDLC (CHAINED EXECUTION — each step MUST complete before next)
 
@@ -598,68 +868,31 @@ STEP 57 — Check FORGE.md for queued items
 
 ### CASE 7: BROWNFIELD — Existing code but no CLAUDE.md
 
-<system-reminder>
-This project has code but was NOT built with Forge. Do NOT create requirements from scratch.
-The requirements ALREADY EXIST in the code. You must DISCOVER them first.
-NEVER ask "what are you building?" — the code TELLS you what was built.
-</system-reminder>
+Routes to CASE 1, Phase A, STEP S1 → STEP S5-BROWNFIELD.
 
-1. **Scan the codebase** (automated, no questions):
-   ```bash
-   # Detect language and framework
-   ls *.py manage.py pyproject.toml 2>/dev/null  # Python/Django
-   ls package.json tsconfig.json 2>/dev/null       # Node/TypeScript
-   ls Cargo.toml 2>/dev/null                        # Rust
-   ls go.mod 2>/dev/null                            # Go
+The brownfield flow is embedded in CASE 1's Phase A. When STEP S1 (ASSESS) detects
+"Code exists, no CLAUDE.md", it jumps to STEP S5-BROWNFIELD which:
 
-   # Count what exists
-   find . -name "*.py" -not -path "*/.venv/*" | wc -l
-   find . -name "test*" -name "*.py" | wc -l
-   ```
+1. @repo-index agent indexes the codebase (language, framework, models, endpoints, tests)
+2. @requirements-analyst agent reverse-engineers [REQ-xxx] from existing code
+3. @system-architect agent generates CLAUDE.md from actual patterns
+4. Then continues: S5 (FORGE.md) → S6 (rules) → S7 (skip scaffold) → S8 (hooks) → S9 (review) → S10 (commit)
 
-2. **Index the project** — spawn @repo-index:
-   - Directory structure, entry points, key files
-   - Models/schemas found, API endpoints found, tests found
-   - Present to user: "I found: [N] files, [framework], [N] models, [N] endpoints, [N] tests"
+After setup completes, present to user:
+```
+I've analyzed your project:
+- Tech: [stack]
+- Models: [count] ([list])
+- Endpoints: [count]
+- Tests: [count]
+- Requirements: [count] reverse-engineered
 
-3. **Reverse-engineer requirements** — spawn @requirements-analyst in reverse mode:
-   - Read models → extract data requirements [REQ-xxx]
-   - Read API endpoints → extract functional requirements [REQ-xxx]
-   - Read tests → extract verified behaviors [REQ-xxx]
-   - Read config → extract infrastructure requirements
-
-4. **Generate CLAUDE.md** from actual code:
-   - Tech stack from pyproject.toml/package.json (not guessing)
-   - Architecture rules from existing patterns (middleware order, test base classes, etc.)
-   - "What NOT to build" from what's deliberately absent
-
-5. **Generate SPEC.md** from reverse-engineered requirements:
-   - Every [REQ-xxx] traced to existing code file
-   - Mark as [IMPLEMENTED] — these already have code + tests
-
-6. **Present to user**:
-   ```
-   I've analyzed your project:
-   - Tech: [stack]
-   - Models: [count] ([list])
-   - Endpoints: [count]
-   - Tests: [count]
-   - Requirements: [count] reverse-engineered
-
-   Generated:
-   - CLAUDE.md ([N] lines, [N] rules from your patterns)
-   - SPEC.md ([N] [REQ-xxx] tags from existing code)
-   - .claude/rules/ (SDLC flow + agent routing)
-   - .claude/settings.json (hooks)
-   - docs/forge-timeline.md
-
-   What would you like to do next?
-   (a) Add a new feature
-   (b) Fix a bug
-   (c) Improve something
-   ```
-7. Route to CASE 3/4/5 based on answer
-8. Log to timeline
+What would you like to do next?
+(a) Add a new feature
+(b) Fix a bug
+(c) Improve something
+```
+Route to CASE 3/4/5 based on answer
 
 ---
 
