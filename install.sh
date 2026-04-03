@@ -42,9 +42,18 @@ install_global() {
     mkdir -p "$CLAUDE_DIR/rules"
     cp "$FORGE_DIR"/rules/*.md "$CLAUDE_DIR/rules/" 2>/dev/null || true
 
-    # Copy hooks
+    # Copy hooks to global settings (where Claude Code actually reads them)
     echo "  Copying hooks..."
-    cp "$FORGE_DIR"/hooks/hooks.json "$CLAUDE_DIR/hooks/" 2>/dev/null || true
+    # Claude Code reads hooks from settings.json, not hooks/ directory
+    if [ -f "$FORGE_DIR/templates/hooks.json" ]; then
+        # Merge hooks into user settings if settings.json exists
+        if [ -f "$CLAUDE_DIR/settings.json" ]; then
+            echo "  Note: ~/.claude/settings.json already exists. Hooks are per-project via forge init."
+        else
+            cp "$FORGE_DIR/templates/hooks.json" "$CLAUDE_DIR/settings.json"
+            echo "  Created ~/.claude/settings.json with forge hooks"
+        fi
+    fi
 
     # Count what was installed
     AGENT_COUNT=$(ls "$CLAUDE_DIR/agents/"*.md 2>/dev/null | wc -l)

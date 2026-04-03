@@ -1,189 +1,46 @@
 {
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "^/forge",
+        "command": "bash -c 'D=\"$PWD\"; C=$(test -f \"$D/CLAUDE.md\" && echo y || echo n); P=$(grep -l \"{{\" \"$D/CLAUDE.md\" 2>/dev/null); F=$(find \"$D\" -maxdepth 2 \\( -name \"*.py\" -o -name \"*.ts\" -o -name \"*.js\" \\) ! -path \"*node_modules*\" ! -path \"*.venv*\" ! -path \"*.git*\" 2>/dev/null | head -1); FG=$(test -d \"$D/.forge\" && echo y || echo n); if [ \"$C\" = \"n\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE1_GREENFIELD: No CLAUDE.md, no code.\"; elif [ \"$C\" = \"n\" ] && [ -n \"$F\" ]; then echo \"[FORGE] CASE7_BROWNFIELD: Code exists but no CLAUDE.md. Will scan and reverse-engineer.\"; elif [ -n \"$P\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE1_GREENFIELD: Placeholder CLAUDE.md, no code.\"; elif [ \"$C\" = \"y\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE2_SPEC_ONLY: CLAUDE.md exists, no code yet.\"; elif [ \"$C\" = \"y\" ] && [ -n \"$F\" ]; then B=$(echo \"$CLAUDE_USER_PROMPT\" | grep -iE \"fix|bug|broken|error|fail|wrong|crash|302|401|500\" | head -1); FT=$(echo \"$CLAUDE_USER_PROMPT\" | grep -iE \"add|build|create|implement|new feature\" | head -1); IM=$(echo \"$CLAUDE_USER_PROMPT\" | grep -iE \"improve|refactor|optimize|speed|clean|perf\" | head -1); if [ -n \"$B\" ]; then echo \"[FORGE] CASE4_BUGFIX: Bug keywords detected.\"; elif [ -n \"$FT\" ]; then echo \"[FORGE] CASE3_FEATURE: Feature keywords detected.\"; elif [ -n \"$IM\" ]; then echo \"[FORGE] CASE5_IMPROVE: Improvement keywords detected.\"; else echo \"[FORGE] CASE6_ASK: Existing project. Will ask what to do.\"; fi; fi; if [ -f \"$D/SPEC.md\" ]; then RC=$(grep -oP \"REQ-\\d+\" \"$D/SPEC.md\" 2>/dev/null | sort -u | wc -l); echo \"[FORGE-SYNC] $RC REQs tracked.\"; else echo \"[FORGE-SYNC] No SPEC.md — will create during flow.\"; fi'",
+        "description": "Deterministic flow routing for /forge — detects all 7 cases"
+      },
+      {
+        "matcher": "",
+        "command": "bash -c 'D=\"$PWD\"; if [ ! -f \"$D/CLAUDE.md\" ] && [ ! -d \"$D/.forge\" ]; then exit 0; fi; if [ -f \"$D/SPEC.md\" ]; then RC=$(grep -oP \"REQ-\\d+\" \"$D/SPEC.md\" 2>/dev/null | sort -u | wc -l); if [ \"$RC\" -gt 0 ]; then echo \"[FORGE-SYNC] $RC REQs in SPEC. Every change MUST reference a REQ.\"; fi; fi'",
+        "description": "Show REQ count on every prompt (only in forge projects)"
+      }
+    ],
     "PreToolUse": [
       {
-        "description": "Block destructive operations",
-        "matcher": "Bash",
-        "pattern": "rm -rf|git reset --hard|git push --force|git checkout \\.|git clean -f|drop table|truncate",
-        "action": "deny",
-        "message": "Destructive operation blocked. Use /careful mode or confirm explicitly."
+        "matcher": "Bash(rm -rf*|git push --force*|git reset --hard*|git checkout -- *|git clean -f*)",
+        "command": "echo '[FORGE] BLOCKED: Destructive command. User must approve.' && exit 2",
+        "description": "Block destructive commands (exit 2 = hard block)"
       },
       {
-        "description": "Block --no-verify on git commits",
-        "matcher": "Bash",
-        "pattern": "--no-verify|--no-gpg-sign",
-        "action": "deny",
-        "message": "Skipping hooks/signing is blocked. Fix the underlying issue instead."
+        "matcher": "Bash(git commit*)",
+        "command": "bash -c 'T=0; if [ -f manage.py ]; then T=$(uv run python manage.py test --testrunner django.test.runner.DiscoverRunner 2>&1 | grep -c \"^OK\" 2>/dev/null || echo 0); fi; if [ \"$T\" = \"0\" ] && [ -f manage.py ]; then echo \"[FORGE] WARNING: Tests not verified. Run: uv run python manage.py test\"; fi'",
+        "description": "Check tests ran before commit"
       },
       {
-        "description": "Command injection detection — block suspicious bash patterns",
-        "matcher": "Bash",
-        "pattern": "\\$\\(.*curl|`.*curl|;\\s*curl|\\|\\s*base64|eval\\s|\\$\\(.*\\)|`[^`]*`.*`",
-        "action": "deny",
-        "message": "Potential command injection detected. Bash command contains suspicious patterns (subshell + network, eval, chained backticks). Review and simplify the command."
-      },
-      {
-        "description": "Block dev server starts (agents should never start long-running processes)",
-        "matcher": "Bash",
-        "pattern": "runserver|npm run dev|yarn dev|bun run dev|flask run|uvicorn.*--reload",
-        "action": "deny",
-        "message": "Agents must not start dev servers. Dev servers are started by the user, not the agent."
-      },
-      {
-        "description": "Detect hardcoded secrets before they enter code",
         "matcher": "Write|Edit",
-        "pattern": "sk-[a-zA-Z0-9]{20,}|ghp_[a-zA-Z0-9]{36}|AKIA[A-Z0-9]{16}|password\\s*=\\s*['\"][^'\"]{8,}['\"]|api_key\\s*=\\s*['\"]",
-        "action": "deny",
-        "message": "Secret detected in code. Use environment variables (os.environ) instead."
-      },
-      {
-        "description": "TDD guard — warn if writing code without test first",
-        "matcher": "Write|Edit",
-        "pattern": "apps/*/models.py|apps/*/api.py|apps/*/services.py|apps/*/views.py",
-        "check": "no_matching_test_file",
-        "action": "warn",
-        "message": "TDD: Writing implementation code. Verify the TEST was written FIRST. If not, write the test before this code."
-      },
-      {
-        "description": "Smart-approve safe read-only commands",
-        "matcher": "Bash",
-        "pattern": "^(ls|cat|head|tail|wc|grep|find|git status|git log|git diff|git branch|pwd|echo|date|which|type|file|stat|du|df)\\b",
-        "action": "approve",
-        "message": "Safe read-only command — auto-approved."
-      },
-      {
-        "description": "Smart-approve formatting and linting",
-        "matcher": "Bash",
-        "pattern": "^(black|ruff|isort|prettier|eslint)\\b",
-        "action": "approve",
-        "message": "Formatting/linting command — auto-approved."
-      },
-      {
-        "description": "Block writes to config files without confirmation",
-        "matcher": "Write|Edit",
-        "pattern": ".ruff.toml|.eslintrc|biome.json|pyproject.toml|settings.py",
-        "action": "warn",
-        "message": "Modifying config file. Verify this is intentional."
-      },
-      {
-        "description": "Warn on file size limit",
-        "matcher": "Write",
-        "check": "line_count > 300",
-        "action": "warn",
-        "message": "File exceeds 300-line limit. Consider splitting into smaller modules."
+        "if": "Write(apps/*/api.py)|Edit(apps/*/api.py)|Write(*/routes/*)|Edit(*/routes/*)",
+        "command": "bash -c 'APP=$(echo \"$CLAUDE_TOOL_INPUT_FILE_PATH\" | grep -oP \"apps/[^/]+\" | head -1); if [ -n \"$APP\" ]; then TF=\"$APP/tests.py\"; if [ ! -f \"$TF\" ] && [ ! -d \"$APP/tests\" ]; then echo \"[FORGE-TDD] No test file at $TF. Write tests FIRST.\"; fi; fi'",
+        "description": "TDD enforcement — warn if writing API code without tests"
       }
     ],
     "PostToolUse": [
       {
-        "description": "Auto-format Python files after write",
         "matcher": "Write|Edit",
-        "pattern": "*.py",
-        "command": "black {file} --quiet && ruff check {file} --fix --quiet",
-        "action": "run",
-        "message": "Auto-formatted with black + ruff"
+        "command": "bash -c 'F=\"${CLAUDE_TOOL_INPUT_FILE_PATH:-}\"; if echo \"$F\" | grep -q \"\\.py$\"; then python -m ruff check --fix \"$F\" 2>/dev/null || true; fi'",
+        "description": "Auto-lint Python after write"
       },
       {
-        "description": "Auto-checkpoint after file write",
-        "matcher": "Write|Edit",
-        "action": "log",
-        "message": "File modified — checkpoint available for rollback"
-      },
-      {
-        "description": "Remind sync check after code changes",
-        "matcher": "Write|Edit",
-        "pattern": "*.py|*.ts|*.js",
-        "action": "remind",
-        "message": "Code changed — verify [REQ-xxx] traceability (spec↔test↔code sync)"
-      },
-      {
-        "description": "Check for zero-debt violations after write",
-        "matcher": "Write|Edit",
-        "pattern": "*.py",
-        "check": "grep -n 'TODO\\|FIXME\\|HACK' {file}",
-        "action": "warn",
-        "message": "Technical debt marker found. Implement now or create a GitHub Issue."
-      },
-      {
-        "description": "Learning log — capture insights continuously",
-        "matcher": "Write|Edit",
-        "pattern": "*.py|*.md",
-        "action": "remind",
-        "message": "If this change revealed a non-obvious pattern or gotcha, capture it now with /learn."
-      },
-      {
-        "description": "Commit guard — enforce conventional format",
         "matcher": "Bash",
-        "pattern": "git commit",
-        "check": "commit_message_format",
-        "action": "warn",
-        "message": "Commit message must follow conventional format: type(scope): description (feat, fix, docs, refactor, test, chore)"
-      },
-      {
-        "description": "Drift prevention — reinforce current task context after every Bash/Read",
-        "matcher": "Bash|Read|Glob|Grep",
-        "action": "inject_reminder",
-        "message": "<system-reminder>Current task: check your [REQ-xxx]. Phase: check SDLC stage. Rules: TDD first, handoff format, /learn insights. NEVER code from training data — verify with context7.</system-reminder>"
-      },
-      {
-        "description": "TDD drift check — warn if code written without test",
-        "matcher": "Write|Edit",
-        "pattern": "apps/*/models.py|apps/*/api.py|apps/*/services.py",
-        "check": "no_recent_test_write",
-        "action": "inject_reminder",
-        "message": "<system-reminder>TDD CHECK: Did you write the TEST first? If not, write the test NOW before continuing with implementation code.</system-reminder>"
-      }
-    ],
-    "SessionStart": [
-      {
-        "description": "Load playbook, rules, and ethos at session start",
-        "action": "load",
-        "files": [
-          "playbook/strategies.md",
-          "rules/universal.md",
-          "docs/ethos.md"
-        ]
-      },
-      {
-        "description": "Load last checkpoint and project index if available",
-        "action": "load",
-        "files": [
-          "docs/checkpoints/INDEX.md",
-          "PROJECT_INDEX.md"
-        ],
-        "optional": true
-      },
-      {
-        "description": "Report session context to user",
-        "action": "remind",
-        "message": "Session started. Loaded: playbook, rules, ethos. Run /sc:load for full context restoration."
-      },
-      {
-        "description": "Context front-loading — summarize current state before any work",
-        "action": "run",
-        "command": "Summarize current project state in under 50 characters. Detect: is this a new topic or continuation of previous work? Load appropriate context.",
-        "message": "<system-reminder>CONTEXT FRONT-LOAD: Before doing ANY work, orient yourself. What project? What phase? What was last done? What's next? Read CLAUDE.md and last checkpoint.</system-reminder>"
-      }
-    ],
-    "Stop": [
-      {
-        "description": "Auto-save session summary on exit",
-        "action": "remind",
-        "message": "Session ending. Run /learn for new insights. Run /sc:save to persist session context."
-      }
-    ],
-    "PreCompact": [
-      {
-        "description": "Save state before context compression",
-        "action": "remind",
-        "message": "Context compacting — verify: current task, spec section, test status, and any in-progress work are preserved."
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "description": "Remind about handoff format after implementation",
-        "action": "remind",
-        "condition": "implementation_complete",
-        "message": "Implementation done? Use the standardized handoff format (docs/patterns/handoff-protocol.md)."
+        "if": "Bash(*manage.py test*|*pytest*|*npm test*)",
+        "command": "bash -c 'if [ -f SPEC.md ]; then echo \"[FORGE-SYNC] Tests done. Verify traceability: every [REQ-xxx] → test → code.\"; fi'",
+        "description": "Sync check reminder after tests"
       }
     ]
   }
