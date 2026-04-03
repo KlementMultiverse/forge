@@ -164,7 +164,17 @@ GITIGNORE
     fi
 
     # Create docs structure
-    mkdir -p "$PROJECT_DIR/docs/proposals" "$PROJECT_DIR/docs/retrospectives" "$PROJECT_DIR/docs/checkpoints" "$PROJECT_DIR/docs/issues"
+    mkdir -p "$PROJECT_DIR/docs/proposals" "$PROJECT_DIR/docs/retrospectives" "$PROJECT_DIR/docs/checkpoints" "$PROJECT_DIR/docs/issues" "$PROJECT_DIR/docs/retros"
+
+    # Create forge timeline from template
+    if [ -f "$FORGE_DIR/templates/forge-timeline.template.md" ] && [ ! -f "$PROJECT_DIR/docs/forge-timeline.md" ]; then
+        cp "$FORGE_DIR/templates/forge-timeline.template.md" "$PROJECT_DIR/docs/forge-timeline.md"
+        # Replace placeholder with project name (dirname)
+        local PROJECT_NAME
+        PROJECT_NAME=$(basename "$PROJECT_DIR")
+        sed -i "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" "$PROJECT_DIR/docs/forge-timeline.md"
+        echo "  Created docs/forge-timeline.md (audit trail)"
+    fi
 
     # Count
     echo ""
@@ -177,10 +187,10 @@ GITIGNORE
     echo "  docs/                — proposals, retros, checkpoints"
     echo ""
     echo -e "${YELLOW}Next steps:${NC}"
-    echo "  1. Open project in Claude Code: claude"
-    echo "  2. Run: /setup"
-    echo "  3. Answer 9 questions about your project"
-    echo "  4. Then run: /forge \"your app description\""
+    echo "  1. cd into your project"
+    echo "  2. Open Claude Code: claude"
+    echo "  3. Type: /forge"
+    echo "  4. That's it. Forge handles everything."
 }
 
 # Export learnings helper

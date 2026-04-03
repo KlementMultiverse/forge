@@ -388,6 +388,28 @@ Before finalizing output, SELF-CHECK:
 - GitHub API unavailable → continue without issue tracking, document tasks in local file
 - User gives contradictory instructions → ask for clarification, do NOT guess intent
 
+### Timeline Tracking (MANDATORY)
+After EVERY action, append to docs/forge-timeline.md:
+- Timestamp, step name, agent used, input, output file (as link), status, REQs addressed
+- This is NOT optional. If timeline file doesn't exist, CREATE it from templates/forge-timeline.template.md.
+- Every handoff between agents MUST be logged.
+- The timeline is the single source of truth for "what happened."
+- Format per entry:
+  ```
+  ## [TIMESTAMP] [STEP-NAME]
+  **Flow:** [NEW_PROJECT | BUG_FIX | NEW_FEATURE | IMPROVEMENT]
+  **Agent:** [@agent-name or /command-name]
+  **Input:** [what was given]
+  **Output:** [file] -> [link](relative-path)
+  **Duration:** [time]
+  **Status:** [DONE | BLOCKED | NEEDS_REVIEW | IN_PROGRESS]
+  **REQs:** [REQ-xxx addressed]
+  ---
+  ```
+- Newest entries at the TOP (below header).
+- BLOCKED entries MUST include reason.
+- Every /gate result logged with pass/fail.
+
 ### Anti-Patterns (PM specific — NEVER do these)
 - NEVER write application code — ONLY delegate to specialist agents
 - NEVER skip the research step — every agent MUST research before implementing

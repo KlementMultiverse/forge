@@ -2,9 +2,14 @@
   "hooks": {
     "UserPromptSubmit": [
       {
-        "matcher": "",
-        "command": "bash -c 'PROJECT_DIR=\"$PWD\"; HAS_CLAUDE=$(test -f \"$PROJECT_DIR/CLAUDE.md\" && echo yes || echo no); HAS_CODE=$(find \"$PROJECT_DIR\" -maxdepth 2 \\( -name \"*.py\" -o -name \"*.ts\" \\) ! -path \"*/node_modules/*\" ! -path \"*/.venv/*\" 2>/dev/null | head -1); HAS_PLACEHOLDER=$(grep -l \"{{\" \"$PROJECT_DIR/CLAUDE.md\" 2>/dev/null); IS_BUG=$(echo \"$CLAUDE_USER_PROMPT\" | grep -iE \"fix|bug|broken|error|fail|wrong|crash\" | head -1); IS_FEAT=$(echo \"$CLAUDE_USER_PROMPT\" | grep -iE \"add|build|create|implement|new\" | head -1); IS_IMPROVE=$(echo \"$CLAUDE_USER_PROMPT\" | grep -iE \"improve|refactor|optimize|speed|clean\" | head -1); if [ \"$HAS_CLAUDE\" = \"no\" ] || [ -n \"$HAS_PLACEHOLDER\" ]; then echo \"[FORGE] NEW_PROJECT — run /setup then /forge\"; elif [ -z \"$HAS_CODE\" ]; then echo \"[FORGE] NEW_PROJECT — run /forge for full SDLC\"; elif [ -n \"$IS_BUG\" ]; then echo \"[FORGE] BUG_FIX — /investigate first, TDD fix, sync check, /learn\"; elif [ -n \"$IS_FEAT\" ]; then echo \"[FORGE] NEW_FEATURE — /specify → /design-doc → /plan-tasks → implement → /gate\"; elif [ -n \"$IS_IMPROVE\" ]; then echo \"[FORGE] IMPROVEMENT — analyze → plan → implement → test\"; fi; if [ -f \"$PROJECT_DIR/SPEC.md\" ]; then RC=$(grep -oP \"REQ-\\d+\" \"$PROJECT_DIR/SPEC.md\" 2>/dev/null | sort -u | wc -l); echo \"[FORGE-SYNC] $RC REQs in SPEC. Every code change MUST reference a REQ.\"; fi'",
-        "description": "Detect project state and route to correct Forge flow"
+        "matcher": "^/forge",
+        "command": "bash -c 'echo \"[FORGE] /forge invoked — command handles routing internally\"'",
+        "description": "Let /forge handle its own routing without double-detection"
+      },
+      {
+        "matcher": "^(?!/forge).*",
+        "command": "bash -c 'PROJECT_DIR=\"$PWD\"; HAS_CLAUDE=$(test -f \"$PROJECT_DIR/CLAUDE.md\" && echo yes || echo no); HAS_CODE=$(find \"$PROJECT_DIR\" -maxdepth 2 \\( -name \"*.py\" -o -name \"*.ts\" -o -name \"*.js\" \\) ! -path \"*/node_modules/*\" ! -path \"*/.venv/*\" ! -path \"*/.git/*\" 2>/dev/null | head -1); HAS_PLACEHOLDER=$(grep -l \"{{\" \"$PROJECT_DIR/CLAUDE.md\" 2>/dev/null); IS_BUG=$(echo \"$CLAUDE_USER_PROMPT\" | grep -iE \"fix|bug|broken|error|fail|wrong|crash\" | head -1); IS_FEAT=$(echo \"$CLAUDE_USER_PROMPT\" | grep -iE \"add|build|create|implement|new\" | head -1); IS_IMPROVE=$(echo \"$CLAUDE_USER_PROMPT\" | grep -iE \"improve|refactor|optimize|speed|clean\" | head -1); if [ \"$HAS_CLAUDE\" = \"no\" ] || [ -n \"$HAS_PLACEHOLDER\" ]; then echo \"[FORGE] NEW_PROJECT — no project setup detected. Run /forge to start.\"; elif [ -z \"$HAS_CODE\" ]; then echo \"[FORGE] NEW_PROJECT — project defined but no code yet. Run /forge for full SDLC.\"; elif [ -n \"$IS_BUG\" ]; then echo \"[FORGE] BUG_FIX — run /forge to investigate and fix with TDD.\"; elif [ -n \"$IS_FEAT\" ]; then echo \"[FORGE] NEW_FEATURE — run /forge to specify, design, and implement.\"; elif [ -n \"$IS_IMPROVE\" ]; then echo \"[FORGE] IMPROVEMENT — run /forge to analyze and improve.\"; else echo \"[FORGE] UNKNOWN — run /forge to let it detect and route.\"; fi; if [ -f \"$PROJECT_DIR/SPEC.md\" ]; then RC=$(grep -oP \"REQ-\\d+\" \"$PROJECT_DIR/SPEC.md\" 2>/dev/null | sort -u | wc -l); echo \"[FORGE-SYNC] $RC REQs in SPEC. Every code change MUST reference a REQ.\"; fi'",
+        "description": "Detect project state and suggest /forge for non-forge prompts"
       }
     ],
     "PreToolUse": [
@@ -22,8 +27,8 @@
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
-        "command": "bash -c 'FILE=\"${CLAUDE_TOOL_INPUT_FILE_PATH:-}\"; if echo \"$FILE\" | grep -q \"\\.py$\" 2>/dev/null; then python -m ruff check --fix \"$FILE\" 2>/dev/null; fi; true'",
-        "description": "Auto-lint Python files after edit"
+        "command": "bash -c 'FILE=\"${CLAUDE_TOOL_INPUT_FILE_PATH:-}\"; if echo \"$FILE\" | grep -q \"\\.py$\" 2>/dev/null; then python -m ruff check --fix \"$FILE\" 2>/dev/null; fi; if echo \"$FILE\" | grep -q \"forge-timeline\\.md$\" 2>/dev/null; then CONTENT=$(cat \"$FILE\" 2>/dev/null); MISSING=\"\"; echo \"$CONTENT\" | grep -q \"\\*\\*Flow:\\*\\*\" || MISSING=\"$MISSING Flow\"; echo \"$CONTENT\" | grep -q \"\\*\\*Agent:\\*\\*\" || MISSING=\"$MISSING Agent\"; echo \"$CONTENT\" | grep -q \"\\*\\*Status:\\*\\*\" || MISSING=\"$MISSING Status\"; if [ -n \"$MISSING\" ]; then echo \"[FORGE-TIMELINE] WARNING: Timeline entry missing fields:$MISSING. Required: Flow, Agent, Input, Output, Duration, Status, REQs.\"; fi; fi; true'",
+        "description": "Auto-lint Python files + validate forge-timeline.md format on write"
       },
       {
         "matcher": "Bash",
