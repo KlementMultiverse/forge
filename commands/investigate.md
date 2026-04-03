@@ -13,6 +13,21 @@ NEVER skip this step. NEVER fix without investigating first.
 "Got an error, let me understand WHY" is REQUIRED.
 </system-reminder>
 
+## Execution Steps
+
+1. READ the error/bug description carefully
+2. REPRODUCE: find the code path that causes the issue
+   - Grep for the function/class/endpoint mentioned
+   - Read the file, trace the execution flow
+   - Check middleware chain, signals, decorators that might intercept
+3. ROOT CAUSE: use 5 Whys
+   - Why does it fail? → [immediate cause]
+   - Why does [immediate cause] happen? → [deeper cause]
+   - Continue until you reach the TRUE root cause
+4. VERIFY: confirm root cause by reading the actual code
+5. OUTPUT: state root cause with file:line references
+6. PROPOSE FIX: exact code change needed
+
 Spawn `@root-cause-analyst` with:
   TASK: Investigate this failure. Do NOT fix it yet.
   1. Read the error message/failing test carefully

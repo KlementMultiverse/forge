@@ -166,8 +166,11 @@ Phase 3: IMPLEMENT (per issue — Forge Cell 9 steps)
   For each issue:
     Step 0: TASK DESIGN DOC (MANDATORY before any code)
       → Agent writes mini design doc using templates/task-design-doc.template.md
-      → Must include: files to change, code changes, API contract, sync check table, test plan
-      → PM verifies: every [REQ-xxx] has planned test + code, no ambiguity
+      → For MODEL tasks: include model code, field types, constraints, indexes
+      → For API tasks: include router code, Schema classes, endpoint contracts (JSON), error format
+      → For FRONTEND tasks: include template structure, JS interactions, CSS changes
+      → Must include sync check table: [REQ-xxx] → test → code
+      → PM verifies: no ambiguity, no missing schemas, every REQ has planned test
       → If ambiguity found → resolve BEFORE coding, not during
     Step 1: @context-loader-agent (fetch library docs)
     Step 2: Domain agent RESEARCH (read spec, tests, code, rules — find gaps)

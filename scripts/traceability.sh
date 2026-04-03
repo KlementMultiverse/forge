@@ -17,17 +17,51 @@ echo "=== Forge Traceability Report ==="
 echo ""
 
 # Extract all REQ tags from spec
-SPEC_REQS=$(grep -oP '\[REQ-\d+\]' "$SPEC_FILE" | sort -u)
+SPEC_REQS=$(grep -oP '\[REQ-\d+\]' "$SPEC_FILE" | sort -u || echo "")
+if [ -z "$SPEC_REQS" ]; then
+    SPEC_COUNT=0
+    echo "SPEC.md: 0 requirements found"
+    echo ""
+    echo "=== Summary ==="
+    echo "Coverage:  0% (0/0 requirements have tests)"
+    echo "Orphans:   0"
+    echo "Missing tests: 0"
+    echo "Missing code:  0"
+    echo ""
+    echo "WARN: No [REQ-xxx] tags found in SPEC.md. Run /generate-spec or /specify to add them."
+    exit 1
+fi
 SPEC_COUNT=$(echo "$SPEC_REQS" | wc -l)
 echo "SPEC.md: $SPEC_COUNT requirements found"
 
-# Find REQ tags in test files
-TEST_REQS=$(grep -roPh '\[REQ-\d+\]' "$PROJECT_ROOT/tests/" "$PROJECT_ROOT/apps/*/tests.py" 2>/dev/null | sort -u || echo "")
+# Find REQ tags in test files — search multiple common locations
+TEST_REQS=""
+for test_path in \
+    "$PROJECT_ROOT/tests/" \
+    "$PROJECT_ROOT/apps/*/tests.py" \
+    "$PROJECT_ROOT/apps/*/tests/" \
+    "$PROJECT_ROOT/*/tests.py" \
+    "$PROJECT_ROOT/*/tests/"; do
+    FOUND=$(grep -roPh '\[REQ-\d+\]' $test_path 2>/dev/null || true)
+    if [ -n "$FOUND" ]; then
+        TEST_REQS="$TEST_REQS
+$FOUND"
+    fi
+done
+TEST_REQS=$(echo "$TEST_REQS" | sort -u | grep '\[REQ' || echo "")
 TEST_COUNT=$(echo "$TEST_REQS" | grep -c '\[REQ' || echo "0")
 echo "Tests:   $TEST_COUNT requirements referenced"
 
-# Find REQ tags in code files (excluding tests and spec)
-CODE_REQS=$(grep -roPh '\[REQ-\d+\]' "$PROJECT_ROOT/apps/" --include="*.py" --exclude="*test*" 2>/dev/null | sort -u || echo "")
+# Find REQ tags in code files (excluding tests and spec) — search .py, .ts, .js
+CODE_REQS=""
+for ext in "*.py" "*.ts" "*.js"; do
+    FOUND=$(grep -roPh '\[REQ-\d+\]' "$PROJECT_ROOT" --include="$ext" --exclude="*test*" --exclude="*spec*" --exclude="SPEC.md" 2>/dev/null || true)
+    if [ -n "$FOUND" ]; then
+        CODE_REQS="$CODE_REQS
+$FOUND"
+    fi
+done
+CODE_REQS=$(echo "$CODE_REQS" | sort -u | grep '\[REQ' || echo "")
 CODE_COUNT=$(echo "$CODE_REQS" | grep -c '\[REQ' || echo "0")
 echo "Code:    $CODE_COUNT requirements referenced"
 

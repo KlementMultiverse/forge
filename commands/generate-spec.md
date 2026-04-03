@@ -28,9 +28,30 @@ Save to project root as `SPEC.md`:
 - API contracts with exact request/response shapes
 - Models with field types and constraints
 
+## Persist REQ Tags
+
+After generating SPEC.md, ensure all [REQ-xxx] tags are persisted:
+
+1. Check if SPEC.md already has a `## Requirements Traceability` section
+2. If not → append one at the end of SPEC.md
+3. Build a traceability table from all [REQ-xxx] tags found in SPEC.md:
+
+```markdown
+## Requirements Traceability
+
+| REQ | Description | Section | Test | Code |
+|-----|-------------|---------|------|------|
+| [REQ-001] | [short description] | [which SPEC section] | [ ] | [ ] |
+| [REQ-002] | [short description] | [which SPEC section] | [ ] | [ ] |
+```
+
+4. This table is the single source of truth for tracking implementation progress
+5. `/plan-tasks` and Forge Cell Step 5 (sync check) update the Test and Code columns
+
 ## Judge
 @requirements-analyst verifies:
 - All [REQ-xxx] from requirements.md are present in SPEC.md
 - No requirement was dropped or changed
 - API contracts are complete (request + response + errors)
 - Models match requirements
+- Requirements Traceability section exists with all [REQ-xxx] listed

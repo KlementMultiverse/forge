@@ -7,19 +7,26 @@ $ARGUMENTS — the insight to save (e.g., "strip_tags on all LLM output before s
 
 ## Execution
 
-1. Read current playbook/strategies.md
-2. Check for duplicates (is this insight already captured?)
-3. If duplicate → increment helpful counter on existing entry
-4. If new → add entry with initial counters:
+1. Read the insight from $ARGUMENTS
+2. Read .forge/playbook/strategies.md (or playbook/strategies.md)
+3. Determine next [str-xxx] ID:
+   - Grep for existing `[str-` entries
+   - Find highest number, increment by 1
+   - If no entries exist, start at [str-001]
+4. Check for duplicates (grep for similar text in strategies.md)
+   - If duplicate found → increment helpful counter on existing entry instead of adding new
+5. If new → append entry with initial counters:
 
 ```markdown
 [str-{next_id}] helpful=0 harmful=0 :: {insight text}
 ```
 
-5. Categorize:
+6. Categorize and place under the correct section:
    - STRATEGIES & INSIGHTS → general best practices
    - COMMON MISTAKES TO AVOID → error patterns
    - DOMAIN-SPECIFIC → stack-related rules
+7. Write the updated file back to disk
+8. Report: "Saved [str-{id}] to playbook"
 
 ## When To Call
 

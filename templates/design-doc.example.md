@@ -518,6 +518,17 @@ api.add_router("/tenants/", tenants_router, auth=TenantSessionAuth())
 
 All keys are automatically tenant-prefixed by `django_tenants.cache.make_key`. Never construct raw Redis keys.
 
+### Cache Strategy
+
+| Key Pattern | TTL | Invalidated By | Data |
+|-------------|-----|----------------|------|
+| `{app}:list:{user_id}` | 30s | create/delete | List endpoint cache |
+| `{app}:detail:{id}` | 60s | update/delete | Detail endpoint cache |
+| `dashboard:stats` | 60s | any mutation | Dashboard aggregates |
+
+Cache backend: Redis via `django.core.cache` with `django_tenants.cache.make_key` for tenant isolation.
+All cache keys MUST use `make_key` — NEVER raw strings.
+
 ### 4.9 Async Lambda Flow
 <!-- COMPLETENESS: Every async flow needs BOTH sides specified — trigger and result handling -->
 

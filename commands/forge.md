@@ -477,7 +477,14 @@ Bug fix flow: investigate FIRST, then fix. NEVER fix without understanding root 
    - Write the fix → run test → must PASS
    - Run ALL tests → no regressions
 6. **Quality**: `black . && ruff check . --fix`
-7. **Sync check**: does a [REQ-xxx] exist for this behavior? If not → add to SPEC
+7. **Sync check**:
+   - Search SPEC.md for a [REQ-xxx] covering this behavior
+   - If found → add test reference to sync check table
+   - If NOT found → create new [REQ-xxx] in SPEC.md:
+     - Determine next available number: `grep -oP 'REQ-\d+' SPEC.md | sort -t- -k2 -n | tail -1`
+     - Append to SPEC.md Requirements Traceability section
+     - Add to sync check table: [REQ-xxx] → test → code
+   - This ensures EVERY bug fix GROWS the spec (system gets better with every fix)
 8. **Commit**: `git commit -m "fix(domain): description [REQ-xxx]"`
 9. **/learn**: if the bug reveals a non-obvious pattern → save to playbook
 
@@ -495,6 +502,11 @@ New feature flow: specify → design → implement. Same as Stages 1-3 of the fu
    - Spawns @requirements-analyst → extracts requirements with [REQ-xxx] tags
    - Produces proposal in docs/proposals/
    - Creates GitHub issues (or local markdown issues if no remote)
+   - **Persist new [REQ-xxx] tags to SPEC.md** — append to Requirements Traceability section:
+     - Read existing SPEC.md → find `## Requirements Traceability` table
+     - If section missing → create it (see /generate-spec for format)
+     - Append new [REQ-xxx] rows to the table
+     - This ensures SPEC.md is ALWAYS the single source of truth for requirements
 4. **Run /design-doc** on the proposal:
    - Spawns @system-architect + @backend-architect + @security-engineer
    - Produces 10-section design doc

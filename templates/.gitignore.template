@@ -43,3 +43,6 @@ coverage.xml
 
 # Testing
 .pytest_cache/
+
+# Forge local
+.forge/checkpoints/

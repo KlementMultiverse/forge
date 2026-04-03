@@ -135,8 +135,17 @@ GITIGNORE
         echo "  Initialized git repository"
     fi
 
+    # Copy scripts (traceability + sync report)
+    if [ -d "$FORGE_DIR/scripts" ]; then
+        echo "  Copying scripts..."
+        mkdir -p "$PROJECT_DIR/scripts"
+        cp "$FORGE_DIR/scripts/traceability.sh" "$PROJECT_DIR/scripts/" 2>/dev/null || true
+        cp "$FORGE_DIR/scripts/sync-report.sh" "$PROJECT_DIR/scripts/" 2>/dev/null || true
+        chmod +x "$PROJECT_DIR/scripts/"*.sh 2>/dev/null || true
+    fi
+
     # Create docs structure
-    mkdir -p "$PROJECT_DIR/docs/proposals" "$PROJECT_DIR/docs/retrospectives" "$PROJECT_DIR/docs/checkpoints"
+    mkdir -p "$PROJECT_DIR/docs/proposals" "$PROJECT_DIR/docs/retrospectives" "$PROJECT_DIR/docs/checkpoints" "$PROJECT_DIR/docs/issues"
 
     # Count
     echo ""
