@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "command": "cd {{PROJECT_DIR}} && (ls *.py > /dev/null 2>&1 && python -m ruff check --fix . 2>/dev/null; true)",
+        "description": "Auto-lint Python files after edit"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash(rm -rf*|git push --force*|git reset --hard*)",
+        "command": "echo 'BLOCKED: Destructive command requires explicit user approval' && exit 2",
+        "description": "Block destructive commands"
+      }
+    ]
+  }
+}

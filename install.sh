@@ -80,13 +80,32 @@ init_project() {
         # CLAUDE.md template → project root
         if [ -f "$FORGE_DIR/templates/CLAUDE.template.md" ] && [ ! -f "$PROJECT_DIR/CLAUDE.md" ]; then
             cp "$FORGE_DIR/templates/CLAUDE.template.md" "$PROJECT_DIR/CLAUDE.md"
-            echo "  Created CLAUDE.md (edit to match your project)"
+            echo "  Created CLAUDE.md (placeholder — run /setup to fill)"
         fi
         # SPEC template
         if [ -f "$FORGE_DIR/templates/SPEC.template.md" ] && [ ! -f "$PROJECT_DIR/SPEC.md" ]; then
             cp "$FORGE_DIR/templates/SPEC.template.md" "$PROJECT_DIR/SPEC.md"
-            echo "  Created SPEC.md (fill in your requirements)"
+            echo "  Created SPEC.md (placeholder — run /setup to fill)"
         fi
+    fi
+
+    # Create .claude/rules/ directory and copy rule templates
+    local CLAUDE_RULES="$PROJECT_DIR/.claude/rules"
+    mkdir -p "$CLAUDE_RULES"
+    if [ -d "$FORGE_DIR/templates/rules" ]; then
+        echo "  Copying rule templates..."
+        cp "$FORGE_DIR/templates/rules/sdlc-flow.md" "$CLAUDE_RULES/" 2>/dev/null || true
+        cp "$FORGE_DIR/templates/rules/agent-routing.md" "$CLAUDE_RULES/" 2>/dev/null || true
+        echo "  Created .claude/rules/ (SDLC flow + agent routing)"
+    fi
+
+    # Copy hooks template
+    if [ -f "$FORGE_DIR/templates/hooks.json" ]; then
+        mkdir -p "$PROJECT_DIR/.claude"
+        cp "$FORGE_DIR/templates/hooks.json" "$PROJECT_DIR/.claude/settings.json"
+        # Replace placeholder with actual project dir
+        sed -i "s|{{PROJECT_DIR}}|$PROJECT_DIR|g" "$PROJECT_DIR/.claude/settings.json"
+        echo "  Created .claude/settings.json (hooks for lint + safety)"
     fi
 
     # Initialize local playbook
@@ -158,9 +177,10 @@ GITIGNORE
     echo "  docs/                — proposals, retros, checkpoints"
     echo ""
     echo -e "${YELLOW}Next steps:${NC}"
-    echo "  1. Edit CLAUDE.md with your tech stack and rules"
-    echo "  2. Edit SPEC.md with your project description"
-    echo "  3. Run: /forge \"describe your app in one sentence\""
+    echo "  1. Open project in Claude Code: claude"
+    echo "  2. Run: /setup"
+    echo "  3. Answer 9 questions about your project"
+    echo "  4. Then run: /forge \"your app description\""
 }
 
 # Export learnings helper

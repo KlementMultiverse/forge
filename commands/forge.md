@@ -59,6 +59,8 @@ NEVER assume new project. NEVER skip detection. The flow you choose determines E
 
 ## Prerequisites (check after intent detection)
 
+0. **Setup complete?** Check if CLAUDE.md has real content (not placeholders).
+   If CLAUDE.md contains `{{` or `[PROJECT NAME]` → run `/setup` first.
 1. **Git initialized?** `git rev-parse --is-inside-work-tree 2>/dev/null`. If not → `git init`.
 2. **GitHub remote?** `git remote get-url origin 2>/dev/null`. If not → offer `gh repo create` or skip.
 3. **context7 MCP?** Test with resolve-library-id. If unavailable → web search fallback.
