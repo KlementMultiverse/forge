@@ -99,6 +99,13 @@ PATTERNS (9 docs — critical execution patterns):
   research-first.md — EVERY agent researches before implementing (context7 + web search + alternatives)
   self-executing.md — agents RUN their own code via Bash, classify errors, fix, verify
 
+EXTERNAL COMMANDS (from companion systems — verify availability):
+  /sc:implement, /sc:test, /sc:brainstorm, /sc:build, /sc:analyze, etc.
+  These are from SuperClaude. If unavailable, Forge agents handle the same tasks directly.
+  /sc:implement → @frontend-architect or @backend-architect
+  /sc:test → @quality-engineer
+  /sc:brainstorm → @socratic-mentor
+
 CRITICAL RULES FOR ALL AGENTS:
   1. RESEARCH FIRST: Every agent fetches context7 docs + web searches for best practices
      + compares alternatives BEFORE writing any code. No coding from training data alone.

@@ -151,6 +151,33 @@ ARCHIVED
 # Add rules here as the project evolves.
 RULES
 
+    # Create .env.example
+    if [ ! -f "$PROJECT_DIR/.env.example" ]; then
+        cat > "$PROJECT_DIR/.env.example" << 'ENVEXAMPLE'
+# Django
+SECRET_KEY=change-me-to-random-string
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Database
+DATABASE_URL=postgres://postgres:postgres@localhost:5432/myapp
+
+# Redis
+REDIS_URL=redis://localhost:6379/0
+
+# AWS (if needed)
+# AWS_ACCESS_KEY_ID=
+# AWS_SECRET_ACCESS_KEY=
+# AWS_S3_BUCKET_NAME=
+# AWS_LAMBDA_FUNCTION_NAME=
+
+# AI/LLM (if needed)
+# OPENAI_API_KEY=
+# ANTHROPIC_API_KEY=
+ENVEXAMPLE
+        echo "  Created .env.example"
+    fi
+
     # Create .gitignore for forge local (keep playbook, ignore checkpoints)
     cat > "$FORGE_LOCAL/.gitignore" << 'GITIGNORE'
 # Checkpoints are ephemeral — don't commit
@@ -194,6 +221,9 @@ GITIGNORE
     echo "  CLAUDE.md            — project brain (edit this)"
     echo "  SPEC.md              — project requirements (fill this)"
     echo "  docs/                — proposals, retros, checkpoints"
+    echo "  .env.example         — environment variable template"
+    echo ""
+    echo "  Note: Dockerfile and docker-compose.yml will be created by /forge during scaffolding"
     echo ""
     echo -e "${YELLOW}Next steps:${NC}"
     echo "  1. cd into your project"

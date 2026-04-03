@@ -98,6 +98,23 @@ for req in $TEST_REQS $CODE_REQS; do
 done
 
 echo ""
+
+# Check: all REQs from docs/requirements.md are in SPEC.md
+if [ -f "$PROJECT_ROOT/docs/requirements.md" ]; then
+    echo "--- Requirements Traceability Check ---"
+    REQ_IN_REQS=$(grep -oP 'REQ-\d+' "$PROJECT_ROOT/docs/requirements.md" | sort -u || echo "")
+    REQ_IN_SPEC=$(grep -oP 'REQ-\d+' "$SPEC_FILE" | sort -u || echo "")
+    MISSING_FROM_SPEC=$(comm -23 <(echo "$REQ_IN_REQS") <(echo "$REQ_IN_SPEC"))
+    if [ -n "$MISSING_FROM_SPEC" ]; then
+        echo "  WARNING: REQs in docs/requirements.md but MISSING from SPEC.md:"
+        echo "$MISSING_FROM_SPEC" | while read -r req; do echo "    $req"; done
+        MISSING_TESTS=$((MISSING_TESTS + $(echo "$MISSING_FROM_SPEC" | wc -l)))
+    else
+        echo "  All REQs from docs/requirements.md are present in SPEC.md"
+    fi
+    echo ""
+fi
+
 echo "=== Summary ==="
 COVERED=$((SPEC_COUNT - MISSING_TESTS))
 if [ "$SPEC_COUNT" -gt 0 ]; then

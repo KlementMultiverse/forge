@@ -20,7 +20,7 @@ Before writing ANY code, every agent executes:
    "What's the latest API for [library]?"
 
 2. WEB SEARCH — find current best practices
-   @deep-researcher → search for "[feature] best practices 2025"
+   @deep-research-agent → search for "[feature] best practices 2025"
    "What's the recommended approach for [feature] in [stack]?"
 
 3. ALTERNATIVES — compare options
@@ -68,7 +68,7 @@ Every agent should have access to:
 - `context7 MCP` — library docs (resolve-library-id + query-docs)
 - `WebSearch` — current best practices, trends, alternatives
 - `WebFetch` — official documentation pages
-- `@deep-researcher` — when deep analysis is needed
+- `@deep-research-agent` — when deep analysis is needed
 
 ## Output: Research Brief
 

@@ -692,7 +692,7 @@ SCAN: Every command that delegates to agents (.claude/commands/*.md)
     CHECK 21.5: Does the delegation include a Handoff section at the end?
     CHECK 21.6: Does the handoff specify: source agent → destination agent?
     CHECK 21.7: Does the handoff include context the next agent needs?
-    CHECK 21.8: Is the PM agent (@pm-agent) referenced as the orchestrator?
+    CHECK 21.8: Is the PM agent (@forge-pm) referenced as the orchestrator?
     RECORD: [filename] → [PASS/FAIL for each check]
 ```
 
