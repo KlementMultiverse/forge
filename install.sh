@@ -234,11 +234,7 @@ GITIGNORE
     echo ""
     echo "  Note: Dockerfile and docker-compose.yml will be created by /forge during scaffolding"
     echo ""
-    echo -e "${YELLOW}Next steps:${NC}"
-    echo "  1. cd into your project"
-    echo "  2. Open Claude Code: claude"
-    echo "  3. Type: /forge"
-    echo "  4. That's it. Forge handles everything."
+    echo -e "${YELLOW}Type: /forge${NC}"
 }
 
 # Export learnings helper
