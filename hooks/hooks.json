@@ -2,45 +2,35 @@
   "hooks": {
     "UserPromptSubmit": [
       {
-        "matcher": "^/forge",
-        "command": "bash -c 'D=\"$PWD\"; C=$(test -f \"$D/CLAUDE.md\" && echo y || echo n); P=$(grep -l \"{{\" \"$D/CLAUDE.md\" 2>/dev/null); F=$(find \"$D\" -maxdepth 2 \\( -name \"*.py\" -o -name \"*.ts\" -o -name \"*.js\" \\) ! -path \"*node_modules*\" ! -path \"*.venv*\" ! -path \"*.git*\" 2>/dev/null | head -1); FG=$(test -d \"$D/.forge\" && echo y || echo n); if [ \"$C\" = \"n\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE1_GREENFIELD: No CLAUDE.md, no code.\"; elif [ \"$C\" = \"n\" ] && [ -n \"$F\" ]; then echo \"[FORGE] CASE7_BROWNFIELD: Code exists but no CLAUDE.md. Will scan and reverse-engineer.\"; elif [ -n \"$P\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE1_GREENFIELD: Placeholder CLAUDE.md, no code.\"; elif [ \"$C\" = \"y\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE2_SPEC_ONLY: CLAUDE.md exists, no code yet.\"; elif [ \"$C\" = \"y\" ] && [ -n \"$F\" ]; then B=$(echo \"$CLAUDE_USER_PROMPT\" | grep -iE \"fix|bug|broken|error|fail|wrong|crash|302|401|500\" | head -1); FT=$(echo \"$CLAUDE_USER_PROMPT\" | grep -iE \"add|build|create|implement|new feature\" | head -1); IM=$(echo \"$CLAUDE_USER_PROMPT\" | grep -iE \"improve|refactor|optimize|speed|clean|perf\" | head -1); if [ -n \"$B\" ]; then echo \"[FORGE] CASE4_BUGFIX: Bug keywords detected.\"; elif [ -n \"$FT\" ]; then echo \"[FORGE] CASE3_FEATURE: Feature keywords detected.\"; elif [ -n \"$IM\" ]; then echo \"[FORGE] CASE5_IMPROVE: Improvement keywords detected.\"; else echo \"[FORGE] CASE6_ASK: Existing project. Will ask what to do.\"; fi; fi; if [ -f \"$D/SPEC.md\" ]; then RC=$(grep -oP \"REQ-\\d+\" \"$D/SPEC.md\" 2>/dev/null | sort -u | wc -l); echo \"[FORGE-SYNC] $RC REQs tracked.\"; else echo \"[FORGE-SYNC] No SPEC.md — will create during flow.\"; fi'",
-        "description": "Deterministic flow routing for /forge — detects all 7 cases"
-      },
-      {
         "matcher": "",
-        "command": "bash -c 'D=\"$PWD\"; if [ ! -f \"$D/CLAUDE.md\" ] && [ ! -d \"$D/.forge\" ]; then exit 0; fi; if [ -f \"$D/SPEC.md\" ]; then RC=$(grep -oP \"REQ-\\d+\" \"$D/SPEC.md\" 2>/dev/null | sort -u | wc -l); if [ \"$RC\" -gt 0 ]; then echo \"[FORGE-SYNC] $RC REQs in SPEC. Every change MUST reference a REQ.\"; fi; fi'",
-        "description": "Show REQ count on every prompt (only in forge projects)"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'D=\"$PWD\"; C=$(test -f \"$D/CLAUDE.md\" && echo y || echo n); F=$(find \"$D\" -maxdepth 2 \\( -name \"*.py\" -o -name \"*.ts\" \\) ! -path \"*node_modules*\" ! -path \"*.venv*\" ! -path \"*.git*\" 2>/dev/null | head -1); P=$(grep -l \"{{\" \"$D/CLAUDE.md\" 2>/dev/null); if [ \"$C\" = \"n\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE1_GREENFIELD\"; elif [ \"$C\" = \"n\" ] && [ -n \"$F\" ]; then echo \"[FORGE] CASE7_BROWNFIELD\"; elif [ -n \"$P\" ]; then echo \"[FORGE] CASE1_GREENFIELD (placeholder)\"; elif [ \"$C\" = \"y\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE2_SPEC_ONLY\"; elif [ \"$C\" = \"y\" ] && [ -n \"$F\" ]; then echo \"[FORGE] EXISTING_PROJECT\"; fi; if [ -f \"$D/SPEC.md\" ]; then RC=$(grep -oP \"REQ-\\d+\" \"$D/SPEC.md\" 2>/dev/null | sort -u | wc -l); echo \"[FORGE-SYNC] $RC REQs tracked.\"; fi'"
+          }
+        ]
       }
     ],
     "PreToolUse": [
       {
-        "matcher": "Bash(rm -rf*|git push --force*|git reset --hard*|git checkout -- *|git clean -f*)",
-        "command": "echo '[FORGE] BLOCKED: Destructive command. User must approve.' && exit 2",
-        "description": "Block destructive commands (exit 2 = hard block)"
-      },
-      {
-        "matcher": "Bash(git commit*)",
-        "command": "bash -c 'T=0; if [ -f manage.py ]; then T=$(uv run python manage.py test --testrunner django.test.runner.DiscoverRunner 2>&1 | grep -c \"^OK\" 2>/dev/null || echo 0); fi; if [ \"$T\" = \"0\" ] && [ -f manage.py ]; then echo \"[FORGE] WARNING: Tests not verified. Run: uv run python manage.py test\"; fi'",
-        "description": "Check tests ran before commit"
-      },
-      {
-        "matcher": "Write|Edit",
-        "if": "Write(apps/*/api.py)|Edit(apps/*/api.py)|Write(*/routes/*)|Edit(*/routes/*)",
-        "command": "bash -c 'APP=$(echo \"$CLAUDE_TOOL_INPUT_FILE_PATH\" | grep -oP \"apps/[^/]+\" | head -1); if [ -n \"$APP\" ]; then TF=\"$APP/tests.py\"; if [ ! -f \"$TF\" ] && [ ! -d \"$APP/tests\" ]; then echo \"[FORGE-TDD] No test file at $TF. Write tests FIRST.\"; fi; fi'",
-        "description": "TDD enforcement — warn if writing API code without tests"
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'CMD=\"$CLAUDE_TOOL_INPUT_COMMAND\"; if echo \"$CMD\" | grep -qE \"rm -rf|git push --force|git reset --hard|git clean -f\"; then echo \"[FORGE] BLOCKED: Destructive command\" && exit 2; fi'"
+          }
+        ]
       }
     ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
-        "command": "bash -c 'F=\"${CLAUDE_TOOL_INPUT_FILE_PATH:-}\"; if echo \"$F\" | grep -q \"\\.py$\"; then python -m ruff check --fix \"$F\" 2>/dev/null || true; fi'",
-        "description": "Auto-lint Python after write"
-      },
-      {
-        "matcher": "Bash",
-        "if": "Bash(*manage.py test*|*pytest*|*npm test*)",
-        "command": "bash -c 'if [ -f SPEC.md ]; then echo \"[FORGE-SYNC] Tests done. Verify traceability: every [REQ-xxx] → test → code.\"; fi'",
-        "description": "Sync check reminder after tests"
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'F=\"${CLAUDE_TOOL_INPUT_FILE_PATH:-}\"; if echo \"$F\" | grep -q \"\\.py$\"; then python -m ruff check --fix \"$F\" 2>/dev/null; fi; true'"
+          }
+        ]
       }
     ]
   }
