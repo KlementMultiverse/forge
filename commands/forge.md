@@ -24,12 +24,14 @@ Read the hook output. Then route to the correct case below.
 
 If hook output is missing or ambiguous, run detection manually:
 ```
-1. CLAUDE.md exists? NO or has {{ placeholders → CASE 1
-2. CLAUDE.md exists, no code (no *.py, *.ts in apps/ src/) → CASE 2
-3. CLAUDE.md exists, code exists, $ARGUMENTS mentions bug/fix/error → CASE 4
-4. CLAUDE.md exists, code exists, $ARGUMENTS mentions add/build/create → CASE 3
-5. CLAUDE.md exists, code exists, $ARGUMENTS mentions improve/refactor → CASE 5
-6. None of the above → CASE 6
+1. CLAUDE.md? NO. Code exists? NO.              → CASE 1 (greenfield — new project)
+2. CLAUDE.md? NO. Code exists? YES.              → CASE 7 (brownfield — existing code, no forge)
+3. CLAUDE.md? YES (placeholders). Code? NO.      → CASE 1 (template only — same as greenfield)
+4. CLAUDE.md? YES (real). Code? NO.              → CASE 2 (has spec, needs implementation)
+5. CLAUDE.md? YES. Code? YES. Bug keywords?      → CASE 4 (bug fix)
+6. CLAUDE.md? YES. Code? YES. Feature keywords?  → CASE 3 (new feature)
+7. CLAUDE.md? YES. Code? YES. Improve keywords?  → CASE 5 (improvement)
+8. None of the above                             → CASE 6 (ask user)
 ```
 
 ---
@@ -341,6 +343,73 @@ Execute the full SDLC pipeline. Every step is logged to timeline.
    **Status:** DONE
    **REQs:** [REQ-xxx if applicable]
    ```
+
+---
+
+### CASE 7: BROWNFIELD — Existing code but no CLAUDE.md
+
+<system-reminder>
+This project has code but was NOT built with Forge. Do NOT create requirements from scratch.
+The requirements ALREADY EXIST in the code. You must DISCOVER them first.
+NEVER ask "what are you building?" — the code TELLS you what was built.
+</system-reminder>
+
+1. **Scan the codebase** (automated, no questions):
+   ```bash
+   # Detect language and framework
+   ls *.py manage.py pyproject.toml 2>/dev/null  # Python/Django
+   ls package.json tsconfig.json 2>/dev/null       # Node/TypeScript
+   ls Cargo.toml 2>/dev/null                        # Rust
+   ls go.mod 2>/dev/null                            # Go
+
+   # Count what exists
+   find . -name "*.py" -not -path "*/.venv/*" | wc -l
+   find . -name "test*" -name "*.py" | wc -l
+   ```
+
+2. **Index the project** — spawn @repo-index:
+   - Directory structure, entry points, key files
+   - Models/schemas found, API endpoints found, tests found
+   - Present to user: "I found: [N] files, [framework], [N] models, [N] endpoints, [N] tests"
+
+3. **Reverse-engineer requirements** — spawn @requirements-analyst in reverse mode:
+   - Read models → extract data requirements [REQ-xxx]
+   - Read API endpoints → extract functional requirements [REQ-xxx]
+   - Read tests → extract verified behaviors [REQ-xxx]
+   - Read config → extract infrastructure requirements
+
+4. **Generate CLAUDE.md** from actual code:
+   - Tech stack from pyproject.toml/package.json (not guessing)
+   - Architecture rules from existing patterns (middleware order, test base classes, etc.)
+   - "What NOT to build" from what's deliberately absent
+
+5. **Generate SPEC.md** from reverse-engineered requirements:
+   - Every [REQ-xxx] traced to existing code file
+   - Mark as [IMPLEMENTED] — these already have code + tests
+
+6. **Present to user**:
+   ```
+   I've analyzed your project:
+   - Tech: [stack]
+   - Models: [count] ([list])
+   - Endpoints: [count]
+   - Tests: [count]
+   - Requirements: [count] reverse-engineered
+
+   Generated:
+   - CLAUDE.md ([N] lines, [N] rules from your patterns)
+   - SPEC.md ([N] [REQ-xxx] tags from existing code)
+   - .claude/rules/ (SDLC flow + agent routing)
+   - .claude/settings.json (hooks)
+   - docs/forge-timeline.md
+
+   What would you like to do next?
+   (a) Add a new feature
+   (b) Fix a bug
+   (c) Improve something
+   ```
+7. Route to CASE 3/4/5 based on answer
+8. Log to timeline
 
 ---
 
