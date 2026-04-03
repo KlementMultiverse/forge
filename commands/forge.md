@@ -1,17 +1,71 @@
 # /forge — Master Command
 
-Run the entire SDLC autonomously from a single sentence.
+The single entry point for ALL work. Detects context and routes to the correct flow automatically.
 
 ## Input
-$ARGUMENTS — A one-sentence description of what to build (e.g., "a clinic management portal for medical practices")
+$ARGUMENTS — What the user wants (can be anything: new project, new feature, bug fix, improvement)
 
-## Prerequisites (check before starting)
+## Step 0: DETECT INTENT (MANDATORY — run before anything else)
 
-1. **CLAUDE.md present?** If yes, read it for existing SDLC flow. If not, /bootstrap will create it.
-2. **Git initialized?** Run `git rev-parse --is-inside-work-tree 2>/dev/null`. If not → `git init`.
-3. **GitHub remote configured?** Run `git remote get-url origin 2>/dev/null`. If not → `gh repo create` (or skip GitHub features and use local issue tracking).
-4. **Forge commands installed?** Check `ls ~/.claude/commands/forge.md 2>/dev/null`. If not → run `install.sh` from the forge repo.
-5. **context7 MCP available?** Test with a simple `resolve-library-id` call. If unavailable → log "context7 unavailable, will use web search fallback" and continue.
+<system-reminder>
+You MUST detect the correct flow BEFORE executing. Read the environment, then route.
+NEVER assume new project. NEVER skip detection. The flow you choose determines EVERYTHING.
+</system-reminder>
+
+### Detection Logic
+
+```
+1. Check: does CLAUDE.md exist in current directory?
+
+   NO  → FLOW A: NEW PROJECT
+        The user wants to build something from scratch.
+        Execute: Phase 0 Genesis → Phase 1 → Phase 2 → Phase 3 → Phase 4 → Phase 5
+
+   YES → Read CLAUDE.md. Check: does code already exist? (ls apps/ src/ or find *.py *.ts)
+
+        NO code exists → FLOW A: NEW PROJECT (has CLAUDE.md from forge init but no code yet)
+
+        YES code exists → Classify the user's request:
+
+        2. Is it a BUG? (keywords: "fix", "broken", "error", "fails", "wrong", "302 instead of 401")
+           YES → FLOW B: BUG FIX
+                 Execute: /investigate → @root-cause-analyst → fix → test → commit
+
+        3. Is it a NEW FEATURE? (keywords: "add", "build", "create", "implement", "new")
+           YES → FLOW C: NEW FEATURE
+                 Execute: /specify → /design-doc → /plan-tasks → Forge Cell per issue → /gate
+
+        4. Is it an IMPROVEMENT? (keywords: "improve", "refactor", "optimize", "speed up", "clean up")
+           YES → FLOW D: IMPROVEMENT
+                 Execute: analyze current state → task design doc → implement → test → commit
+
+        5. Is it a QUESTION? (keywords: "how", "why", "explain", "what is")
+           YES → FLOW E: KNOWLEDGE
+                 Execute: @learning-guide or @socratic-mentor → explain using actual project code
+
+        6. Can't classify?
+           → Ask user: "I see an existing project. Do you want to: (a) add a feature, (b) fix a bug, (c) improve something, (d) something else?"
+```
+
+### Flow Summary
+
+| Flow | When | Entry Point | Stages |
+|------|------|-------------|--------|
+| A: New Project | No CLAUDE.md or no code | /discover → full SDLC | 0→1→2→3→4→5 |
+| B: Bug Fix | User describes a bug | /investigate | investigate→fix→test→commit |
+| C: New Feature | User wants new functionality | /specify | 1→2→3→4→5 |
+| D: Improvement | Refactor, optimize, clean up | analysis→plan→implement | task design doc→implement→test |
+| E: Knowledge | User asks a question | @learning-guide | explain→done |
+
+## Prerequisites (check after intent detection)
+
+1. **Git initialized?** `git rev-parse --is-inside-work-tree 2>/dev/null`. If not → `git init`.
+2. **GitHub remote?** `git remote get-url origin 2>/dev/null`. If not → offer `gh repo create` or skip.
+3. **context7 MCP?** Test with resolve-library-id. If unavailable → web search fallback.
+
+---
+
+## FLOW A: New Project — Full SDLC
 
 ## Execution
 
@@ -397,3 +451,94 @@ Forge complete.
 - Reviews passed: [count] (per-agent judges + /review + CodeRabbit)
 - Playbook: [count] strategies learned
 ```
+
+---
+
+## FLOW B: Bug Fix (existing project, user reports a bug)
+
+<system-reminder>
+Bug fix flow: investigate FIRST, then fix. NEVER fix without understanding root cause.
+</system-reminder>
+
+1. **Read CLAUDE.md** → understand project context, rules, tech stack
+2. **Understand the bug** → read the user's description, reproduce if possible
+3. **Run /investigate** → @root-cause-analyst traces the code path:
+   - Read the relevant files (user may give hints like file:line)
+   - Grep for related patterns
+   - Trace the execution flow
+   - Identify the ROOT CAUSE (not just the symptom)
+4. **Write task design doc** → using templates/task-design-doc.template.md:
+   - What files to change
+   - What the fix looks like (exact code)
+   - What tests to add
+   - Sync check: which [REQ-xxx] does this relate to?
+5. **TDD fix**:
+   - Write test that reproduces the bug → run → must FAIL (proves bug exists)
+   - Write the fix → run test → must PASS
+   - Run ALL tests → no regressions
+6. **Quality**: `black . && ruff check . --fix`
+7. **Sync check**: does a [REQ-xxx] exist for this behavior? If not → add to SPEC
+8. **Commit**: `git commit -m "fix(domain): description [REQ-xxx]"`
+9. **/learn**: if the bug reveals a non-obvious pattern → save to playbook
+
+---
+
+## FLOW C: New Feature (existing project, user wants new functionality)
+
+<system-reminder>
+New feature flow: specify → design → implement. Same as Stages 1-3 of the full SDLC.
+</system-reminder>
+
+1. **Read CLAUDE.md** → understand project context, existing SDLC flow, agent selection matrix
+2. **Read existing SPEC.md** → understand what already exists, what [REQ-xxx] tags are used
+3. **Run /specify** on the user's feature request:
+   - Spawns @requirements-analyst → extracts requirements with [REQ-xxx] tags
+   - Produces proposal in docs/proposals/
+   - Creates GitHub issues (or local markdown issues if no remote)
+4. **Run /design-doc** on the proposal:
+   - Spawns @system-architect + @backend-architect + @security-engineer
+   - Produces 10-section design doc
+   - Includes API contracts, model changes, test scenarios
+5. **Run /plan-tasks** on the design doc:
+   - Breaks into phased GitHub issues with dependencies
+6. **Implement per issue** (Forge Cell):
+   - Step 0: Task design doc (mini design doc per issue)
+   - Step 1: @context-loader-agent fetches library docs
+   - Step 2: Domain agent researches (reads spec, tests, code, rules)
+   - Step 3: TDD (test first → fail → code → pass → all tests)
+   - Step 4: Quality (black + ruff + full test suite)
+   - Step 5: Sync check (spec↔test↔code, [REQ-xxx] traceability)
+   - Step 6: Per-agent judge rates 1-5 (accept ≥ 4)
+   - Step 7: Commit → close issue → /checkpoint → /learn
+7. **Run /gate** after each phase
+8. **Run /retro** when feature is complete
+
+---
+
+## FLOW D: Improvement (refactor, optimize, clean up)
+
+1. **Read CLAUDE.md** → understand project context
+2. **Analyze current state**:
+   - If refactor: @refactoring-expert analyzes the target code
+   - If performance: @performance-engineer profiles and measures
+   - If cleanup: @code-archaeologist finds dead code, tech debt
+3. **Write task design doc** → what changes, why, what tests verify the improvement
+4. **Implement with safety**:
+   - Run ALL existing tests first → establish baseline
+   - Make changes (one at a time for refactors)
+   - Run ALL tests after each change → no regressions
+   - For performance: measure before AND after with exact numbers
+5. **Commit**: `git commit -m "refactor|perf|chore(domain): description"`
+6. **/learn**: if improvement reveals pattern → save to playbook
+
+---
+
+## FLOW E: Knowledge (user asks a question)
+
+1. **Read CLAUDE.md** → understand project context
+2. **Read relevant code** → find the actual implementation
+3. **Explain** using @learning-guide or @socratic-mentor:
+   - Use real code from THIS project (not generic examples)
+   - Build explanation progressively
+   - Connect to project's architecture decisions
+4. **No code changes** — this is read-only
