@@ -138,52 +138,140 @@ This is NOT a questionnaire. It's a discovery conversation.
 
 11. CONTINUE to Phase B automatically (no stopping)
 
-#### Phase B -- Full SDLC (runs automatically after Phase A)
+#### Phase B -- Full SDLC (CHAINED EXECUTION — each step MUST complete before next)
 
-Execute the full SDLC pipeline. Every step is logged to timeline.
+<system-reminder>
+CHAINED EXECUTION PROTOCOL:
+Each step below MUST be executed using the Skill tool (for commands) or Agent tool (for agents).
+After EACH step:
+  1. VERIFY the output file exists (use Read or Bash ls)
+  2. VERIFY it has real content (not empty, not placeholder)
+  3. LOG to docs/forge-trace/{NNN}-{step}/ (input.md + output.md + meta.md)
+  4. LOG to docs/forge-timeline.md
+  5. ONLY THEN proceed to next step
 
-**Phase 0: Genesis (remaining steps)**
-1. Run `/discover` with discovery report (formalize research)
-   - Log to timeline
-2. Run `/requirements` on discovery report
-   - Log to timeline
-3. Run `/feasibility` on requirements
-   - ASK USER: "Recommended: [stack]. Use this or pick your own?"
-   - Skip if already answered in Phase A
-   - Log to timeline
-4. Run `/generate-spec` synthesizing all outputs
-   - Log to timeline
-5. Run `/challenge` on SPEC.md
-   - PROCEED -> continue | REFINE -> update + re-challenge | RETHINK -> STOP ask user
-   - Log to timeline
-6. Run `/bootstrap` to finalize scaffold
-   - Log to timeline
-7. Run @code-archaeologist baseline assessment
-8. Run `/sc:index-repo`
-9. Run `/sc:load`
-10. **GATE:** `/gate phase-0`
-    - Log to timeline
+If verification FAILS → retry the step (max 2) → still fails → STOP and report.
+If a step produces no output file → the step did NOT run → DO NOT PROCEED.
+
+You are EXECUTING these commands, not describing them.
+Use the Skill tool: `skill: "discover"` or `skill: "requirements"` etc.
+Use the Agent tool for specialist agents: `subagent_type: "security-engineer"` etc.
+</system-reminder>
+
+**Phase 0: Genesis**
+
+STEP 1 — /discover
+  Execute: `skill: "discover", args: "$ARGUMENTS"`
+  Verify: `ls docs/discovery-report.md` → file exists, >500 bytes
+  Trace: save to docs/forge-trace/001-discover/
+  If missing → step failed → retry
+
+STEP 2 — /requirements
+  Execute: `skill: "requirements", args: "docs/discovery-report.md"`
+  Verify: `grep -c "REQ-" docs/requirements.md` → at least 15 REQs
+  Trace: save to docs/forge-trace/002-requirements/
+  If <15 REQs → step incomplete → retry with "need more requirements"
+
+STEP 3 — /feasibility
+  Execute: `skill: "feasibility", args: "docs/requirements.md"`
+  Verify: `ls docs/feasibility.md` → file exists
+  ASK USER: "Recommended: [stack]. Confirm? (yes/change)"
+  Trace: save to docs/forge-trace/003-feasibility/
+
+STEP 4 — /generate-spec
+  Execute: `skill: "generate-spec"`
+  Verify: `grep -c "REQ-" SPEC.md` → at least 15 REQs in SPEC
+  Verify: SPEC.md has ## Models, ## API Endpoints, ## Tech Stack sections
+  Trace: save to docs/forge-trace/004-generate-spec/
+  If SPEC incomplete → retry
+
+STEP 5 — /challenge
+  Execute: `skill: "challenge", args: "SPEC.md"`
+  Verify: output contains PROCEED or REFINE or RETHINK
+  If RETHINK → STOP, ask user
+  If REFINE → update SPEC → re-run /challenge (max 2)
+  Trace: save to docs/forge-trace/005-challenge/
+
+STEP 6 — /bootstrap
+  Execute: `skill: "bootstrap"`
+  Verify: `ls manage.py pyproject.toml Dockerfile docker-compose.yml config/settings.py` → all exist
+  Trace: save to docs/forge-trace/006-bootstrap/
+  If any missing → step failed → retry
+
+STEP 7 — /checkpoint
+  Execute: `skill: "checkpoint", args: "phase-0 | Genesis complete"`
+  Trace: save to docs/forge-trace/007-checkpoint-p0/
+
+STEP 8 — /gate phase-0
+  Execute: `skill: "gate", args: "phase-0"`
+  Verify: gate output says PASS
+  If BLOCKED → fix issues → re-run /gate
+  Trace: save to docs/forge-trace/008-gate-p0/
 
 **Phase 1: Specify**
-11. Run `/specify` on SPEC.md
-    - Log to timeline
-12. Run `/checkpoint`
-13. **GATE:** `/gate stage-1`
-    - Log to timeline
+
+STEP 9 — /specify
+  Execute: `skill: "specify", args: "SPEC.md"`
+  Verify: `ls docs/proposals/01-*.md` → proposal exists
+  Verify: proposal has ## Acceptance Criteria with Given/When/Then
+  Trace: save to docs/forge-trace/009-specify/
+
+STEP 10 — /checkpoint
+  Execute: `skill: "checkpoint", args: "specify | proposal created"`
+  Trace: save to docs/forge-trace/010-checkpoint-s1/
+
+STEP 11 — /gate stage-1
+  Execute: `skill: "gate", args: "stage-1"`
+  Verify: gate PASS
+  Trace: save to docs/forge-trace/011-gate-s1/
 
 **Phase 2: Architect**
-14. Run `/plan-review` on proposal
-15. Run @api-architect for API contracts
-    - Log to timeline
-16. Run `/design-doc` on proposal + contracts
-    - Log to timeline
-17. Run `/plan-tasks` on design doc
-    - Log to timeline
-18. Run `/sc:estimate` per phase
-19. Run `/sc:workflow` to validate plan
-20. Run `/checkpoint` for each output
-21. **GATE:** `/gate stage-2`
-    - Log to timeline
+
+STEP 12 — /plan-review
+  Execute: `skill: "plan-review", args: "docs/proposals/01-*.md"`
+  Verify: review output exists with feedback
+  Trace: save to docs/forge-trace/012-plan-review/
+
+STEP 13 — @api-architect (API contracts)
+  Execute: spawn Agent with subagent_type="general-purpose"
+    prompt: "You are @api-architect. Read docs/proposals/01-*.md and SPEC.md. Design API contracts for every endpoint: method, path, request JSON, response JSON, error codes, Pydantic schemas."
+  Verify: output has endpoint tables with JSON shapes
+  Trace: save to docs/forge-trace/013-api-contracts/
+
+STEP 14 — /design-doc
+  Execute: `skill: "design-doc", args: "docs/proposals/01-*.md"`
+  Verify: `ls docs/design-doc.md` → exists, >5000 bytes
+  Verify: has all 10 sections (## 1. through ## 10.)
+  Verify: has "Will implement" decisions (at least 8)
+  Verify: has Pydantic Schema classes
+  Verify: has test scenarios (at least 15)
+  Trace: save to docs/forge-trace/012-design-doc/
+  If any verify fails → retry with specific feedback
+
+STEP 15 — /plan-tasks
+  Execute: `skill: "plan-tasks", args: "docs/design-doc.md"`
+  Verify: `ls docs/issues/*.md | wc -l` → at least 10 issue files
+  Verify: each issue has [REQ-xxx] reference
+  Trace: save to docs/forge-trace/015-plan-tasks/
+
+STEP 16 — /sc:estimate
+  Execute: `skill: "sc:estimate", args: "docs/design-doc.md"`
+  Verify: effort estimates per phase exist
+  Trace: save to docs/forge-trace/016-estimate/
+
+STEP 17 — /sc:workflow
+  Execute: `skill: "sc:workflow", args: "docs/design-doc.md"`
+  Verify: dependency ordering validated
+  Trace: save to docs/forge-trace/017-workflow/
+
+STEP 18 — /checkpoint
+  Execute: `skill: "checkpoint", args: "architect | design doc + tasks created"`
+  Trace: save to docs/forge-trace/018-checkpoint-s2/
+
+STEP 19 — /gate stage-2
+  Execute: `skill: "gate", args: "stage-2"`
+  Verify: gate PASS
+  Trace: save to docs/forge-trace/019-gate-s2/
 
 **Phase 3: IMPLEMENT (per issue — strict agent separation)**
 
@@ -202,83 +290,73 @@ This prevents:
 - Code that ignores the spec because same agent wrote both
 </system-reminder>
 
-For EACH issue in dependency order:
+For EACH issue in dependency order, execute this chain.
+Use N = issue number (e.g., issue 1 = steps 100-109, issue 2 = 110-119).
 
-**Step 0: TASK DESIGN DOC** → @system-architect or @backend-architect
-  - Reads: SPEC.md [REQ-xxx] for this issue + design-doc Section 4
-  - Writes: docs/forge-trace/{NNN}-design/output.md
-  - Contains: files to change, model fields, API contract, error format
-  - Verified by: @reviewer (rate 1-5, reject <4)
+STEP N0 — TASK DESIGN DOC
+  Execute: spawn Agent with subagent_type="backend-architect"
+    prompt: "Read SPEC.md [REQ-xxx] for issue #{N} and design-doc Section 4. Write a task design doc: files to change, model fields, API contract, error format. Use templates/task-design-doc.template.md format."
+  Verify: output contains "## Files to Change" and "## API Contract"
+  Trace: docs/forge-trace/{N}0-design/
 
-**Step 1: CONTEXT LOAD** → @context-loader-agent
-  - Fetches: library docs via context7 MCP for this issue's stack
-  - Writes: docs/forge-trace/{NNN}-context/output.md
-  - This is NOT optional. Code quality depends on current docs.
+STEP N1 — CONTEXT LOAD
+  Execute: spawn Agent with subagent_type="context-loader-agent"
+    prompt: "Fetch library docs for this issue's stack via context7 MCP: {libraries from agent-routing.md}"
+  Verify: agent reports docs fetched (not "unavailable")
+  Trace: docs/forge-trace/{N}1-context/
 
-**Step 2: WRITE SPEC ENTRY** → @requirements-analyst
-  - Reads: task design doc + existing SPEC.md
-  - Writes: adds/updates [REQ-xxx] in SPEC.md with acceptance criteria
-  - Each REQ has: Given/When/Then acceptance criteria
-  - Verified by: @reviewer
+STEP N2 — WRITE SPEC ENTRY
+  Execute: spawn Agent with subagent_type="requirements-analyst"
+    prompt: "Read task design doc from step N0. Add [REQ-xxx] to SPEC.md with Given/When/Then acceptance criteria."
+  Verify: `grep -c "REQ-" SPEC.md` increased by at least 1
+  Trace: docs/forge-trace/{N}2-spec/
 
-**Step 3: WRITE TESTS** → @quality-engineer
-  - Reads: SPEC.md [REQ-xxx] (NOT the code — code doesn't exist yet)
-  - Reads: task design doc (API contracts, model fields)
-  - Writes: apps/{app}/tests.py
-  - Every test method has [REQ-xxx] in docstring
-  - Tests cover: happy path, error cases, edge cases, auth, validation
-  - Minimum 5 tests per issue (not 1-2 token tests)
-  - RUN tests: `uv run python manage.py test apps.{app}` → MUST FAIL
-  - If tests PASS → something is wrong (code doesn't exist yet!) → investigate
-  - Verified by: @reviewer
-  - Trace: docs/forge-trace/{NNN}-tests/
+STEP N3 — WRITE TESTS (from SPEC, NOT from code)
+  Execute: spawn Agent with subagent_type="quality-engineer"
+    prompt: "Read SPEC.md [REQ-xxx] for issue #{N} and the task design doc. Write tests in apps/{app}/tests.py. Do NOT read any implementation code. Every test has [REQ-xxx] in docstring. Minimum 5 tests."
+  Verify: `grep -c "def test_" apps/{app}/tests.py` increased by at least 5
+  Execute: `uv run python manage.py test apps.{app}` via Bash
+  Verify: tests FAIL (code doesn't exist yet — if they PASS, something is wrong)
+  Trace: docs/forge-trace/{N}3-tests/
 
-**Step 4: WRITE CODE** → domain agent (@django-ninja-agent, @backend-architect, etc.)
-  - Reads: SPEC.md [REQ-xxx] + task design doc + test expectations
-  - Reads: context7 docs from Step 1
-  - Writes: models.py, api.py, services.py, schemas.py
-  - Every function/class has [REQ-xxx] in comment
-  - RUN tests: `uv run python manage.py test apps.{app}` → MUST PASS
-  - RUN all tests: `uv run python manage.py test` → no regressions
-  - If tests FAIL → agent fixes (max 3 attempts) → still fails → @root-cause-analyst
-  - Verified by: @reviewer (rate 1-5, reject <4)
-  - Trace: docs/forge-trace/{NNN}-code/
+STEP N4 — WRITE CODE
+  Execute: spawn Agent with subagent_type="{domain-agent}" (from agent-routing.md)
+    prompt: "Read SPEC.md [REQ-xxx], task design doc, and test file. Write models/api/services/schemas to make tests pass. Every function has [REQ-xxx] comment. Use context7 docs from step N1."
+  Verify: `uv run python manage.py test apps.{app}` → ALL PASS via Bash
+  Verify: `uv run python manage.py test` → ALL tests pass (no regression) via Bash
+  If FAIL: agent retries (max 3)
+  If still FAIL: spawn Agent with subagent_type="root-cause-analyst"
+  Trace: docs/forge-trace/{N}4-code/
 
-**Step 5: QUALITY** → automated (hook-enforced)
-  - `black . && ruff check . --fix`
-  - This happens automatically via PostToolUse hook
+STEP N5 — LINT (hook-enforced, automatic)
+  Happens via PostToolUse hook on every Write/Edit
 
-**Step 6: SYNC CHECK** → PM verifies
-  - For EVERY [REQ-xxx] in this issue:
-    - Has entry in SPEC.md? check
-    - Has test in tests.py? check
-    - Has code in models/api/services? check
-  - If ANY gap → STOP and fix before proceeding
-  - Run: `bash scripts/traceability.sh` → must show 100% for this issue's REQs
-  - Trace: docs/forge-trace/{NNN}-sync/
+STEP N6 — SYNC CHECK
+  Execute: `bash scripts/traceability.sh` via Bash
+  Verify: output shows 100% for this issue's [REQ-xxx] tags
+  If gap found: STOP — fix before proceeding
+  Trace: docs/forge-trace/{N}6-sync/
 
-**Step 7: SECURITY** → @security-engineer (quick scan)
-  - Reads: new/changed code from this issue
-  - Checks: input validation, auth, no hardcoded secrets, error exposure
-  - If issues found → fix before commit
-  - Trace: docs/forge-trace/{NNN}-security/
+STEP N7 — SECURITY SCAN
+  Execute: spawn Agent with subagent_type="security-engineer"
+    prompt: "Review the code changes for issue #{N}. Check: input validation, auth, no hardcoded secrets, error exposure, tenant isolation."
+  Verify: no CRITICAL or HIGH findings
+  If found: fix before commit
+  Trace: docs/forge-trace/{N}7-security/
 
-**Step 8: REVIEW** → @reviewer (per-agent judge)
-  - Rates overall output 1-5
-  - Checks: tests cover acceptance criteria, code matches spec, no orphan code
-  - If < 4 → reiterate from Step 4 (max 3)
-  - Writes mini-retro
-  - Trace: docs/forge-trace/{NNN}-review/
+STEP N8 — REVIEW
+  Execute: spawn Agent with subagent_type="self-review"
+    prompt: "Rate the output of issue #{N} on scale 1-5. Check: tests cover acceptance criteria, code matches spec, no orphan code, handoff format complete."
+  Verify: rating >= 4
+  If < 4: go back to STEP N4 (max 3 iterations)
+  Trace: docs/forge-trace/{N}8-review/
 
-**Step 9: COMMIT + LEARN**
-  - `git commit -m "feat({domain}): {description} [REQ-xxx..xxx]"`
-  - Close issue (GitHub or mark DONE in docs/issues/)
-  - Update FORGE.md: move item from Active to Done with traceability links
-  - /checkpoint evaluates
-  - If agent discovered non-obvious pattern → /learn → update playbook
-  - Trace: docs/forge-trace/{NNN}-commit/
-
-  - Log EACH step to timeline
+STEP N9 — COMMIT + LEARN
+  Execute: `git add apps/{app}/ && git commit -m "feat({app}): {description} [REQ-xxx]"` via Bash
+  Execute: update FORGE.md — move item from Active to Done
+  Execute: `skill: "checkpoint", args: "{agent} | issue #{N} complete"`
+  Execute: `skill: "learn", args: "{any non-obvious pattern discovered}"` (if applicable)
+  Trace: docs/forge-trace/{N}9-commit/
 
 23. After each phase group:
     - /review (inline code review of ALL changes in this phase)
@@ -286,30 +364,102 @@ For EACH issue in dependency order:
     - Log to timeline
 
 **Phase 4: Validate**
-24. Run `/sc:analyze`
-25. Run `/audit-patterns full` (must be >90%)
-26. Run `/sc:test --coverage`
-27. Run traceability check
-28. Run `/security-scan`
-29. If UI: `/design-audit` + `/critic`
-30. **GATE:** `/gate stage-4`
-    - Log to timeline
+
+STEP 40 — /sc:analyze
+  Execute: `skill: "sc:analyze"`
+  Verify: analysis report produced
+  Trace: save to docs/forge-trace/040-analyze/
+
+STEP 41 — /audit-patterns full
+  Execute: `skill: "audit-patterns", args: "full"`
+  Verify: pass rate > 90% — if not, fix top 5 failures then re-run
+  Trace: save to docs/forge-trace/041-audit/
+
+STEP 42 — /sc:test --coverage
+  Execute: `skill: "sc:test", args: "--coverage"`
+  Verify: tests pass, coverage report generated
+  Trace: save to docs/forge-trace/042-coverage/
+
+STEP 43 — traceability check
+  Execute: `bash scripts/traceability.sh` via Bash
+  Verify: 100% REQ coverage, 0 orphans, 0 drift
+  If gaps → fix before proceeding
+  Trace: save to docs/forge-trace/043-traceability/
+
+STEP 44 — /security-scan
+  Execute: `skill: "security-scan"`
+  Verify: no CRITICAL or HIGH findings
+  If found → fix → re-scan
+  Trace: save to docs/forge-trace/044-security/
+
+STEP 45 — /design-audit + /critic (if project has UI)
+  Execute: `skill: "design-audit"` (if templates/ exist)
+  Execute: `skill: "critic"` (if Playwright available)
+  Trace: save to docs/forge-trace/045-design/
+
+STEP 46 — /gate stage-4
+  Execute: `skill: "gate", args: "stage-4"`
+  Verify: gate PASS
+  Trace: save to docs/forge-trace/046-gate-s4/
 
 **Phase 5: Review + Learn**
-31. Run `/sc:cleanup`
-32. Run `/sc:improve`
-33. Run `/retro`
-34. Run `/sc:reflect`
-35. Run `/sc:document`
-36. Run @playbook-curator delta-update
-37. Run `/prune` + `/evolve`
-38. Run `/autoresearch`
-39. Run `/sc:save`
-40. **GATE:** `/gate stage-5` -> MERGE
-    - Log to timeline
+
+STEP 47 — /sc:cleanup
+  Execute: `skill: "sc:cleanup"`
+  Verify: dead code removed, no regressions (run tests)
+  Trace: save to docs/forge-trace/047-cleanup/
+
+STEP 48 — /sc:improve
+  Execute: `skill: "sc:improve"`
+  Verify: improvements applied, tests still pass
+  Trace: save to docs/forge-trace/048-improve/
+
+STEP 49 — /retro
+  Execute: `skill: "retro"`
+  Verify: `ls docs/retrospectives/*.md` → retro file exists
+  Verify: CLAUDE.md Lessons Learned section updated
+  Trace: save to docs/forge-trace/049-retro/
+
+STEP 50 — /sc:reflect
+  Execute: `skill: "sc:reflect"`
+  Verify: task completion validated
+  Trace: save to docs/forge-trace/050-reflect/
+
+STEP 51 — /sc:document
+  Execute: `skill: "sc:document"`
+  Verify: documentation generated/updated
+  Trace: save to docs/forge-trace/051-document/
+
+STEP 52 — @playbook-curator
+  Execute: spawn Agent with subagent_type="general-purpose"
+    prompt: "You are @playbook-curator. Read docs/retrospectives/*.md. Delta-update .forge/playbook/strategies.md with new entries. Check duplicates. Increment counters."
+  Verify: playbook file updated
+  Trace: save to docs/forge-trace/052-playbook/
+
+STEP 53 — /prune + /evolve
+  Execute: `skill: "prune"`
+  Execute: `skill: "evolve"`
+  Trace: save to docs/forge-trace/053-prune-evolve/
+
+STEP 54 — /autoresearch (improve agent prompts from this build)
+  Execute: `skill: "autoresearch"`
+  Trace: save to docs/forge-trace/054-autoresearch/
+
+STEP 55 — /sc:save
+  Execute: `skill: "sc:save"`
+  Trace: save to docs/forge-trace/055-save/
+
+STEP 56 — /gate stage-5 → MERGE
+  Execute: `skill: "gate", args: "stage-5"`
+  Verify: gate PASS → merge PR
+  Trace: save to docs/forge-trace/056-gate-final/
 
 **Phase 6: Iterate**
-41. Collect feedback -> new issues -> loop to Phase 1 or Phase 3
+
+STEP 57 — Check FORGE.md for queued items
+  Read FORGE.md → any QUEUED items?
+  YES → loop back to Phase 3 (or Phase 1 if new feature)
+  NO → project complete, report summary
 
 ---
 
