@@ -70,25 +70,48 @@ NEVER assume new project. NEVER skip detection. The flow you choose determines E
 ## Execution
 
 <system-reminder>
-This is the master orchestration command. It runs ALL stages sequentially.
+STRICT ENFORCEMENT — READ THIS BEFORE EVERY STEP:
 
-REVIEWER RULE: Every agent output gets reviewed. NEVER skip the review step.
-- Phase 0-2: @spec-panel or domain expert reviews
-- Phase 3: Per-agent domain judge rates 1-5
-- Phase 3 end: /review (inline staff-engineer review)
-- All gates: CodeRabbit reviews PR → 0 suggestions required
+You MUST execute EVERY step below in EXACT order. No skipping. No shortcuts. No "I'll do this later."
+After EACH step, verify the output exists and is complete before moving to the next step.
 
-CODERABBIT RULE: Every /gate creates a PR and waits for CodeRabbit.
-- 0 suggestions → PASS → proceed to next phase
-- >0 suggestions → FIX each one → push → wait for re-review → repeat until 0
-- NEVER skip CodeRabbit. NEVER proceed with open suggestions.
+MANDATORY AGENTS PER STEP (you MUST spawn these — not simulate, not summarize):
+- Phase 0: @deep-research-agent, @requirements-analyst, @business-panel-experts, @system-architect, @security-engineer
+- Phase 1: @requirements-analyst, @spec-panel review, @business-panel-experts validation
+- Phase 2: @system-architect, @backend-architect, @security-engineer, @api-architect
+- Phase 3: @context-loader-agent (BEFORE every implementation), domain agent, per-agent @reviewer judge
+- Phase 4: @pattern-auditor-agent, @security-engineer, @quality-engineer
+- Phase 5: @retrospective-miner, @playbook-curator
+
+ENFORCEMENT RULES:
+1. NEVER write code without first fetching library docs via @context-loader-agent (context7 MCP)
+2. NEVER submit agent output without running /checkpoint on it
+3. NEVER proceed to next phase without completing ALL steps in current phase
+4. NEVER implement without a task-level design doc (templates/task-design-doc.template.md)
+5. NEVER claim "tests pass" without actually running them via Bash tool
+6. EVERY test method MUST have [REQ-xxx] in its docstring
+7. EVERY model/function MUST have [REQ-xxx] in a comment
+8. After EVERY agent output → spawn @reviewer to rate 1-5. If <4 → reiterate same agent (max 3)
+9. After EVERY phase → run /gate (PR + review or manual checklist)
+10. Target: 100+ tests for MVP, 100% REQ traceability, 0 orphan code
+
+QUALITY GATES (each must pass before next step):
+- After /discover: discovery report has real research (not just training knowledge)
+- After /requirements: minimum 20 [REQ-xxx] tags with acceptance criteria
+- After /feasibility: stack confirmed by user
+- After /generate-spec: SPEC.md has models with field types, API endpoints with methods, [REQ-xxx] on every requirement
+- After /specify: proposal has Given/When/Then for EVERY user story
+- After /design-doc: ALL 10 sections complete, 8+ decisions with trade-offs, 15+ test scenarios, Pydantic schemas defined
+- After /plan-tasks: every task has: files to change, [REQ-xxx] link, depends-on, acceptance criteria
+- After EACH implementation task: test written FIRST (TDD), test FAILS, code written, test PASSES, ALL tests pass, lint clean
+- After ALL implementation: sync check shows 100% traceability (no orphan REQs, no orphan code)
 
 The ONLY times to stop and ask the user:
 1. /feasibility → "Recommended stack: [X]. Confirm?"
 2. Credentials needed (AWS keys, API keys, etc.)
 3. After 3 reflexion failures on a single issue
 4. /challenge verdict is RETHINK
-Everything else runs autonomously.
+Everything else runs autonomously — but EVERY step runs. No shortcuts.
 </system-reminder>
 
 ---
@@ -457,7 +480,16 @@ Forge complete.
 ## FLOW B: Bug Fix (existing project, user reports a bug)
 
 <system-reminder>
-Bug fix flow: investigate FIRST, then fix. NEVER fix without understanding root cause.
+STRICT ENFORCEMENT — Bug Fix Flow:
+1. NEVER fix without /investigate first (root cause before fix)
+2. MUST spawn @root-cause-analyst agent (not just grep yourself)
+3. MUST write task design doc BEFORE writing any fix code
+4. MUST write test that reproduces the bug FIRST (TDD — test fails, then fix, then test passes)
+5. MUST run ALL tests after fix (not just the new test)
+6. MUST update SPEC.md with [REQ-xxx] if requirement was missing
+7. MUST run /checkpoint after fix
+8. MUST run /learn if bug reveals a non-obvious pattern
+Every bug fix makes the system BETTER — new test, new REQ, new playbook entry.
 </system-reminder>
 
 1. **Read CLAUDE.md** → understand project context, rules, tech stack
@@ -493,7 +525,26 @@ Bug fix flow: investigate FIRST, then fix. NEVER fix without understanding root 
 ## FLOW C: New Feature (existing project, user wants new functionality)
 
 <system-reminder>
-New feature flow: specify → design → implement. Same as Stages 1-3 of the full SDLC.
+STRICT ENFORCEMENT — New Feature Flow:
+1. MUST run /specify with @requirements-analyst (not just list requirements yourself)
+2. MUST spawn @business-panel-experts to validate the feature makes business sense
+3. MUST run /design-doc with @system-architect + @backend-architect + @security-engineer
+4. MUST produce ALL 10 sections in design doc (check templates/design-doc-completeness-checklist.md)
+5. MUST run /plan-tasks to create phased issues with dependencies
+6. For EACH issue:
+   a. MUST write task design doc FIRST (templates/task-design-doc.template.md)
+   b. MUST call @context-loader-agent to fetch library docs via context7
+   c. MUST write test FIRST (TDD) — test must FAIL before code is written
+   d. MUST run test after code — test must PASS
+   e. MUST run ALL tests — no regressions
+   f. MUST run black + ruff
+   g. MUST spawn @reviewer to rate output 1-5 — reject if <4
+   h. MUST run /checkpoint
+   i. MUST verify sync: every [REQ-xxx] has test + code
+7. After ALL issues in a phase → /gate
+8. After feature complete → /retro + /learn
+Target: 10+ tests per feature area, 100% REQ traceability, 0 orphan code.
+This is NOT optional. Every step produces an artifact. No step is "assumed."
 </system-reminder>
 
 1. **Read CLAUDE.md** → understand project context, existing SDLC flow, agent selection matrix

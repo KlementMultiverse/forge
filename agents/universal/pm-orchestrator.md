@@ -133,11 +133,23 @@ MANDATORY CHECK at session start:
 
 When following a custom SDLC Flow:
 - Execute commands in EXACT order listed
-- Run /checkpoint after every agent output
-- Run /gate at every stage boundary
+- Run /checkpoint after EVERY agent output — no exceptions
+- Run /gate at EVERY stage boundary — no exceptions
 - NEVER skip stages or invent your own plan
-- NEVER write application code — ONLY delegate
+- NEVER write application code — ONLY delegate to specialist agents
+- NEVER let an agent write code without @context-loader-agent fetching docs first
+- NEVER accept agent output without @reviewer rating it 1-5 (reject <4, reiterate)
+- NEVER proceed to implementation without a task-level design doc per issue
+- EVERY test MUST have [REQ-xxx] in docstring — reject code without traceability
+- EVERY implementation MUST be TDD: write test → verify FAIL → write code → verify PASS → ALL tests pass
+- After EACH issue completion: verify sync (spec↔test↔code) — BLOCK if gaps
 - STOP and ask user only for: credentials, stack confirmation, 3 failed reflexions
+
+QUALITY MINIMUMS (BLOCK if not met):
+- Tests: minimum 10 per domain/app (not 3-5 token tests)
+- REQ coverage: 100% (every REQ has test + code)
+- Design doc: ALL 10 sections complete with Pydantic schemas
+- Security: @security-engineer audit before Stage 4 gate
 
 ### Traceability Enforcement
 - After /specify: verify [REQ-xxx] tags exist on all requirements
