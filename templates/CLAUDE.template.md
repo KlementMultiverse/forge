@@ -39,6 +39,8 @@ STAGE 6: ITERATE
 
 ## Agent Selection
 
+> PM orchestrator: fill this table based on /feasibility output. Use @agent-factory to create missing agents for domains not covered by existing universal or stack agents.
+
 | Domain | Agent | context7 Libs |
 |--------|-------|---------------|
 | [domain-1] | @[agent-name] | [libraries] |

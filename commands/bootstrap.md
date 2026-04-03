@@ -17,8 +17,11 @@ $ARGUMENTS — project name (e.g., "clinic-portal")
    - .env.example with required env vars
 3. Create folder structure per SPEC.md architecture section
 4. Git init + initial commit
-5. Create GitHub repo: `gh repo create {project-name} --private --source=.`
-6. Push initial commit
+5. Create GitHub repo (with auth guard):
+   - Check: `gh auth status 2>/dev/null`
+   - If gh CLI is authenticated: `gh repo create {project-name} --private --source=. --push`
+   - If gh CLI is NOT authenticated: skip GitHub and log: "GitHub repo not created — run `gh auth login` to enable GitHub integration"
+6. Push initial commit (only if remote was created successfully)
 
 ## Output
 

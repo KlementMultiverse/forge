@@ -5,6 +5,14 @@ Run the entire SDLC autonomously from a single sentence.
 ## Input
 $ARGUMENTS — A one-sentence description of what to build (e.g., "a clinic management portal for medical practices")
 
+## Prerequisites (check before starting)
+
+1. **CLAUDE.md present?** If yes, read it for existing SDLC flow. If not, /bootstrap will create it.
+2. **Git initialized?** Run `git rev-parse --is-inside-work-tree 2>/dev/null`. If not → `git init`.
+3. **GitHub remote configured?** Run `git remote get-url origin 2>/dev/null`. If not → `gh repo create` (or skip GitHub features and use local issue tracking).
+4. **Forge commands installed?** Check `ls ~/.claude/commands/forge.md 2>/dev/null`. If not → run `install.sh` from the forge repo.
+5. **context7 MCP available?** Test with a simple `resolve-library-id` call. If unavailable → log "context7 unavailable, will use web search fallback" and continue.
+
 ## Execution
 
 <system-reminder>

@@ -30,7 +30,7 @@ EXISTING COMMANDS (from base installation):
   /sc:spec-panel, /sc:task
 
 UNIVERSAL AGENTS (28):
-  @deep-researcher, @requirements-analyst, @business-panel-experts,
+  @deep-research-agent, @requirements-analyst, @business-panel-experts,
   @system-architect, @backend-architect, @api-architect, @security-engineer,
   @quality-engineer, @performance-engineer, @frontend-architect,
   @devops-architect, @python-expert, @refactoring-expert, @technical-writer,
@@ -272,7 +272,7 @@ Act:
 
 | Task Type | Primary Agent | Support | Command |
 |-----------|--------------|---------|---------|
-| Research problem | @deep-researcher | — | /discover |
+| Research problem | @deep-research-agent | — | /discover |
 | Extract requirements | @requirements-analyst | /sc:brainstorm | /requirements |
 | Select tech stack | @system-architect | @security-engineer | /feasibility |
 | Design API contracts | @api-architect | — | — |
