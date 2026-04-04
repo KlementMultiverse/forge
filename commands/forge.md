@@ -22,18 +22,36 @@ The UserPromptSubmit hook already ran and injected one of:
 
 Read the hook output. Then route to the correct case below.
 
+### STEP 0.5: CHECK FORGE STATE (HIGHEST PRIORITY — before anything else)
+
+If `docs/forge-state.json` exists:
+```bash
+bash scripts/forge-enforce.sh check-state 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh check-state 2>/dev/null
+bash scripts/forge-enforce.sh check-continuation 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh check-continuation 2>/dev/null
+```
+
+**VIOLATION REMEDIATION — AUTO-FIX (CASE 8):**
+If forge-state.json has violations > 0 → ROUTE TO CASE 8 IMMEDIATELY.
+Do NOT ask the user. Do NOT show options. Auto-fix violations.
+
+**RESUME — AUTO-CONTINUE:**
+If forge-state.json shows current_step < 57 → RESUME from next step.
+Do NOT ask the user. Continue execution from where it left off.
+
 ### STEP 1: READ FORGE.md (if exists)
 
 If FORGE.md exists in the project:
 1. Read it
-2. Find the first QUEUED item
-3. Set it to ACTIVE
-4. Route to the correct flow based on `type`:
+2. **FIRST:** Check forge-state.json for violations → if any → CASE 8 (auto-fix)
+3. **SECOND:** Check forge-state.json for incomplete steps → if any → RESUME from next step
+4. **THIRD:** Find the first QUEUED item
+5. Set it to ACTIVE
+6. Route to the correct flow based on `type`:
    - NEW_PROJECT → CASE 1
    - FEATURE → CASE 3
    - BUG → CASE 4
    - IMPROVEMENT → CASE 5
-5. If no QUEUED items → ask user what to do
+7. If no QUEUED items AND no violations AND all steps done → ask user what to do
 
 If FORGE.md does NOT exist:
 1. Route based on hook detection (current behavior)
@@ -41,15 +59,19 @@ If FORGE.md does NOT exist:
 
 If hook output is missing or ambiguous, run detection manually:
 ```
-1. CLAUDE.md? NO. Code exists? NO.              → CASE 1 (greenfield — new project)
-2. CLAUDE.md? NO. Code exists? YES.              → CASE 7 (brownfield — existing code, no forge)
-3. CLAUDE.md? YES (placeholders). Code? NO.      → CASE 1 (template only — same as greenfield)
-4. CLAUDE.md? YES (real). Code? NO.              → CASE 2 (has spec, needs implementation)
-5. CLAUDE.md? YES. Code? YES. Bug keywords?      → CASE 4 (bug fix)
-6. CLAUDE.md? YES. Code? YES. Feature keywords?  → CASE 3 (new feature)
-7. CLAUDE.md? YES. Code? YES. Improve keywords?  → CASE 5 (improvement)
-8. None of the above                             → CASE 6 (ask user)
+1. forge-state.json has violations?              → CASE 8 (violation remediation — AUTO)
+2. forge-state.json has incomplete steps?        → RESUME from next step (AUTO)
+3. CLAUDE.md? NO. Code exists? NO.              → CASE 1 (greenfield — new project)
+4. CLAUDE.md? NO. Code exists? YES.              → CASE 7 (brownfield — existing code, no forge)
+5. CLAUDE.md? YES (placeholders). Code? NO.      → CASE 1 (template only — same as greenfield)
+6. CLAUDE.md? YES (real). Code? NO.              → CASE 2 (has spec, needs implementation)
+7. CLAUDE.md? YES. Code? YES. Bug keywords?      → CASE 4 (bug fix)
+8. CLAUDE.md? YES. Code? YES. Feature keywords?  → CASE 3 (new feature)
+9. CLAUDE.md? YES. Code? YES. Improve keywords?  → CASE 5 (improvement)
+10. None of the above                            → CASE 6 (ask user)
 ```
+
+**CRITICAL: Cases 1-2 (violations and incomplete steps) are checked FIRST. They take priority over everything. Do NOT ask the user if violations exist — just fix them.**
 
 ---
 
@@ -102,9 +124,29 @@ Q3: "What's the main problem it solves?"
   → PM presents: "I found [competitors]. Your gap is [X]. Sound right?"
 
 Q4: "Tech preferences? Or should I recommend?"
-  → If recommend: PM analyzes project needs
-  → PM presents: "For [project type] I recommend [stack] because [reason]. Confirm?"
+  → If recommend: PM checks proven stacks FIRST:
+    Run: `bash ~/.claude/scripts/forge-stack.sh list`
+    Stacks with learnings > 0 are PROVEN (battle-tested from past builds).
+    Stacks with learnings = 0 are AVAILABLE (registered but untested).
+    PM presents: "Based on your project needs and our proven stacks:
+      RECOMMENDED: {stack} — {N} learnings from {N} past builds
+      Also available: {other stacks}
+      Or I can research a new stack for this project."
+    Proven stacks get priority because their rules/agents/scaffold have been refined.
+  → If user specifies a stack: use that (user choice overrides recommendation)
   → PM notes: language, framework, database, cache, frontend, special features
+  → STACK REGISTRY: Check ~/.claude/stacks/ for available stacks (ls ~/.claude/stacks/)
+    If stack matches a registry folder (e.g., "django", "fastapi"):
+    - Read ~/.claude/stacks/{stack}/rules.md → will be copied to project .claude/rules/
+    - Read ~/.claude/stacks/{stack}/agents.md → will be used for agent-routing.md
+    - Read ~/.claude/stacks/{stack}/learnings.md → include in agent prompts as context
+    - Read ~/.claude/stacks/{stack}/scaffold.md → use for Step S7 scaffold
+    If no match → AUTO-CREATE the stack registry:
+      Run: `bash ~/.claude/scripts/forge-stack.sh create {stack} --auto`
+      This creates ~/.claude/stacks/{stack}/ with template files.
+      @system-architect will refine them during S3/S6 using context7 docs.
+      After this build's /retro (Step 49), the templates get real learnings.
+      Second build on this stack will be fully informed.
 
 Q5: "Any of these apply?" (multi-select)
   - Multi-tenant
@@ -265,9 +307,28 @@ Trace: save to docs/forge-trace/S5-forge-md/
 mkdir -p .claude/rules/
 ```
 
+**STACK REGISTRY CHECK** (do this FIRST):
+```bash
+STACK_DIR="$HOME/.claude/stacks/{stack}"  # e.g., django, fastapi, nextjs
+if [ -d "$STACK_DIR" ]; then
+  # Copy stack rules into project
+  cp "$STACK_DIR/rules.md" .claude/rules/{stack}-rules.md
+  # Use stack agent routing as base for agent-routing.md
+  STACK_AGENTS=$(cat "$STACK_DIR/agents.md")
+  # Read stack learnings — include in all agent prompts this build
+  STACK_LEARNINGS=$(cat "$STACK_DIR/learnings.md")
+  # Read stack scaffold instructions for Step S7
+  STACK_SCAFFOLD=$(cat "$STACK_DIR/scaffold.md")
+fi
+```
+
+If stack registry exists: use agents.md as the base for agent-routing.md (customize for this project's specific apps).
+If no registry: fall back to @system-architect generating from scratch (below).
+
 For sdlc-flow.md: PM fills the template with project-specific stages.
 
-For agent-routing.md: @system-architect fills the agent matrix based on stack:
+For agent-routing.md: If stack registry provided agents.md, adapt it to this project's app structure.
+Otherwise, @system-architect fills the agent matrix based on stack:
 
 Execute: spawn Agent with subagent_type="system-architect"
   prompt: |
@@ -276,10 +337,14 @@ Execute: spawn Agent with subagent_type="system-architect"
     Stack: {stack}
     Features: {features}
 
-    Fill the agent matrix table:
-    | Domain | Agent | context7 Libraries |
+    IMPORTANT: Check if ~/.claude/stacks/{stack}/agents.md exists.
+    If YES: use it as the BASE template, adapt for this project's specific apps/folders.
+    If NO: create from scratch using the mappings below.
 
-    Use these mappings:
+    Fill the agent matrix table:
+    | Domain | Files | Agent | context7 Libraries |
+
+    Default mappings (only if no stack registry):
     - Django models → @django-tenants-agent (if multi-tenant) or @backend-architect
     - Django API → @django-ninja-agent
     - FastAPI → @backend-architect (or @agent-factory creates one)
@@ -300,12 +365,15 @@ Trace: save to docs/forge-trace/S6-rules/
 Execute: spawn Agent with subagent_type="devops-architect"
   prompt: |
     Create project scaffold for {stack}.
-    Read CLAUDE.md for rules. Generate REAL files:
+    Read CLAUDE.md for rules. Read ~/.claude/rules/docker.md for Docker rules.
+    Follow the Docker rules file — it covers volume mounts, dev vs prod, .dockerignore.
+    Generate REAL files:
 
     For Django:
     - pyproject.toml (all deps from CLAUDE.md tech stack)
-    - Dockerfile (Python 3.12, multi-stage, uv)
-    - docker-compose.yml (PostgreSQL + Redis + Django)
+    - Dockerfile (Python 3.12, multi-stage, uv — production with gunicorn)
+    - docker-compose.yml (PostgreSQL + Redis + Django — DEVELOPMENT with volume mount + runserver)
+    - .dockerignore (.venv, __pycache__, .git, *.pyc)
     - config/settings.py (full Django settings)
     - config/urls.py
     - config/wsgi.py
@@ -317,7 +385,8 @@ Execute: spawn Agent with subagent_type="devops-architect"
     For FastAPI:
     - pyproject.toml
     - Dockerfile
-    - docker-compose.yml
+    - docker-compose.yml (with volume mount + uvicorn --reload for dev)
+    - .dockerignore
     - app/main.py
     - app/config.py
     - .env.example
@@ -326,7 +395,8 @@ Execute: spawn Agent with subagent_type="devops-architect"
     For Next.js:
     - package.json
     - Dockerfile
-    - docker-compose.yml
+    - docker-compose.yml (with volume mount + next dev for dev)
+    - .dockerignore
     - next.config.js
     - .env.example
     - .gitignore
@@ -411,14 +481,51 @@ Then → STEP S5 (FORGE.md) → S6 → S7 (skip scaffold, code exists) → S8 �
 #### Phase B -- Full SDLC (CHAINED EXECUTION — each step MUST complete before next)
 
 <system-reminder>
-CHAINED EXECUTION PROTOCOL:
+CHAINED EXECUTION PROTOCOL — ENFORCED BY HOOKS AND SCRIPTS:
+
+BEFORE ANYTHING: Run `bash scripts/forge-enforce.sh check-state` to load current state.
+BEFORE ANYTHING: Run `bash scripts/forge-enforce.sh check-continuation` to find the NEXT step.
+BEFORE ANYTHING: Run `bash scripts/docker-state.sh` to capture Docker state.
+
+RESUME LOGIC — CRITICAL:
+  Read docs/forge-state.json. For each step:
+  - If status = "DONE" → SKIP IT. Do not re-run completed steps.
+  - If status = "SKIPPED" → Note as historical violation. Do not re-run unless user asks.
+  - If status = "NOT_STARTED" → EXECUTE this step.
+  - If status = "IN_PROGRESS" → RESUME this step.
+  The check-continuation command tells you the EXACT next step. Start there.
+
+RETROACTIVE GATES — When phases are DONE but gates never ran:
+  The gate only needs to VERIFY (run checks), not REDO work.
+  Run: tests pass + lint clean + traceability pass + Docker healthy + no secrets.
+  If all pass → mark gate passed with `forge-enforce.sh update-gate <N>`.
+  Do NOT re-run the phase's work steps.
+
 Each step below MUST be executed using the Skill tool (for commands) or Agent tool (for agents).
 After EACH step:
   1. VERIFY the output file exists (use Read or Bash ls)
   2. VERIFY it has real content (not empty, not placeholder)
-  3. LOG to docs/forge-trace/{NNN}-{step}/ (input.md + output.md + meta.md)
-  4. LOG to docs/forge-timeline.md
-  5. ONLY THEN proceed to next step
+  3. LOG to docs/forge-trace/{NNN}-{step}/ — ALL 3 FILES: input.md + output.md + meta.md
+  4. VERIFY trace: `bash scripts/forge-enforce.sh check-trace <STEP_NUMBER>`
+  5. LOG to docs/forge-timeline.md
+  6. UPDATE state: `bash scripts/forge-enforce.sh update-step <STEP_NUMBER> DONE`
+  7. ONLY THEN proceed to next step
+
+PHASE TRANSITIONS — HARD GATE:
+  Before starting Phase N, you MUST verify Phase N-1 gate passed:
+  `bash scripts/forge-enforce.sh check-gate <N-1>`
+  If NOT passed → run /gate phase-<N-1> → verify → THEN proceed.
+  NEVER skip a gate. NEVER proceed without a passing gate.
+
+AGENT SEPARATION — ENFORCED:
+  PM (you) NEVER writes to apps/**/*.py or templates/**/*.html
+  Always spawn the specialist agent from .claude/rules/agent-routing.md
+  Hook will warn if you attempt to write app code directly.
+
+AUTO-CONTINUATION — MANDATORY:
+  NEVER stop to ask "should I continue?" — always continue.
+  NEVER ask which agent to use — consult agent-routing.md.
+  ONLY stop for: gate BLOCKED, /challenge RETHINK, missing credentials, 3 failed retries.
 
 If verification FAILS → retry the step (max 2) → still fails → STOP and report.
 If a step produces no output file → the step did NOT run → DO NOT PROCEED.
@@ -426,6 +533,9 @@ If a step produces no output file → the step did NOT run → DO NOT PROCEED.
 You are EXECUTING these commands, not describing them.
 Use the Skill tool: `skill: "discover"` or `skill: "requirements"` etc.
 Use the Agent tool for specialist agents: `subagent_type: "security-engineer"` etc.
+
+ON CONTEXT LIMIT: Save state with forge-enforce.sh, summarize in timeline, continue immediately.
+ON SESSION RESTART: Run `bash scripts/forge-enforce.sh check-continuation` to find next step.
 </system-reminder>
 
 **Phase 0: Genesis**
@@ -546,18 +656,46 @@ STEP 19 — /gate stage-2
 **Phase 3: IMPLEMENT (per issue — strict agent separation)**
 
 <system-reminder>
-STRICT AGENT SEPARATION — MANDATORY:
+ENFORCEMENT CHECKPOINT — BEFORE Phase 3:
+1. Run: `bash scripts/forge-enforce.sh check-gate 2` — Phase 2 gate MUST be passed
+2. Run: `bash scripts/forge-enforce.sh check-docker` — all services MUST be healthy
+3. Run: `bash scripts/docker-state.sh` — capture Docker state for agent prompts
+4. If any check fails → FIX FIRST → do NOT proceed
+
+STRICT AGENT SEPARATION — MANDATORY AND ENFORCED:
 - SPEC agent and CODE agent are DIFFERENT agents
 - TEST agent and CODE agent are DIFFERENT agents
 - TEST agent reads SPEC (not code) to write tests
 - CODE agent reads SPEC + design doc + test expectations to write code
 - REVIEW agent judges every output independently
 - NO agent does more than ONE job per step
+- PM NEVER writes to apps/**/*.py — Hook will warn on violation
+
+AGENT ROUTING (from .claude/rules/agent-routing.md):
+- apps/tenants/ → @django-tenants-agent
+- apps/users/ → @django-ninja-agent
+- apps/search/ → @backend-architect
+- apps/documents/ → @s3-lambda-agent + @django-ninja-agent
+- apps/conversations/ → @llm-integration-agent + @s3-lambda-agent
+- apps/audit/ → @django-tenants-agent
+- templates/ → /sc:implement
+- tests → @quality-engineer (reads SPEC.md ONLY)
+
+TDD CYCLE — MANDATORY:
+1. @quality-engineer writes tests from SPEC.md → tests MUST FAIL
+2. @domain-agent writes code → tests MUST PASS
+3. Full suite → NO regressions
+If tests pass at step 1 → INVESTIGATE before coding
+
+PER-ISSUE COMMITS — MANDATORY:
+Each issue = one commit: `feat(<app>): <description> [REQ-xxx]`
+NEVER batch multiple issues into one monolithic commit.
 
 This prevents:
 - Tests that are designed to pass (written after code)
 - Specs that are reverse-engineered from implementation
 - Code that ignores the spec because same agent wrote both
+- Monolithic commits that are impossible to review or revert
 </system-reminder>
 
 For EACH issue in dependency order, execute this chain.
@@ -614,11 +752,15 @@ STEP N7 — SECURITY SCAN
   If found: fix before commit
   Trace: docs/forge-trace/{N}7-security/
 
-STEP N8 — REVIEW
-  Execute: spawn Agent with subagent_type="self-review"
-    prompt: "Rate the output of issue #{N} on scale 1-5. Check: tests cover acceptance criteria, code matches spec, no orphan code, handoff format complete."
+STEP N8 — REVIEW (per-issue inline review — MANDATORY)
+  Execute: spawn Agent with subagent_type="reviewer"
+    prompt: "Review code for issue #{N}. Rate 1-5.
+    CHECK: tests cover [REQ-xxx] acceptance criteria, code matches spec, no orphan code,
+    no hardcoded secrets, files <300 lines, no TODO/FIXME, error paths handled,
+    auth checks on protected routes, LLM output sanitized.
+    If rating <4: list EXACT fixes needed. If >=4: approve."
   Verify: rating >= 4
-  If < 4: go back to STEP N4 (max 3 iterations)
+  If < 4: fix issues → re-run review (max 3 iterations)
   Trace: docs/forge-trace/{N}8-review/
 
 STEP N9 — COMMIT + LEARN
@@ -633,7 +775,50 @@ STEP N9 — COMMIT + LEARN
     - /gate (PR + CodeRabbit or manual checklist)
     - Log to timeline
 
+STEP 37 — /review (phase-level inline code review — MANDATORY before gate)
+  Execute: `skill: "review", args: "all changes since last gate"`
+  This reviews ALL code written in Phase 3 as a whole:
+    - Cross-issue consistency (naming, patterns, imports)
+    - API contract alignment with design-doc.md Section 4
+    - Tenant isolation across all apps
+    - No duplicate logic between issues
+    - Test coverage gaps across the full suite
+  Verify: review produces report with 0 CRITICAL, 0 HIGH findings
+  If issues found: fix → re-run review
+  Execute: `bash scripts/forge-enforce.sh update-step 37 DONE`
+  Trace: save to docs/forge-trace/037-review-s3/
+
+STEP 38 — /checkpoint phase-3
+  Execute: `skill: "checkpoint", args: "phase-3 | Implementation complete"`
+  Execute: `bash scripts/forge-enforce.sh update-step 38 DONE`
+  Trace: save to docs/forge-trace/038-checkpoint-s3/
+
+STEP 39 — /gate stage-3 (MANDATORY — blocks Phase 4)
+  Execute: `skill: "gate", args: "stage-3"`
+  Verify: gate PASS
+  Execute: `bash scripts/forge-enforce.sh update-gate 3`
+  Execute: `bash scripts/forge-enforce.sh update-step 39 DONE`
+  If FAIL → fix issues → re-run /gate
+  Trace: save to docs/forge-trace/039-gate-s3/
+
+  **PHASE 3→4 TRANSITION:**
+  1. Verify: `bash scripts/forge-enforce.sh check-gate 3` → MUST be PASSED
+  2. Verify: `bash scripts/docker-state.sh --check` → DOCKER_HEALTHY
+  3. Run: `bash scripts/run-e2e.sh` → unit + e2e tests MUST pass
+  4. Update: `bash scripts/forge-enforce.sh update-step 40 IN_PROGRESS`
+  5. Continue to Phase 4 immediately — DO NOT STOP
+
 **Phase 4: Validate**
+
+<system-reminder>
+ENFORCEMENT CHECKPOINT — BEFORE Phase 4:
+1. Run: `bash scripts/forge-enforce.sh check-gate 3` — Phase 3 gate MUST be passed
+2. Run: `bash scripts/forge-enforce.sh check-docker` — Docker MUST be healthy
+3. Run: `bash scripts/run-e2e.sh` — ALL tests (unit + e2e) MUST pass before validation
+4. Update state: `bash scripts/forge-enforce.sh update-step 40 IN_PROGRESS`
+5. If gate not passed → run /gate stage-3 first → THEN proceed
+AUTO-CONTINUE: Do NOT stop to ask the user. Proceed through ALL Phase 4 steps.
+</system-reminder>
 
 STEP 40 — /sc:analyze
   Execute: `skill: "sc:analyze"`
@@ -662,17 +847,35 @@ STEP 44 — /security-scan
   If found → fix → re-scan
   Trace: save to docs/forge-trace/044-security/
 
-STEP 45 — /design-audit + /critic (if project has UI)
+STEP 45 — /design-audit + /critic + E2E TESTS (MANDATORY if project has UI)
   Execute: `skill: "design-audit"` (if templates/ exist)
   Execute: `skill: "critic"` (if Playwright available)
+  Execute: `skill: "sc:test", args: "--type e2e"` — MANDATORY, run Playwright e2e tests
+  Execute: `docker compose exec web uv run python manage.py test` — MANDATORY, full unit test suite
+  Verify: ALL tests pass (both unit and e2e)
   Trace: save to docs/forge-trace/045-design/
+
+STEP 45b — /review (Phase 4 validation review — MANDATORY before gate)
+  Execute: `skill: "review", args: "validation findings"`
+  Review all fixes made during Phase 4 (from audit-patterns, security-scan, etc.)
+  Verify: no regressions introduced by fixes, all tests still pass
+  Execute: `bash scripts/forge-enforce.sh update-step 45 DONE`
 
 STEP 46 — /gate stage-4
   Execute: `skill: "gate", args: "stage-4"`
   Verify: gate PASS
+  Execute: `bash scripts/forge-enforce.sh update-step 46 DONE`
+  Execute: `bash scripts/forge-enforce.sh update-gate 4`
   Trace: save to docs/forge-trace/046-gate-s4/
 
 **Phase 5: Review + Learn**
+
+<system-reminder>
+ENFORCEMENT CHECKPOINT — BEFORE Phase 5:
+1. Run: `bash scripts/forge-enforce.sh check-gate 4` — Phase 4 gate MUST be passed
+2. Update state: `bash scripts/forge-enforce.sh update-step 47 IN_PROGRESS`
+AUTO-CONTINUE: Do NOT stop. Execute ALL steps 47-56 without pausing.
+</system-reminder>
 
 STEP 47 — /sc:cleanup
   Execute: `skill: "sc:cleanup"`
@@ -688,6 +891,18 @@ STEP 49 — /retro
   Execute: `skill: "retro"`
   Verify: `ls docs/retrospectives/*.md` → retro file exists
   Verify: CLAUDE.md Lessons Learned section updated
+  STACK LEARNING FEEDBACK: After retro, append new learnings to the stack registry:
+    ```bash
+    STACK=$(grep -oP 'framework.*?:\s*\K\w+' CLAUDE.md | head -1 | tr '[:upper:]' '[:lower:]')
+    STACK_LEARNINGS="$HOME/.claude/stacks/$STACK/learnings.md"
+    if [ -f "$STACK_LEARNINGS" ]; then
+      echo "" >> "$STACK_LEARNINGS"
+      echo "## From $(basename $(pwd)) ($(date +%Y-%m-%d))" >> "$STACK_LEARNINGS"
+      # Append each new lesson from retro that is stack-specific (not process-related)
+    fi
+    ```
+    Read docs/retrospectives/*.md → extract stack-specific lessons → append to ~/.claude/stacks/{stack}/learnings.md
+    This makes the NEXT build on this stack smarter.
   Trace: save to docs/forge-trace/049-retro/
 
 STEP 50 — /sc:reflect
@@ -695,8 +910,11 @@ STEP 50 — /sc:reflect
   Verify: task completion validated
   Trace: save to docs/forge-trace/050-reflect/
 
-STEP 51 — /sc:document
+STEP 51 — /sc:document + @deploy-guide-agent
   Execute: `skill: "sc:document"`
+  Execute: spawn Agent with subagent_type="general-purpose"
+    prompt: "You are @deploy-guide-agent. Read CLAUDE.md, docker-compose.yml, Dockerfile, .env.example. Generate docs/DEPLOY.md with: prerequisites, quick-start (Docker exists vs not), env vars table, services table, common operations, making changes, troubleshooting, architecture diagram, health checks. Every command must be copy-pasteable. Under 200 lines."
+  Verify: `ls docs/DEPLOY.md` → exists and has ## Quick Start section
   Verify: documentation generated/updated
   Trace: save to docs/forge-trace/051-document/
 
@@ -912,6 +1130,128 @@ Route to CASE 3/4/5 based on answer
    - (c) -> CASE 5
    - (d) -> Read CLAUDE.md, read relevant code, explain using real project code (no code changes)
 3. Log to timeline
+
+---
+
+### CASE 8: VIOLATION REMEDIATION (auto-fix — NO user interaction)
+
+<system-reminder>
+CASE 8 IS FULLY AUTONOMOUS. Do NOT ask the user anything.
+Read violations from forge-state.json. Fix each one. Update state. Continue.
+This case runs when: forge-state.json exists AND violations array is non-empty.
+PRIORITY ORDER: gates > review > Phase 5 steps > traces > checkpoints.
+</system-reminder>
+
+**STEP R1: Read violations and categorize**
+
+```bash
+bash scripts/forge-enforce.sh check-state
+bash scripts/forge-enforce.sh check-continuation
+bash scripts/forge-review-guard.sh status
+```
+
+Categorize violations by type:
+- GATE_SKIPPED → run retroactive gates (verify only, don't redo work)
+- REVIEW_SKIPPED → run /review now
+- PHASE5_BATCH_SKIPPED → re-run skipped Phase 5 skills properly
+- CHECKPOINT_SKIPPED → run /checkpoint for the phase
+- TRACE_INCOMPLETE → backfill missing input.md/output.md
+- AGENT_SEPARATION → log as historical (can't undo, note for future)
+- TDD_SKIPPED → log as historical (can't undo, note for future)
+
+**STEP R2: Fix gate violations (highest priority)**
+
+For each phase with gate_passed = false AND status = DONE:
+1. Run verification: tests pass + lint clean + traceability + Docker healthy + no secrets
+2. If ALL pass → `bash scripts/forge-enforce.sh update-gate <phase>`
+3. If ANY fail → fix the issue → re-verify → mark gate
+4. Continue to next ungated phase
+
+**STEP R3: Fix review violations**
+
+If REVIEW_SKIPPED in violations:
+1. Run `/review` (the skill) — this triggers PostToolUse hook that marks phase as reviewed
+2. Fix any issues found
+3. Commit fixes
+4. Review guard marker is now set → gate and PR unblocked
+
+**STEP R4: Fix Phase 5 batch-skip violations**
+
+If PHASE5_BATCH_SKIPPED in violations:
+For each step that was batch-marked without execution:
+- Step 47: Run `skill: "sc:cleanup"` → verify no regressions
+- Step 48: Run `skill: "sc:improve"` → verify tests still pass
+- Step 49: Run `skill: "retro"` → verify retrospective file created
+- Step 50: Run `skill: "sc:reflect"` → verify reflection report
+- Step 51: Run `skill: "sc:document"` + @deploy-guide-agent → verify docs/DEPLOY.md
+- Step 52: Run @playbook-curator → verify playbook updated
+- Step 53: Run `skill: "prune"` + `skill: "evolve"`
+- Step 54: Run `skill: "autoresearch"`
+- Step 55: Run `skill: "sc:save"`
+
+Each step: execute → verify output → update forge-state.json → trace.
+
+**STEP R5: Fix checkpoint violations**
+
+For each skipped checkpoint:
+Run `skill: "checkpoint", args: "phase-<N> | retroactive checkpoint"`
+
+**STEP R6: Fix trace violations**
+
+For each step with trace_complete = false:
+Backfill input.md and output.md from git history and forge-timeline.md.
+
+**STEP R7: Handle CodeRabbit reviews on existing PRs**
+
+```bash
+# Check if any open PRs have CodeRabbit reviews
+PR_NUM=$(gh pr list --state open --json number -q '.[0].number' 2>/dev/null)
+if [ -n "$PR_NUM" ]; then
+  REVIEWS=$(gh api repos/{owner}/{repo}/pulls/$PR_NUM/reviews \
+    --jq '[.[] | select(.user.login | contains("coderabbit"))] | length' 2>/dev/null)
+  COMMENTS=$(gh api repos/{owner}/{repo}/pulls/$PR_NUM/comments \
+    --jq '[.[] | select(.user.login | contains("coderabbit"))] | length' 2>/dev/null)
+fi
+```
+
+If CodeRabbit has reviewed (REVIEWS > 0):
+1. Read ALL CodeRabbit comments
+2. For each comment:
+   - Read the file + line
+   - Understand the suggestion
+   - Apply fix using correct specialist agent (from agent-routing.md)
+   - Run tests → verify no regression
+3. Commit: `fix: address CodeRabbit review [iteration N]`
+4. Push
+5. Wait for re-review (poll 30s x 10)
+6. Repeat until APPROVED or 5 iterations
+
+If CodeRabbit state = APPROVED:
+- Mark PR as ready
+- Log to timeline
+
+If no CodeRabbit after 5 min:
+- Fall back to local verification checklist
+- Log: "CodeRabbit unavailable"
+
+**STEP R8: Clear resolved violations from state**
+
+```python
+# Remove violations that have been fixed
+for v in violations:
+    if v resolved: remove from list
+state["violations"] = remaining_violations
+state["status"] = "CLEAN" if no violations else "VIOLATIONS_REMAINING"
+```
+
+**STEP R9: Final verification**
+
+```bash
+bash scripts/forge-enforce.sh full-audit
+```
+
+If AUDIT PASSED → log "All violations resolved" → check FORGE.md for queued items → if none, report done.
+If AUDIT FAILED → loop back to R1 (max 3 iterations) → if still failing, report remaining issues to user.
 
 ---
 

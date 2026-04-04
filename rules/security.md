@@ -1,3 +1,8 @@
+---
+description: Security rules for all projects with auth, APIs, or data storage.
+paths: ["**"]
+---
+
 # Security Rules
 
 1. All credentials from environment variables — NEVER hardcoded
