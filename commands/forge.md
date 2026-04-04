@@ -544,12 +544,14 @@ STEP 1 — /discover
   Execute: `skill: "discover", args: "$ARGUMENTS"`
   Verify: `ls docs/discovery-report.md` → file exists, >500 bytes
   Trace: save to docs/forge-trace/001-discover/
+  State: `bash scripts/forge-enforce.sh update-step 1 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 1 DONE`
   If missing → step failed → retry
 
 STEP 2 — /requirements
   Execute: `skill: "requirements", args: "docs/discovery-report.md"`
   Verify: `grep -c "REQ-" docs/requirements.md` → at least 15 REQs
   Trace: save to docs/forge-trace/002-requirements/
+  State: `bash scripts/forge-enforce.sh update-step 2 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 2 DONE`
   If <15 REQs → step incomplete → retry with "need more requirements"
 
 STEP 3 — /feasibility
@@ -557,12 +559,14 @@ STEP 3 — /feasibility
   Verify: `ls docs/feasibility.md` → file exists
   ASK USER: "Recommended: [stack]. Confirm? (yes/change)"
   Trace: save to docs/forge-trace/003-feasibility/
+  State: `bash scripts/forge-enforce.sh update-step 3 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 3 DONE`
 
 STEP 4 — /generate-spec
   Execute: `skill: "generate-spec"`
   Verify: `grep -c "REQ-" SPEC.md` → at least 15 REQs in SPEC
   Verify: SPEC.md has ## Models, ## API Endpoints, ## Tech Stack sections
   Trace: save to docs/forge-trace/004-generate-spec/
+  State: `bash scripts/forge-enforce.sh update-step 4 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 4 DONE`
   If SPEC incomplete → retry
 
 STEP 5 — /challenge
@@ -571,22 +575,27 @@ STEP 5 — /challenge
   If RETHINK → STOP, ask user
   If REFINE → update SPEC → re-run /challenge (max 2)
   Trace: save to docs/forge-trace/005-challenge/
+  State: `bash scripts/forge-enforce.sh update-step 5 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 5 DONE`
 
 STEP 6 — /bootstrap
   Execute: `skill: "bootstrap"`
   Verify: `ls manage.py pyproject.toml Dockerfile docker-compose.yml config/settings.py` → all exist
   Trace: save to docs/forge-trace/006-bootstrap/
+  State: `bash scripts/forge-enforce.sh update-step 6 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 6 DONE`
   If any missing → step failed → retry
 
 STEP 7 — /checkpoint
   Execute: `skill: "checkpoint", args: "phase-0 | Genesis complete"`
   Trace: save to docs/forge-trace/007-checkpoint-p0/
+  State: `bash scripts/forge-enforce.sh update-step 7 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 7 DONE`
 
 STEP 8 — /gate phase-0
   Execute: `skill: "gate", args: "phase-0"`
   Verify: gate output says PASS
   If BLOCKED → fix issues → re-run /gate
   Trace: save to docs/forge-trace/008-gate-p0/
+  State: `bash scripts/forge-enforce.sh update-step 8 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 8 DONE`
+  Gate: `bash scripts/forge-enforce.sh update-gate 0 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-gate 0`
 
 **Phase 1: Specify**
 
@@ -595,15 +604,19 @@ STEP 9 — /specify
   Verify: `ls docs/proposals/01-*.md` → proposal exists
   Verify: proposal has ## Acceptance Criteria with Given/When/Then
   Trace: save to docs/forge-trace/009-specify/
+  State: `bash scripts/forge-enforce.sh update-step 9 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 9 DONE`
 
 STEP 10 — /checkpoint
   Execute: `skill: "checkpoint", args: "specify | proposal created"`
   Trace: save to docs/forge-trace/010-checkpoint-s1/
+  State: `bash scripts/forge-enforce.sh update-step 10 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 10 DONE`
 
 STEP 11 — /gate stage-1
   Execute: `skill: "gate", args: "stage-1"`
   Verify: gate PASS
   Trace: save to docs/forge-trace/011-gate-s1/
+  State: `bash scripts/forge-enforce.sh update-step 11 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 11 DONE`
+  Gate: `bash scripts/forge-enforce.sh update-gate 1 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-gate 1`
 
 **Phase 2: Architect**
 
@@ -611,12 +624,14 @@ STEP 12 — /plan-review
   Execute: `skill: "plan-review", args: "docs/proposals/01-*.md"`
   Verify: review output exists with feedback
   Trace: save to docs/forge-trace/012-plan-review/
+  State: `bash scripts/forge-enforce.sh update-step 12 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 12 DONE`
 
 STEP 13 — @api-architect (API contracts)
   Execute: spawn Agent with subagent_type="general-purpose"
     prompt: "You are @api-architect. Read docs/proposals/01-*.md and SPEC.md. Design API contracts for every endpoint: method, path, request JSON, response JSON, error codes, Pydantic schemas."
   Verify: output has endpoint tables with JSON shapes
   Trace: save to docs/forge-trace/013-api-contracts/
+  State: `bash scripts/forge-enforce.sh update-step 13 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 13 DONE`
 
 STEP 14 — /design-doc
   Execute: `skill: "design-doc", args: "docs/proposals/01-*.md"`
@@ -625,7 +640,8 @@ STEP 14 — /design-doc
   Verify: has "Will implement" decisions (at least 8)
   Verify: has Pydantic Schema classes
   Verify: has test scenarios (at least 15)
-  Trace: save to docs/forge-trace/012-design-doc/
+  Trace: save to docs/forge-trace/014-design-doc/
+  State: `bash scripts/forge-enforce.sh update-step 14 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 14 DONE`
   If any verify fails → retry with specific feedback
 
 STEP 15 — /plan-tasks
@@ -633,25 +649,31 @@ STEP 15 — /plan-tasks
   Verify: `ls docs/issues/*.md | wc -l` → at least 10 issue files
   Verify: each issue has [REQ-xxx] reference
   Trace: save to docs/forge-trace/015-plan-tasks/
+  State: `bash scripts/forge-enforce.sh update-step 15 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 15 DONE`
 
 STEP 16 — /sc:estimate
   Execute: `skill: "sc:estimate", args: "docs/design-doc.md"`
   Verify: effort estimates per phase exist
   Trace: save to docs/forge-trace/016-estimate/
+  State: `bash scripts/forge-enforce.sh update-step 16 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 16 DONE`
 
 STEP 17 — /sc:workflow
   Execute: `skill: "sc:workflow", args: "docs/design-doc.md"`
   Verify: dependency ordering validated
   Trace: save to docs/forge-trace/017-workflow/
+  State: `bash scripts/forge-enforce.sh update-step 17 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 17 DONE`
 
 STEP 18 — /checkpoint
   Execute: `skill: "checkpoint", args: "architect | design doc + tasks created"`
   Trace: save to docs/forge-trace/018-checkpoint-s2/
+  State: `bash scripts/forge-enforce.sh update-step 18 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 18 DONE`
 
 STEP 19 — /gate stage-2
   Execute: `skill: "gate", args: "stage-2"`
   Verify: gate PASS
   Trace: save to docs/forge-trace/019-gate-s2/
+  State: `bash scripts/forge-enforce.sh update-step 19 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 19 DONE`
+  Gate: `bash scripts/forge-enforce.sh update-gate 2 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-gate 2`
 
 **Phase 3: IMPLEMENT (per issue — strict agent separation)**
 
@@ -824,28 +846,33 @@ STEP 40 — /sc:analyze
   Execute: `skill: "sc:analyze"`
   Verify: analysis report produced
   Trace: save to docs/forge-trace/040-analyze/
+  State: `bash scripts/forge-enforce.sh update-step 40 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 40 DONE`
 
 STEP 41 — /audit-patterns full
   Execute: `skill: "audit-patterns", args: "full"`
   Verify: pass rate > 90% — if not, fix top 5 failures then re-run
   Trace: save to docs/forge-trace/041-audit/
+  State: `bash scripts/forge-enforce.sh update-step 41 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 41 DONE`
 
 STEP 42 — /sc:test --coverage
   Execute: `skill: "sc:test", args: "--coverage"`
   Verify: tests pass, coverage report generated
   Trace: save to docs/forge-trace/042-coverage/
+  State: `bash scripts/forge-enforce.sh update-step 42 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 42 DONE`
 
 STEP 43 — traceability check
   Execute: `bash scripts/traceability.sh` via Bash
   Verify: 100% REQ coverage, 0 orphans, 0 drift
   If gaps → fix before proceeding
   Trace: save to docs/forge-trace/043-traceability/
+  State: `bash scripts/forge-enforce.sh update-step 43 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 43 DONE`
 
 STEP 44 — /security-scan
   Execute: `skill: "security-scan"`
   Verify: no CRITICAL or HIGH findings
   If found → fix → re-scan
   Trace: save to docs/forge-trace/044-security/
+  State: `bash scripts/forge-enforce.sh update-step 44 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 44 DONE`
 
 STEP 45 — /design-audit + /critic + E2E TESTS (MANDATORY if project has UI)
   Execute: `skill: "design-audit"` (if templates/ exist)
@@ -854,19 +881,19 @@ STEP 45 — /design-audit + /critic + E2E TESTS (MANDATORY if project has UI)
   Execute: `docker compose exec web uv run python manage.py test` — MANDATORY, full unit test suite
   Verify: ALL tests pass (both unit and e2e)
   Trace: save to docs/forge-trace/045-design/
+  State: `bash scripts/forge-enforce.sh update-step 45 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 45 DONE`
 
 STEP 45b — /review (Phase 4 validation review — MANDATORY before gate)
   Execute: `skill: "review", args: "validation findings"`
   Review all fixes made during Phase 4 (from audit-patterns, security-scan, etc.)
   Verify: no regressions introduced by fixes, all tests still pass
-  Execute: `bash scripts/forge-enforce.sh update-step 45 DONE`
 
 STEP 46 — /gate stage-4
   Execute: `skill: "gate", args: "stage-4"`
   Verify: gate PASS
-  Execute: `bash scripts/forge-enforce.sh update-step 46 DONE`
-  Execute: `bash scripts/forge-enforce.sh update-gate 4`
   Trace: save to docs/forge-trace/046-gate-s4/
+  State: `bash scripts/forge-enforce.sh update-step 46 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 46 DONE`
+  Gate: `bash scripts/forge-enforce.sh update-gate 4 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-gate 4`
 
 **Phase 5: Review + Learn**
 
@@ -881,11 +908,13 @@ STEP 47 — /sc:cleanup
   Execute: `skill: "sc:cleanup"`
   Verify: dead code removed, no regressions (run tests)
   Trace: save to docs/forge-trace/047-cleanup/
+  State: `bash scripts/forge-enforce.sh update-step 47 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 47 DONE`
 
 STEP 48 — /sc:improve
   Execute: `skill: "sc:improve"`
   Verify: improvements applied, tests still pass
   Trace: save to docs/forge-trace/048-improve/
+  State: `bash scripts/forge-enforce.sh update-step 48 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 48 DONE`
 
 STEP 49 — /retro
   Execute: `skill: "retro"`
@@ -898,49 +927,55 @@ STEP 49 — /retro
     if [ -f "$STACK_LEARNINGS" ]; then
       echo "" >> "$STACK_LEARNINGS"
       echo "## From $(basename $(pwd)) ($(date +%Y-%m-%d))" >> "$STACK_LEARNINGS"
-      # Append each new lesson from retro that is stack-specific (not process-related)
     fi
     ```
     Read docs/retrospectives/*.md → extract stack-specific lessons → append to ~/.claude/stacks/{stack}/learnings.md
-    This makes the NEXT build on this stack smarter.
   Trace: save to docs/forge-trace/049-retro/
+  State: `bash scripts/forge-enforce.sh update-step 49 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 49 DONE`
 
 STEP 50 — /sc:reflect
   Execute: `skill: "sc:reflect"`
   Verify: task completion validated
   Trace: save to docs/forge-trace/050-reflect/
+  State: `bash scripts/forge-enforce.sh update-step 50 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 50 DONE`
 
 STEP 51 — /sc:document + @deploy-guide-agent
   Execute: `skill: "sc:document"`
   Execute: spawn Agent with subagent_type="general-purpose"
     prompt: "You are @deploy-guide-agent. Read CLAUDE.md, docker-compose.yml, Dockerfile, .env.example. Generate docs/DEPLOY.md with: prerequisites, quick-start (Docker exists vs not), env vars table, services table, common operations, making changes, troubleshooting, architecture diagram, health checks. Every command must be copy-pasteable. Under 200 lines."
   Verify: `ls docs/DEPLOY.md` → exists and has ## Quick Start section
-  Verify: documentation generated/updated
   Trace: save to docs/forge-trace/051-document/
+  State: `bash scripts/forge-enforce.sh update-step 51 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 51 DONE`
 
 STEP 52 — @playbook-curator
   Execute: spawn Agent with subagent_type="general-purpose"
     prompt: "You are @playbook-curator. Read docs/retrospectives/*.md. Delta-update .forge/playbook/strategies.md with new entries. Check duplicates. Increment counters."
   Verify: playbook file updated
   Trace: save to docs/forge-trace/052-playbook/
+  State: `bash scripts/forge-enforce.sh update-step 52 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 52 DONE`
 
 STEP 53 — /prune + /evolve
   Execute: `skill: "prune"`
   Execute: `skill: "evolve"`
   Trace: save to docs/forge-trace/053-prune-evolve/
+  State: `bash scripts/forge-enforce.sh update-step 53 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 53 DONE`
 
 STEP 54 — /autoresearch (improve agent prompts from this build)
   Execute: `skill: "autoresearch"`
   Trace: save to docs/forge-trace/054-autoresearch/
+  State: `bash scripts/forge-enforce.sh update-step 54 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 54 DONE`
 
 STEP 55 — /sc:save
   Execute: `skill: "sc:save"`
   Trace: save to docs/forge-trace/055-save/
+  State: `bash scripts/forge-enforce.sh update-step 55 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 55 DONE`
 
 STEP 56 — /gate stage-5 → MERGE
   Execute: `skill: "gate", args: "stage-5"`
   Verify: gate PASS → merge PR
   Trace: save to docs/forge-trace/056-gate-final/
+  State: `bash scripts/forge-enforce.sh update-step 56 DONE 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-step 56 DONE`
+  Gate: `bash scripts/forge-enforce.sh update-gate 5 2>/dev/null || bash ~/.claude/scripts/forge-enforce.sh update-gate 5`
 
 **Phase 6: Iterate**
 

@@ -1,5 +1,16 @@
 {
   "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'D=\"$PWD\"; if [ -f \"$D/docs/forge-state.json\" ]; then STEP=$(python3 -c \"import json; d=json.load(open(\\\"$D/docs/forge-state.json\\\")); print(d.get(\\\"current_step\\\",0))\" 2>/dev/null || echo 0); if [ -f \"$D/docs/.observer-reviewing\" ]; then AGE=$(python3 -c \"import os,time; t=os.path.getmtime(\\\"$D/docs/.observer-reviewing\\\"); print(int(time.time()-t))\" 2>/dev/null || echo 0); echo \"[FORGE] WAIT: Observer is reviewing (${AGE}s ago). Run: sleep 30 then check again with: cat docs/.observer-reviews.log | tail -5\"; elif grep -q \"NEEDS_FIX\" \"$D/docs/.observer-reviews.log\" 2>/dev/null; then FIXES=$(grep -c \"NEEDS_FIX\" \"$D/docs/.observer-reviews.log\"); echo \"[FORGE] OBSERVER FEEDBACK: $FIXES items need fixing. Read docs/.observer-reviews.log — fix all NEEDS_FIX items before continuing.\"; grep \"NEEDS_FIX\" \"$D/docs/.observer-reviews.log\" | tail -5; elif [ \"$STEP\" -lt 57 ]; then echo \"[FORGE] AUTO-CONTINUE: Step $STEP/57 — No observer issues. Continue to next step immediately.\"; fi; fi'"
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "matcher": "",
@@ -28,7 +39,34 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'F=\"${CLAUDE_TOOL_INPUT_FILE_PATH:-}\"; if echo \"$F\" | grep -q \"\\.py$\"; then python -m ruff check --fix \"$F\" 2>/dev/null; fi; true'"
+            "command": "bash -c 'F=\"${CLAUDE_TOOL_INPUT_FILE_PATH:-}\"; D=\"$PWD\"; mkdir -p \"$D/docs\"; echo \"$(date -u +%H:%M:%S) WRITE $F\" >> \"$D/docs/.builder-activity.log\"; if echo \"$F\" | grep -q \"\\.py$\"; then python -m ruff check --fix \"$F\" 2>/dev/null; fi; true'"
+          }
+        ]
+      },
+      {
+        "matcher": "Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'D=\"$PWD\"; mkdir -p \"$D/docs\"; echo \"$(date -u +%H:%M:%S) AGENT ${CLAUDE_TOOL_INPUT_SUBAGENT_TYPE:-unknown} ${CLAUDE_TOOL_INPUT_DESCRIPTION:-}\" >> \"$D/docs/.builder-activity.log\"; true'"
+          }
+        ]
+      },
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'D=\"$PWD\"; mkdir -p \"$D/docs\"; echo \"$(date -u +%H:%M:%S) SKILL ${CLAUDE_TOOL_INPUT_SKILL:-unknown} ${CLAUDE_TOOL_INPUT_ARGS:-}\" >> \"$D/docs/.builder-activity.log\"; true'"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'D=\"$PWD\"; mkdir -p \"$D/docs\"; CMD=\"${CLAUDE_TOOL_INPUT_COMMAND:-}\"; SHORT=$(echo \"$CMD\" | head -c 80); echo \"$(date -u +%H:%M:%S) BASH $SHORT\" >> \"$D/docs/.builder-activity.log\"; true'"
           }
         ]
       }
