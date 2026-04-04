@@ -66,8 +66,8 @@ STEP N2 — WRITE SPEC ENTRY
 
 STEP N3 — WRITE TESTS (from SPEC, NOT from code)
   Execute: spawn Agent with subagent_type="quality-engineer"
-    prompt: "Read SPEC.md [REQ-xxx] for issue #{N} and the task design doc. Write tests in apps/{app}/tests.py. Do NOT read any implementation code. Every test has [REQ-xxx] in docstring. Minimum 5 tests."
-  Verify: `grep -c "def test_" apps/{app}/tests.py` increased by at least 5
+    prompt: "Read SPEC.md [REQ-xxx] for issue #{N} and the task design doc. Write tests in a DOMAIN-SPECIFIC test file: apps/{app}/tests_{domain}.py (e.g., tests_models.py, tests_api.py, tests_discovery.py). NEVER put all tests in one tests.py — split by domain. Each file MUST stay under 300 lines. Do NOT read any implementation code. Every test has [REQ-xxx] in docstring. Minimum 5 tests."
+  Verify: test file under 300 lines (split if needed)
   Execute: `uv run python manage.py test apps.{app}` via Bash
   Verify: tests FAIL (code doesn't exist yet — if they PASS, something is wrong)
   Trace: docs/forge-trace/{N}3-tests/

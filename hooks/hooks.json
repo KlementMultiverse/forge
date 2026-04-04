@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'D=\"$PWD\"; C=$(test -f \"$D/CLAUDE.md\" && echo y || echo n); F=$(find \"$D\" -maxdepth 2 \\( -name \"*.py\" -o -name \"*.ts\" \\) ! -path \"*node_modules*\" ! -path \"*.venv*\" ! -path \"*.git*\" 2>/dev/null | head -1); P=$(grep -l \"{{\" \"$D/CLAUDE.md\" 2>/dev/null); if [ \"$C\" = \"n\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE1_GREENFIELD\"; elif [ \"$C\" = \"n\" ] && [ -n \"$F\" ]; then echo \"[FORGE] CASE7_BROWNFIELD\"; elif [ -n \"$P\" ]; then echo \"[FORGE] CASE1_GREENFIELD (placeholder)\"; elif [ \"$C\" = \"y\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE2_SPEC_ONLY\"; elif [ \"$C\" = \"y\" ] && [ -n \"$F\" ]; then echo \"[FORGE] EXISTING_PROJECT\"; fi; if [ -f \"$D/SPEC.md\" ]; then RC=$(grep -oP \"REQ-\\d+\" \"$D/SPEC.md\" 2>/dev/null | sort -u | wc -l); echo \"[FORGE-SYNC] $RC REQs tracked.\"; fi'"
+            "command": "bash -c 'D=\"$PWD\"; bash ~/.claude/scripts/forge-state-sync.sh 2>/dev/null; C=$(test -f \"$D/CLAUDE.md\" && echo y || echo n); F=$(find \"$D\" -maxdepth 2 \\( -name \"*.py\" -o -name \"*.ts\" \\) ! -path \"*node_modules*\" ! -path \"*.venv*\" ! -path \"*.git*\" 2>/dev/null | head -1); P=$(grep -l \"{{\" \"$D/CLAUDE.md\" 2>/dev/null); if [ \"$C\" = \"n\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE1_GREENFIELD\"; elif [ \"$C\" = \"n\" ] && [ -n \"$F\" ]; then echo \"[FORGE] CASE7_BROWNFIELD\"; elif [ -n \"$P\" ]; then echo \"[FORGE] CASE1_GREENFIELD (placeholder)\"; elif [ \"$C\" = \"y\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE2_SPEC_ONLY\"; elif [ \"$C\" = \"y\" ] && [ -n \"$F\" ]; then echo \"[FORGE] EXISTING_PROJECT\"; fi; if [ -f \"$D/SPEC.md\" ]; then RC=$(grep -oP \"REQ-[A-Z]+-[0-9]+\" \"$D/SPEC.md\" 2>/dev/null | sort -u | wc -l); echo \"[FORGE-SYNC] $RC REQs tracked.\"; fi'"
           }
         ]
       }
@@ -39,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'F=\"${CLAUDE_TOOL_INPUT_FILE_PATH:-}\"; D=\"$PWD\"; mkdir -p \"$D/docs\"; echo \"$(date -u +%H:%M:%S) WRITE $F\" >> \"$D/docs/.builder-activity.log\"; if echo \"$F\" | grep -q \"\\.py$\"; then python -m ruff check --fix \"$F\" 2>/dev/null; fi; true'"
+            "command": "bash -c 'F=\"${CLAUDE_TOOL_INPUT_FILE_PATH:-}\"; D=\"$PWD\"; mkdir -p \"$D/docs\"; echo \"$(date -u +%H:%M:%S) WRITE $F\" >> \"$D/docs/.builder-activity.log\"; if echo \"$F\" | grep -q \"\\.py$\"; then python -m ruff check --fix \"$F\" 2>/dev/null; LC=$(wc -l < \"$F\" 2>/dev/null || echo 0); if [ \"$LC\" -gt 300 ]; then BN=$(basename \"$F\" .py); DN=$(dirname \"$F\"); echo \"[FORGE] FILE TOO LONG: $F is $LC lines (limit 300). You MUST split it now.\"; echo \"[FORGE] HOW TO SPLIT: Create multiple files in $DN/ — e.g., ${BN}_models.py, ${BN}_api.py, ${BN}_services.py\"; echo \"[FORGE] For test files: tests_models.py, tests_api.py, tests_discovery.py etc.\"; echo \"[FORGE] Move related classes/functions to each file. Update imports. Run tests after.\"; fi; fi; true'"
           }
         ]
       },
