@@ -1,107 +1,92 @@
-# [PROJECT NAME] — Complete Build Spec
+# New Project — Spec
+<!-- {{FORGE_PLACEHOLDER}} — This file will be replaced by /forge Phase A Step S4. -->
+<!-- Do not treat anything below as real requirements. Run /forge to configure. -->
+
+<!--
+TEMPLATE (agents: Read this file, replace all {{PLACEHOLDERS}}, remove comment blocks):
+
+# {{PROJECT_NAME}} — Complete Build Spec
 
 ## Overview
 
-[1-2 paragraph description of what this project does, who it's for, and what problem it solves.]
+{{OVERVIEW_PARAGRAPHS}}
 
 ## Tech Stack
 
 | Technology | Purpose | Version |
 |---|---|---|
-| [Runtime] | [Purpose] | [Version] |
-| [Framework] | [Purpose] | [Version] |
-| [Database] | [Purpose] | [Version] |
-| [Cache] | [Purpose] | [Version] |
-| [Storage] | [Purpose] | [Version] |
-| [AI/LLM] | [Purpose] | [Version] |
+| {{RUNTIME}} | {{PURPOSE}} | {{VERSION}} |
+| {{FRAMEWORK}} | {{PURPOSE}} | {{VERSION}} |
+| {{DATABASE}} | {{PURPOSE}} | {{VERSION}} |
+| {{CACHE}} | {{PURPOSE}} | {{VERSION}} |
+| {{STORAGE}} | {{PURPOSE}} | {{VERSION}} |
 
 ## Architecture
 
 ### Project Structure
 
 ```
-project-name/
-├── config/
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-├── apps/
-│   ├── [app1]/
-│   ├── [app2]/
-│   └── [app3]/
-├── templates/
-├── static/
-├── tests/
-├── docker-compose.yml
-├── Dockerfile
-└── pyproject.toml
+{{PROJECT_TREE}}
 ```
 
 ### Shared vs Tenant Apps (if multi-tenant)
 
 **Shared (public schema):**
-- [List apps that live in shared/public schema]
+- {{SHARED_APPS}}
 
 **Tenant (per-tenant schema):**
-- [List apps that live in each tenant's schema]
+- {{TENANT_APPS}}
 
 ## Models
 
-### [REQ-001] [Model Name]
+### [REQ-001] {{MODEL_NAME}}
 
 | Field | Type | Constraints | Notes |
 |---|---|---|---|
 | id | BigAutoField | PK | Auto-generated |
-| [field] | [type] | [constraints] | [notes] |
+| {{FIELD}} | {{TYPE}} | {{CONSTRAINTS}} | {{NOTES}} |
 
 **Business Rules:**
-- [Rule 1]
-- [Rule 2]
-
-### [REQ-002] [Model Name]
-
-[Same format as above]
+- {{RULE}}
 
 ## API Endpoints
 
-### [REQ-xxx] [Endpoint Group]
+### [REQ-xxx] {{ENDPOINT_GROUP}}
 
 ```
-[METHOD] /api/[path]/
-  Request: { [field]: [type], ... }
-  Response: { [field]: [type], ... }
-  Errors: [status] ([reason]), ...
-  Auth: [required/optional/none]
-  Permissions: [admin/staff/any authenticated]
+{{METHOD}} /api/{{PATH}}/
+  Request: { {{FIELDS}} }
+  Response: { {{FIELDS}} }
+  Errors: {{STATUS}} ({{REASON}})
+  Auth: {{AUTH_LEVEL}}
+  Permissions: {{PERMISSIONS}}
 ```
 
 ## Frontend Pages
 
-### [REQ-xxx] [Page Name]
+### [REQ-xxx] {{PAGE_NAME}}
 
-- **URL:** /[path]/
-- **Purpose:** [What the user does here]
-- **Components:**
-  - [Component 1: description]
-  - [Component 2: description]
-- **API calls:** [Which endpoints this page uses]
+- **URL:** /{{PATH}}/
+- **Purpose:** {{PURPOSE}}
+- **Components:** {{COMPONENTS}}
+- **API calls:** {{ENDPOINTS_USED}}
 
 ## Security
 
-- **Authentication:** [Method — session, JWT, OAuth]
-- **Authorization:** [Role-based — admin/staff/user]
-- **Data isolation:** [How data is separated between users/tenants]
-- **Audit logging:** [What is tracked, immutability rules]
-- **Input validation:** [Sanitization rules, XSS prevention]
-- **Secrets:** [All from env vars, never hardcoded]
+- **Authentication:** {{AUTH_METHOD}}
+- **Authorization:** {{AUTHZ_METHOD}}
+- **Data isolation:** {{ISOLATION_METHOD}}
+- **Audit logging:** {{AUDIT_RULES}}
+- **Input validation:** {{VALIDATION_RULES}}
+- **Secrets:** All from env vars, never hardcoded
 
 ## Business Rules
 
-- [REQ-xxx] [Rule description — e.g., "Tasks follow state machine: created → assigned → in_progress → completed"]
-- [REQ-xxx] [Rule description]
-- [REQ-xxx] [Rule description]
+- [REQ-xxx] {{RULE_DESCRIPTION}}
 
 ## Seed/Demo Data
 
-- [What demo data should exist for testing/demos]
-- [Users, sample objects, realistic scenarios]
+- {{SEED_DATA_DESCRIPTION}}
+
+END TEMPLATE
+-->
