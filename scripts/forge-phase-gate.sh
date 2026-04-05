@@ -52,6 +52,91 @@ cmd_check() {
     local coderabbit_ok=false
     local approval_file="$APPROVAL_DIR/phase-${phase}.json"
 
+    # ─── CIRCUIT BREAKER ───
+    local STATE_FILE="$D/docs/forge-state.json"
+    if [ -f "$STATE_FILE" ]; then
+        local cb_action
+        cb_action=$(python3 -c "
+import json, datetime
+
+with open('$STATE_FILE') as f:
+    state = json.load(f)
+
+cb = state.get('gate_circuit', {
+    'state': 'CLOSED',
+    'poll_count': 0,
+    'cooldown_count': 0,
+    'last_poll_at': None,
+    'cooldown_until': None,
+    'last_response': None
+})
+
+now = datetime.datetime.now(datetime.UTC)
+
+# Check if in cooldown
+if cb['state'] == 'OPEN' and cb.get('cooldown_until'):
+    cooldown_end = datetime.datetime.fromisoformat(cb['cooldown_until'])
+    if now < cooldown_end:
+        remaining = int((cooldown_end - now).total_seconds())
+        print(f'COOLDOWN:{remaining}')
+    else:
+        # Cooldown expired → half-open
+        cb['state'] = 'HALF_OPEN'
+        state['gate_circuit'] = cb
+        with open('$STATE_FILE', 'w') as f:
+            json.dump(state, f, indent=2)
+        print('HALF_OPEN')
+elif cb['state'] == 'HALF_OPEN':
+    print('POLL')
+elif cb.get('cooldown_count', 0) >= 3:
+    print('ESCALATE')
+else:
+    # CLOSED — normal polling
+    cb['poll_count'] = cb.get('poll_count', 0) + 1
+    cb['last_poll_at'] = now.isoformat()
+
+    # After 5 polls → open circuit
+    if cb['poll_count'] >= 5:
+        cb['state'] = 'OPEN'
+        cb['cooldown_count'] = cb.get('cooldown_count', 0) + 1
+        cb['cooldown_until'] = (now + datetime.timedelta(minutes=5)).isoformat()
+        cb['poll_count'] = 0
+        state['gate_circuit'] = cb
+        with open('$STATE_FILE', 'w') as f:
+            json.dump(state, f, indent=2)
+        print('OPEN')
+    else:
+        state['gate_circuit'] = cb
+        with open('$STATE_FILE', 'w') as f:
+            json.dump(state, f, indent=2)
+        print('POLL')
+" 2>/dev/null || echo "POLL")
+
+        case "$cb_action" in
+            COOLDOWN:*)
+                local remaining="${cb_action#COOLDOWN:}"
+                echo "[PHASE-GATE] CIRCUIT OPEN — cooldown active (${remaining}s remaining)"
+                echo "[PHASE-GATE] Action: Wait for cooldown. Do NOT poll."
+                return 1
+                ;;
+            OPEN)
+                echo "[PHASE-GATE] CIRCUIT OPENED — 5 polls with no approval"
+                echo "[PHASE-GATE] Entering 5-minute cooldown. Will auto-retry after."
+                return 1
+                ;;
+            ESCALATE)
+                echo "[PHASE-GATE] ESCALATED — 3 cooldown cycles exhausted"
+                echo "[PHASE-GATE] Manual override needed: forge-phase-gate.sh clear"
+                return 2
+                ;;
+            HALF_OPEN)
+                echo "[PHASE-GATE] HALF-OPEN — cooldown expired, single poll..."
+                ;;
+            POLL)
+                ;;
+        esac
+    fi
+
     echo "[PHASE-GATE] Checking approvals for Phase $phase"
     echo ""
 
@@ -213,6 +298,17 @@ approval = {
 with open('$approval_file', 'w') as f:
     json.dump(approval, f, indent=2)
 "
+        # Reset circuit breaker on approval
+        if [ -f "$D/docs/forge-state.json" ]; then
+            python3 -c "
+import json
+with open('$D/docs/forge-state.json') as f:
+    state = json.load(f)
+state['gate_circuit'] = {'state': 'CLOSED', 'poll_count': 0, 'cooldown_count': 0, 'last_poll_at': None, 'cooldown_until': None, 'last_response': None}
+with open('$D/docs/forge-state.json', 'w') as f:
+    json.dump(state, f, indent=2)
+" 2>/dev/null
+        fi
         return 0
     elif $observer_ok; then
         echo "[PHASE-GATE] ⏳ WAITING — Observer approved, CodeRabbit pending"
