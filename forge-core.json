@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated": "2026-04-05T10:29:29.906929+00:00",
+  "generated": "2026-04-05T10:30:36.576727+00:00",
   "description": "Authoritative registry of all forge core components. Changes require GitHub issue + protocol.",
   "protocols": {
     "agent": {
@@ -1089,7 +1089,7 @@
     "templates/hooks.json": {
       "type": "template",
       "name": "hooks",
-      "checksum": "b2a349bf22333a77",
+      "checksum": "0a2c05b5a4c39db3",
       "lines": 84,
       "last_verified": "2026-04-05",
       "validation_status": "PASS"
