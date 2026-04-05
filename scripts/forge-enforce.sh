@@ -454,7 +454,7 @@ else:
         state['phases'][cp] = {'name': 'Unknown', 'status': 'IN_PROGRESS', 'gate_passed': False, 'steps': {}}
     state['phases'][cp]['steps'][str(step)] = {'name': 'step-$step', 'status': status, 'trace_complete': False}
 
-state['current_step'] = step
+state['current_step'] = max(state.get('current_step', 0), step)
 state['last_updated'] = datetime.datetime.now(datetime.UTC).isoformat()
 state['status'] = 'IN_PROGRESS' if status in ('DONE', 'IN_PROGRESS') else status
 
