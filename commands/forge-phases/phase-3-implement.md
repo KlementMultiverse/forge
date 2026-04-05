@@ -149,7 +149,7 @@ STEP 39 — /gate stage-3 (MANDATORY — blocks Phase 4)
   **PHASE 3→4 TRANSITION:**
   1. Verify: `bash scripts/forge-enforce.sh check-gate 3` → MUST be PASSED
   2. Verify: `bash scripts/docker-state.sh --check` → DOCKER_HEALTHY
-  3. Run: `bash scripts/run-e2e.sh` → unit + e2e tests MUST pass
+  3. Run full test suite (unit + e2e) → ALL tests MUST pass
   4. Update: `bash scripts/forge-enforce.sh update-step 40 IN_PROGRESS`
   5. Continue to Phase 4 immediately — DO NOT STOP
 

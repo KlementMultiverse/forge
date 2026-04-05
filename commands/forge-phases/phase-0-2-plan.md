@@ -73,8 +73,8 @@ STEP 12 — /plan-review
   Trace: save to docs/forge-trace/012-plan-review/
 
 STEP 13 — @api-architect (API contracts)
-  Execute: spawn Agent with subagent_type="general-purpose"
-    prompt: "You are @api-architect. Read docs/proposals/01-*.md and SPEC.md. Design API contracts for every endpoint: method, path, request JSON, response JSON, error codes, Pydantic schemas."
+  Execute: spawn Agent with subagent_type="api-architect"
+    prompt: "Read docs/proposals/01-*.md and SPEC.md. Design API contracts for every endpoint: method, path, request JSON, response JSON, error codes, Pydantic schemas."
   Verify: output has endpoint tables with JSON shapes
   Trace: save to docs/forge-trace/013-api-contracts/
 

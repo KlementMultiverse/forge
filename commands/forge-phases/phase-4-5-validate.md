@@ -4,7 +4,7 @@
 ENFORCEMENT CHECKPOINT — BEFORE Phase 4:
 1. Run: `bash scripts/forge-enforce.sh check-gate 3` — Phase 3 gate MUST be passed
 2. Run: `bash scripts/forge-enforce.sh check-docker` — Docker MUST be healthy
-3. Run: `bash scripts/run-e2e.sh` — ALL tests (unit + e2e) MUST pass before validation
+3. Run full test suite (unit + e2e) — ALL tests MUST pass before validation
 4. Update state: `bash scripts/forge-enforce.sh update-step 40 IN_PROGRESS`
 5. If gate not passed → run /gate stage-3 first → THEN proceed
 AUTO-CONTINUE: Do NOT stop to ask the user. Proceed through ALL Phase 4 steps.
@@ -97,14 +97,14 @@ STEP 50 — /sc:reflect
 
 STEP 51 — /sc:document + @deploy-guide-agent
   Execute: `skill: "sc:document"`
-  Execute: spawn Agent with subagent_type="general-purpose"
-    prompt: "You are @deploy-guide-agent. Read CLAUDE.md, docker-compose.yml, Dockerfile, .env.example. Generate docs/DEPLOY.md with: prerequisites, quick-start (Docker exists vs not), env vars table, services table, common operations, making changes, troubleshooting, architecture diagram, health checks. Every command must be copy-pasteable. Under 200 lines."
+  Execute: spawn Agent with subagent_type="deploy-guide"
+    prompt: "Read CLAUDE.md, docker-compose.yml, Dockerfile, .env.example. Generate docs/DEPLOY.md with: prerequisites, quick-start (Docker exists vs not), env vars table, services table, common operations, making changes, troubleshooting, architecture diagram, health checks. Every command must be copy-pasteable. Under 200 lines."
   Verify: `ls docs/DEPLOY.md` → exists and has ## Quick Start section
   Trace: save to docs/forge-trace/051-document/
 
 STEP 52 — @playbook-curator
-  Execute: spawn Agent with subagent_type="general-purpose"
-    prompt: "You are @playbook-curator. Read docs/retrospectives/*.md. Delta-update .forge/playbook/strategies.md with new entries. Check duplicates. Increment counters."
+  Execute: spawn Agent with subagent_type="playbook-curator"
+    prompt: "Read docs/retrospectives/*.md. Delta-update .forge/playbook/strategies.md with new entries. Check duplicates. Increment counters."
   Verify: playbook file updated
   Trace: save to docs/forge-trace/052-playbook/
 
