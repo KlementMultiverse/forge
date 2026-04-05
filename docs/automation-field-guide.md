@@ -125,6 +125,29 @@ paths: ["apps/**", "tests/**"]
 ---
 ```
 
+### Core Component Registry (forge-core.json)
+
+When your automation has 100+ files, you need a single source of truth that tracks:
+- **What exists** — every component with path, type, name
+- **What's valid** — checksums detect unauthorized changes
+- **How to change it** — protocols per component type
+- **When it changed** — last verified date
+
+```
+forge-core.json:
+  protocols:     what makes each component type valid
+  components:    path → {type, name, checksum, lines, status}
+
+Change protocol (ALL component types):
+  1. GitHub issue first (describe what and why)
+  2. Make the change
+  3. Run validation (forge-lint.py)
+  4. Update registry (forge-lint.py --update-registry)
+  5. Commit with issue reference (#N)
+```
+
+**Key insight from Claude Code source:** Anthropic doesn't use a master manifest. Instead, they use Zod schemas for runtime type validation + memoized loading + feature gates. For a prompt-driven system like forge, a JSON registry with checksum verification achieves the same goal with simpler tooling.
+
 ---
 
 ## Part 1: The Mental Model
