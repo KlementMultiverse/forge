@@ -1,0 +1,93 @@
+#!/bin/bash
+# forge — Two windows, two terminals, connected via tmux sessions
+#
+# Window 1:  cd ~/projects/my-app && forge
+# Window 2:  forge watch
+#
+# Each window is a FULL SCREEN tmux session.
+# Claude Code gets the entire terminal — no splits.
+# tmux-bridge reads/writes across sessions.
+
+set -uo pipefail
+export PATH="$HOME/.smux/bin:$HOME/.local/bin:$PATH"
+
+PROJECT_DIR="$(pwd)"
+PROJECT_NAME="$(basename "$PROJECT_DIR")"
+BRIDGE="$HOME/.forge-bridge"
+mkdir -p "$BRIDGE"
+
+case "${1:-builder}" in
+
+    watch)
+        # OBSERVER — opens in its own tmux session, full screen
+        # Can read builder output and type into builder
+        PROJ=$(cat "$BRIDGE/active-project.txt" 2>/dev/null || echo "$PROJECT_DIR")
+
+        # Kill old observer session if exists
+        tmux kill-session -t forge-observer 2>/dev/null || true
+
+        echo "Starting observer for: $PROJ"
+        echo "Observer connects to builder via tmux-bridge"
+        echo ""
+
+        # Create observer tmux session and open claude in it
+        tmux new-session -s forge-observer -c "$HOME/.claude" \
+            "claude --prompt \"You are the OBSERVER for a forge build at $PROJ.
+
+You can communicate with the builder terminal using these commands:
+  Read builder screen:  ! tmux-bridge read forge-builder 80
+  Type into builder:    ! tmux-bridge type forge-builder 'text here'
+  Press Enter:          ! tmux-bridge keys forge-builder Enter
+  Press 1 (accept):     ! tmux-bridge keys forge-builder 1 Enter
+
+STEP 1: Ask me about the project first (5 questions). Do NOT touch the builder yet.
+STEP 2: Once I confirm, type /forge into the builder:
+        ! tmux-bridge type forge-builder '/forge' && sleep 1 && tmux-bridge keys forge-builder Enter
+STEP 3: Monitor builder every 30 seconds. Auto-answer routine questions. Ask me for real decisions.
+
+Start now — ask me Question 1: What are you building?\""
+        ;;
+
+    start)
+        # START BUILDER — observer tells user to run this
+        echo "$PROJECT_DIR" > "$BRIDGE/active-project.txt"
+
+        # Kill old builder session if exists
+        tmux kill-session -t forge-builder 2>/dev/null || true
+
+        echo "Starting builder for: $PROJECT_DIR"
+        echo "Builder is ready. Observer will send /forge when ready."
+        echo ""
+
+        # Create builder tmux session and open claude in it
+        tmux new-session -s forge-builder -c "$PROJECT_DIR" "claude"
+        ;;
+
+    builder|"")
+        # DEFAULT — instructions
+        echo "$PROJECT_DIR" > "$BRIDGE/active-project.txt"
+        echo ""
+        echo "=== forge ==="
+        echo ""
+        echo "Project: $PROJECT_DIR"
+        echo ""
+        echo "Two steps:"
+        echo "  1. In THIS window:    forge start"
+        echo "  2. In ANOTHER window: forge watch"
+        echo ""
+        echo "The observer asks you about the project first."
+        echo "Then it controls the builder automatically."
+        echo ""
+        echo "Run 'forge start' now, then open another window and run 'forge watch'"
+        ;;
+
+    --help|-h)
+        echo "forge — Two windows, fully connected"
+        echo ""
+        echo "Window 1:  cd ~/projects/my-app && forge start"
+        echo "Window 2:  forge watch"
+        echo ""
+        echo "Observer reads builder screen and types answers automatically."
+        echo "You talk to the observer only."
+        ;;
+esac

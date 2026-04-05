@@ -1,3 +1,8 @@
+---
+description: Python-specific rules. Only loads when Python files are present.
+paths: ["*.py", "pyproject.toml", "requirements.txt", "apps/**/*.py"]
+---
+
 # Python Rules
 
 1. Use `uv` for package management — NEVER `pip install`

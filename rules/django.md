@@ -1,3 +1,8 @@
+---
+description: Django-specific rules. Only loads when Django project files are present.
+paths: ["manage.py", "apps/**", "config/settings.py", "**/django*"]
+---
+
 # Django Rules
 
 1. Django Ninja for ALL API routes — NEVER import `rest_framework`
