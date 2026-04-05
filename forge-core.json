@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated": "2026-04-05T10:32:18.073102+00:00",
+  "generated": "2026-04-05T10:39:45.282457+00:00",
   "description": "Authoritative registry of all forge core components. Changes require GitHub issue + protocol.",
   "protocols": {
     "agent": {
@@ -849,7 +849,7 @@
     "scripts/forge-enforce.sh": {
       "type": "script",
       "name": "forge-enforce",
-      "checksum": "57986c8f5b923d15",
+      "checksum": "0b082207b510a949",
       "lines": 663,
       "last_verified": "2026-04-05",
       "validation_status": "PASS"

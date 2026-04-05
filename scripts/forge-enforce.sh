@@ -639,6 +639,132 @@ for p_num in sorted(state.get('phases', {}).keys(), key=int):
     fi
 }
 
+cmd_classify_error() {
+    local context="${1:-}"
+    local error_type="AGENT_FAILED"
+
+    if echo "$context" | grep -qiE "fail.*test|test.*fail"; then
+        error_type="TEST_FAILED"
+    elif echo "$context" | grep -qiE "ruff|lint|black"; then
+        error_type="LINT_FAILED"
+    elif echo "$context" | grep -qiE "blocked.*gate|gate.*blocked"; then
+        error_type="GATE_BLOCKED"
+    elif echo "$context" | grep -qiE "unhealthy.*docker|docker.*unhealthy"; then
+        error_type="DOCKER_UNHEALTHY"
+    elif echo "$context" | grep -qiE "401|403|token.*revok|auth.*expir"; then
+        error_type="AUTH_EXPIRED"
+    elif echo "$context" | grep -qiE "timeout|ECONNRESET|network|connection"; then
+        error_type="NETWORK_ERROR"
+    elif echo "$context" | grep -qiE "300 lines|FILE TOO LONG"; then
+        error_type="FILE_TOO_LONG"
+    elif echo "$context" | grep -qiE "REQ-.*missing|orphan.*req|drift"; then
+        error_type="SPEC_DRIFT"
+    elif echo "$context" | grep -qiE "trace.*incomplete|missing.*input\.md|missing.*output\.md"; then
+        error_type="TRACE_INCOMPLETE"
+    fi
+
+    # Get severity and action from protocol
+    local severity="HIGH"
+    local action="retry"
+    local max_retries=3
+    case "$error_type" in
+        GATE_BLOCKED)      severity="HIGH";     action="wait";      max_retries=5 ;;
+        RETRY_EXHAUSTED)   severity="CRITICAL";  action="escalate";  max_retries=0 ;;
+        AGENT_FAILED)      severity="HIGH";     action="retry";     max_retries=3 ;;
+        TEST_FAILED)       severity="HIGH";     action="investigate"; max_retries=3 ;;
+        LINT_FAILED)       severity="MEDIUM";   action="auto-fix";  max_retries=2 ;;
+        TRACE_INCOMPLETE)  severity="MEDIUM";   action="backfill";  max_retries=1 ;;
+        DOCKER_UNHEALTHY)  severity="HIGH";     action="restart";   max_retries=2 ;;
+        AUTH_EXPIRED)      severity="CRITICAL";  action="refresh";   max_retries=1 ;;
+        NETWORK_ERROR)     severity="HIGH";     action="retry";     max_retries=5 ;;
+        SPEC_DRIFT)        severity="MEDIUM";   action="sync";      max_retries=1 ;;
+        FILE_TOO_LONG)     severity="MEDIUM";   action="split";     max_retries=0 ;;
+    esac
+
+    echo "$error_type|$severity|$action|$max_retries"
+}
+
+cmd_retry_track() {
+    local step="${1:?Usage: retry-track <step> <pass|fail> [error_context]}"
+    local result="${2:?Usage: retry-track <step> <pass|fail> [error_context]}"
+    local context="${3:-}"
+    ensure_state_file
+
+    python3 -c "
+import json, datetime
+
+with open('$STATE_FILE') as f:
+    state = json.load(f)
+
+retry = state.get('retry_state', {
+    'current_step': 0,
+    'consecutive_failures': 0,
+    'last_error_type': None,
+    'last_error_detail': None,
+    'first_failure_at': None,
+    'backoff_until': None
+})
+
+result = '$result'
+step = $step
+context = '''$context'''
+
+if result == 'pass':
+    # Reset on success
+    retry['consecutive_failures'] = 0
+    retry['last_error_type'] = None
+    retry['last_error_detail'] = None
+    retry['first_failure_at'] = None
+    retry['backoff_until'] = None
+    print(f'Step {step}: PASS — retry counter reset')
+else:
+    # Increment on failure
+    retry['current_step'] = step
+    retry['consecutive_failures'] += 1
+    retry['last_error_detail'] = context[:200] if context else 'unknown'
+
+    # Classify error
+    error_info = '$(cmd_classify_error "$context")'
+    parts = error_info.split('|')
+    retry['last_error_type'] = parts[0] if len(parts) > 0 else 'AGENT_FAILED'
+    max_retries = int(parts[3]) if len(parts) > 3 else 3
+
+    if not retry['first_failure_at']:
+        retry['first_failure_at'] = datetime.datetime.now(datetime.UTC).isoformat()
+
+    # Exponential backoff: 5s, 10s, 20s, 40s, 60s (capped)
+    backoff_secs = min(5 * (2 ** (retry['consecutive_failures'] - 1)), 60)
+    retry['backoff_until'] = (
+        datetime.datetime.now(datetime.UTC) +
+        datetime.timedelta(seconds=backoff_secs)
+    ).isoformat()
+
+    cf = retry['consecutive_failures']
+    print(f'Step {step}: FAIL #{cf} — {retry[\"last_error_type\"]} — backoff {backoff_secs}s')
+
+    if cf >= max_retries:
+        # Escalate
+        retry['last_error_type'] = 'RETRY_EXHAUSTED'
+        print(f'[FORGE] ESCALATED: {cf} consecutive failures on step {step}')
+        print(f'[FORGE] Last error: {retry[\"last_error_detail\"]}')
+        print(f'[FORGE] Action: Stop retrying. Fix the root cause or ask user.')
+
+        # Log to violations
+        v = {
+            'type': 'RETRY_EXHAUSTED',
+            'step': step,
+            'detail': retry['last_error_detail'],
+            'timestamp': datetime.datetime.now(datetime.UTC).isoformat(),
+            'retries': cf
+        }
+        state.setdefault('violations', []).append(v)
+
+state['retry_state'] = retry
+with open('$STATE_FILE', 'w') as f:
+    json.dump(state, f, indent=2)
+"
+}
+
 # Dispatch
 case "${1:-help}" in
     check-gate)         shift; cmd_check_gate "$@" ;;
@@ -649,6 +775,8 @@ case "${1:-help}" in
     check-continuation) cmd_check_continuation ;;
     update-step)        shift; cmd_update_step "$@" ;;
     update-gate)        shift; cmd_update_gate "$@" ;;
+    classify-error)     shift; cmd_classify_error "$@" ;;
+    retry-track)        shift; cmd_retry_track "$@" ;;
     init)               shift; cmd_init "$@" ;;
     full-audit)         cmd_full_audit ;;
     *)
@@ -666,6 +794,8 @@ case "${1:-help}" in
         echo "  check-docker              Verify Docker containers healthy"
         echo "  update-step <step> <stat> Update step status (DONE/SKIPPED/IN_PROGRESS)"
         echo "  update-gate <phase>       Mark phase gate as passed"
+        echo "  classify-error <context>  Classify error type from context string"
+        echo "  retry-track <step> <p|f>  Track pass/fail with retry counting + backoff"
         echo "  full-audit                Run all checks, report violations"
         ;;
 esac
