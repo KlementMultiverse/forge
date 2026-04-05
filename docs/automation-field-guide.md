@@ -825,4 +825,63 @@ Two roots tracked:
 
 ---
 
+## Part 10: Error Handling (from source analysis)
+
+### The Retry Stack
+
+Claude Code uses a layered retry system. We replicated the key patterns:
+
+```
+Layer 1: CLASSIFY the error
+  Input: error context string
+  Output: type (11 types) + severity + action + max_retries
+  Claude Code: classifyToolError() in toolExecution.ts
+  Forge: forge-enforce.sh classify-error
+
+Layer 2: TRACK consecutive failures
+  Exponential backoff: 5s × 2^(n-1), capped at 60s
+  On pass: reset counter to 0
+  On max retries: escalate to RETRY_EXHAUSTED
+  Claude Code: withRetry.ts consecutive 529 counter
+  Forge: forge-enforce.sh retry-track
+
+Layer 3: CIRCUIT BREAKER for external dependencies
+  CLOSED → OPEN (5 identical failures) → HALF-OPEN (auto-retry) → ESCALATE
+  Cooldown: 5 minutes between retry bursts
+  Max cooldowns: 3 before manual intervention
+  Claude Code: fastMode.ts cooldown state machine
+  Forge: forge-phase-gate.sh gate_circuit
+
+Layer 4: ESCALATE when all else fails
+  Log to violations, print human-readable instructions, STOP
+  Never retry silently after escalation
+```
+
+### Error Types Reference
+
+| Type | When | Action |
+|------|------|--------|
+| TEST_FAILED | Tests fail | Investigate root cause first |
+| LINT_FAILED | Ruff/black errors | Auto-fix then retry |
+| GATE_BLOCKED | Observer/CR pending | Wait with circuit breaker |
+| AGENT_FAILED | Agent returns bad output | Retry with better prompt |
+| DOCKER_UNHEALTHY | Container down | Restart then retry |
+| AUTH_EXPIRED | Token/credential expired | Refresh then retry |
+| NETWORK_ERROR | Connection issues | Retry with backoff |
+| SPEC_DRIFT | Triangle out of sync | Sync all three |
+| FILE_TOO_LONG | >300 lines | Split (no retry) |
+| TRACE_INCOMPLETE | Missing trace files | Backfill |
+| RETRY_EXHAUSTED | Max retries hit | STOP and escalate |
+
+### Key Insight: Hooks Never Block on Error
+
+Claude Code hooks are designed to fail gracefully — `toolHooks.ts line 189`
+catches all errors, logs them, and continues. Never blocks the parent query.
+
+Our hooks do the same with `|| true` at the end. The exception: PreToolUse
+hooks CAN block (exit code 2) — that's intentional for safety (blocking
+destructive commands).
+
+---
+
 *This document is a living artifact. Every build teaches something new. Update it.*
