@@ -64,12 +64,13 @@ install_global() {
     cp "$FORGE_DIR"/templates/commit-msg "$CLAUDE_DIR/templates/" 2>/dev/null || true
     cp "$FORGE_DIR"/templates/rules/*.md "$CLAUDE_DIR/templates/rules/" 2>/dev/null || true
 
-    # Generate registry (dependency graph)
-    echo "  Generating registry..."
-    python3 "$FORGE_DIR/scripts/forge-registry.py" "$FORGE_DIR" 2>/dev/null || true
-
-    # Run lint (non-blocking — warnings only)
-    python3 "$FORGE_DIR/scripts/forge-lint.py" "$FORGE_DIR" 2>/dev/null || true
+    # Generate registry + run lint in parallel (both independent)
+    echo "  Validating..."
+    python3 "$FORGE_DIR/scripts/forge-registry.py" "$FORGE_DIR" 2>/dev/null &
+    local PID_REG=$!
+    python3 "$FORGE_DIR/scripts/forge-lint.py" "$FORGE_DIR" 2>/dev/null &
+    local PID_LINT=$!
+    wait $PID_REG $PID_LINT 2>/dev/null || true
     echo ""
 
     # Install forge shell function

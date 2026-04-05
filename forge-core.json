@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated": "2026-04-05T10:31:41.161096+00:00",
+  "generated": "2026-04-05T10:32:18.073102+00:00",
   "description": "Authoritative registry of all forge core components. Changes require GitHub issue + protocol.",
   "protocols": {
     "agent": {
