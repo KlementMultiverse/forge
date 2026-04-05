@@ -1,0 +1,3629 @@
+{
+  "version": "1.0",
+  "forge_dir": "/home/intruder/projects/forge",
+  "stats": {
+    "agents": 51,
+    "commands": 41,
+    "scripts": 20,
+    "hooks": 8,
+    "templates": 13,
+    "rules": 7,
+    "edges": 388
+  },
+  "components": {
+    "agents": {
+      "repo-index": {
+        "type": "agent",
+        "path": "agents/universal/repo-index.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "refactoring-expert": {
+        "type": "agent",
+        "path": "agents/universal/refactoring-expert.md",
+        "depends_on": {
+          "commands": [
+            "investigate"
+          ]
+        },
+        "depended_by": {}
+      },
+      "retrospective-miner": {
+        "type": "agent",
+        "path": "agents/universal/retrospective-miner.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn",
+            "retro"
+          ]
+        },
+        "depended_by": {}
+      },
+      "socratic-mentor": {
+        "type": "agent",
+        "path": "agents/universal/socratic-mentor.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "performance-engineer": {
+        "type": "agent",
+        "path": "agents/universal/performance-engineer.md",
+        "depends_on": {
+          "commands": [
+            "benchmark",
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "code-archaeologist": {
+        "type": "agent",
+        "path": "agents/universal/code-archaeologist.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "aws-setup-agent": {
+        "type": "agent",
+        "path": "agents/universal/aws-setup-agent.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "reviewer": {
+        "type": "agent",
+        "path": "agents/universal/reviewer.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "business-panel-experts": {
+        "type": "agent",
+        "path": "agents/universal/business-panel-experts.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "playbook-curator": {
+        "type": "agent",
+        "path": "agents/universal/playbook-curator.md",
+        "depends_on": {
+          "commands": [
+            "evolve",
+            "investigate",
+            "learn",
+            "prune",
+            "retro"
+          ]
+        },
+        "depended_by": {}
+      },
+      "devops-architect": {
+        "type": "agent",
+        "path": "agents/universal/devops-architect.md",
+        "depends_on": {
+          "commands": [
+            "app",
+            "investigate",
+            "learn",
+            "server"
+          ]
+        },
+        "depended_by": {}
+      },
+      "deep-research-agent": {
+        "type": "agent",
+        "path": "agents/universal/deep-research-agent.md",
+        "depends_on": {
+          "commands": [
+            "discover",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "frontend-architect": {
+        "type": "agent",
+        "path": "agents/universal/frontend-architect.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "pm-orchestrator": {
+        "type": "agent",
+        "path": "agents/universal/pm-orchestrator.md",
+        "depends_on": {
+          "agents": [
+            "api-architect",
+            "aws-setup-agent",
+            "backend-architect",
+            "business-panel-expert",
+            "context-loader-agent",
+            "deep-research-agent",
+            "devops-architect",
+            "django-ninja-agent",
+            "django-tenants-agent",
+            "frontend-architect",
+            "learning-guide",
+            "pattern-auditor-agent",
+            "playbook-curator",
+            "playwright-critic",
+            "python-expert",
+            "refactoring-expert",
+            "requirements-analyst",
+            "retrospective-miner",
+            "root-cause-analyst",
+            "s3-lambda-agent",
+            "sdlc-enforcer",
+            "self-review",
+            "system-architect",
+            "technical-writer"
+          ],
+          "commands": [
+            "audit-patterns",
+            "autoresearch",
+            "bootstrap",
+            "challenge",
+            "checkpoint",
+            "critic",
+            "design-audit",
+            "design-doc",
+            "discover",
+            "evolve",
+            "feasibility",
+            "forge",
+            "gate",
+            "generate-spec",
+            "guard",
+            "investigate",
+            "learn",
+            "plan-tasks",
+            "prune",
+            "requirements",
+            "retro",
+            "review",
+            "run-with-checkpoint",
+            "security-scan",
+            "specify"
+          ]
+        },
+        "depended_by": {}
+      },
+      "technical-writer": {
+        "type": "agent",
+        "path": "agents/universal/technical-writer.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "tools-architect": {
+        "type": "agent",
+        "path": "agents/universal/tools-architect.md",
+        "depends_on": {
+          "agents": [
+            "mcp-architect"
+          ],
+          "commands": [
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "context-loader-agent": {
+        "type": "agent",
+        "path": "agents/universal/context-loader-agent.md",
+        "depends_on": {
+          "agents": [
+            "django-ninja-agent"
+          ],
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "quality-engineer": {
+        "type": "agent",
+        "path": "agents/universal/quality-engineer.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "system-architect": {
+        "type": "agent",
+        "path": "agents/universal/system-architect.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn",
+            "requirements"
+          ]
+        },
+        "depended_by": {}
+      },
+      "self-review": {
+        "type": "agent",
+        "path": "agents/universal/self-review.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "learning-guide": {
+        "type": "agent",
+        "path": "agents/universal/learning-guide.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "playwright-critic": {
+        "type": "agent",
+        "path": "agents/universal/playwright-critic.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "sdlc-enforcer": {
+        "type": "agent",
+        "path": "agents/universal/sdlc-enforcer.md",
+        "depends_on": {
+          "commands": [
+            "gate",
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "deploy-guide-agent": {
+        "type": "agent",
+        "path": "agents/universal/deploy-guide-agent.md",
+        "depends_on": {
+          "agents": [
+            "deploy-guide-agent"
+          ]
+        },
+        "depended_by": {}
+      },
+      "pattern-auditor-agent": {
+        "type": "agent",
+        "path": "agents/universal/pattern-auditor-agent.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "backend-architect": {
+        "type": "agent",
+        "path": "agents/universal/backend-architect.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "requirements-analyst": {
+        "type": "agent",
+        "path": "agents/universal/requirements-analyst.md",
+        "depends_on": {
+          "agents": [
+            "business-panel-expert"
+          ],
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "mcp-architect": {
+        "type": "agent",
+        "path": "agents/universal/mcp-architect.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn",
+            "mcp"
+          ]
+        },
+        "depended_by": {}
+      },
+      "python-expert": {
+        "type": "agent",
+        "path": "agents/universal/python-expert.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "agent-factory": {
+        "type": "agent",
+        "path": "agents/universal/agent-factory.md",
+        "depends_on": {
+          "commands": [
+            "feasibility",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "security-engineer": {
+        "type": "agent",
+        "path": "agents/universal/security-engineer.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "root-cause-analyst": {
+        "type": "agent",
+        "path": "agents/universal/root-cause-analyst.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "api-architect": {
+        "type": "agent",
+        "path": "agents/universal/api-architect.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "langsmith-agent": {
+        "type": "agent",
+        "path": "agents/stacks/langchain/langsmith-agent.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "README": {
+        "type": "agent",
+        "path": "agents/stacks/azure/README.md",
+        "depends_on": {
+          "agents": [
+            "azure-openai-agent",
+            "azure-setup-agent"
+          ]
+        },
+        "depended_by": {}
+      },
+      "langgraph-agent": {
+        "type": "agent",
+        "path": "agents/stacks/langchain/langgraph-agent.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "langchain-agent": {
+        "type": "agent",
+        "path": "agents/stacks/langchain/langchain-agent.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "ai-safety-agent": {
+        "type": "agent",
+        "path": "agents/stacks/genai/ai-safety-agent.md",
+        "depends_on": {
+          "agents": [
+            "llm-integration-agent",
+            "rag-architect"
+          ],
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "chatbot-builder": {
+        "type": "agent",
+        "path": "agents/stacks/genai/chatbot-builder.md",
+        "depends_on": {
+          "agents": [
+            "llm-integration-agent",
+            "rag-architect",
+            "voice-agent"
+          ],
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "agent-orchestrator": {
+        "type": "agent",
+        "path": "agents/stacks/genai/agent-orchestrator.md",
+        "depends_on": {
+          "agents": [
+            "llm-integration-agent",
+            "rag-architect",
+            "voice-agent"
+          ],
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "eval-engineer": {
+        "type": "agent",
+        "path": "agents/stacks/genai/eval-engineer.md",
+        "depends_on": {
+          "agents": [
+            "ai-safety-agent",
+            "llm-integration-agent",
+            "rag-architect"
+          ],
+          "commands": [
+            "generate-dataset",
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "voice-agent-builder": {
+        "type": "agent",
+        "path": "agents/stacks/genai/voice-agent-builder.md",
+        "depends_on": {
+          "agents": [
+            "llm-integration-agent",
+            "rag-architect"
+          ],
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "rag-architect": {
+        "type": "agent",
+        "path": "agents/stacks/genai/rag-architect.md",
+        "depends_on": {
+          "agents": [
+            "llm-integration-agent",
+            "s3-lambda-agent",
+            "voice-agent"
+          ],
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "llm-integration-agent": {
+        "type": "agent",
+        "path": "agents/stacks/genai/llm-integration-agent.md",
+        "depends_on": {
+          "agents": [
+            "rag-architect",
+            "voice-agent"
+          ],
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "django-tenants-agent": {
+        "type": "agent",
+        "path": "agents/stacks/django/django-tenants-agent.md",
+        "depends_on": {
+          "commands": [
+            "bootstrap",
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "s3-lambda-agent": {
+        "type": "agent",
+        "path": "agents/stacks/django/s3-lambda-agent.md",
+        "depends_on": {
+          "agents": [
+            "aws-setup-agent"
+          ],
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "django-ninja-agent": {
+        "type": "agent",
+        "path": "agents/stacks/django/django-ninja-agent.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "vertex-ai-agent": {
+        "type": "agent",
+        "path": "agents/stacks/gcp/vertex-ai-agent.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "gcp-setup-agent": {
+        "type": "agent",
+        "path": "agents/stacks/gcp/gcp-setup-agent.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "azure-setup-agent": {
+        "type": "agent",
+        "path": "agents/stacks/azure/azure-setup-agent.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "azure-openai-agent": {
+        "type": "agent",
+        "path": "agents/stacks/azure/azure-openai-agent.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      }
+    },
+    "commands": {
+      "requirements": {
+        "type": "command",
+        "path": "commands/requirements.md",
+        "depends_on": {
+          "agents": [
+            "business-panel-expert",
+            "requirements-analyst"
+          ],
+          "commands": [
+            "discover",
+            "requirements"
+          ]
+        },
+        "depended_by": {}
+      },
+      "feasibility": {
+        "type": "command",
+        "path": "commands/feasibility.md",
+        "depends_on": {
+          "agents": [
+            "system-architect"
+          ],
+          "commands": [
+            "feasibility",
+            "requirements"
+          ]
+        },
+        "depended_by": {}
+      },
+      "build-project": {
+        "type": "command",
+        "path": "commands/build-project.md",
+        "depends_on": {
+          "agents": [
+            "aws-setup-agent",
+            "backend-architect",
+            "context-loader-agent",
+            "devops-architect",
+            "django-ninja-agent",
+            "django-tenants-agent",
+            "frontend-architect",
+            "python-expert",
+            "refactoring-expert",
+            "root-cause-analyst",
+            "s3-lambda-agent",
+            "system-architect"
+          ],
+          "commands": [
+            "audit-patterns",
+            "autoresearch",
+            "build-project",
+            "checkpoint",
+            "design-doc",
+            "gate",
+            "plan-tasks",
+            "retro",
+            "specify"
+          ]
+        },
+        "depended_by": {}
+      },
+      "retro": {
+        "type": "command",
+        "path": "commands/retro.md",
+        "depends_on": {
+          "agents": [
+            "learning-guide"
+          ],
+          "commands": [
+            "gate",
+            "retro"
+          ]
+        },
+        "depended_by": {}
+      },
+      "specify": {
+        "type": "command",
+        "path": "commands/specify.md",
+        "depends_on": {
+          "agents": [
+            "business-panel-expert",
+            "requirements-analyst"
+          ],
+          "commands": [
+            "design-doc",
+            "specify"
+          ]
+        },
+        "depended_by": {}
+      },
+      "generate-spec": {
+        "type": "command",
+        "path": "commands/generate-spec.md",
+        "depends_on": {
+          "agents": [
+            "requirements-analyst"
+          ],
+          "commands": [
+            "generate-spec"
+          ]
+        },
+        "depended_by": {}
+      },
+      "checkpoint": {
+        "type": "command",
+        "path": "commands/checkpoint.md",
+        "depends_on": {
+          "commands": [
+            "checkpoint",
+            "gate",
+            "plan-tasks",
+            "retro"
+          ]
+        },
+        "depended_by": {}
+      },
+      "codex": {
+        "type": "command",
+        "path": "commands/codex.md",
+        "depends_on": {
+          "commands": [
+            "codex",
+            "security-scan"
+          ]
+        },
+        "depended_by": {}
+      },
+      "careful": {
+        "type": "command",
+        "path": "commands/careful.md",
+        "depends_on": {
+          "commands": [
+            "careful",
+            "freeze",
+            "guard"
+          ]
+        },
+        "depended_by": {}
+      },
+      "gate": {
+        "type": "command",
+        "path": "commands/gate.md",
+        "depends_on": {
+          "commands": [
+            "gate"
+          ],
+          "scripts": [
+            "forge-enforce.sh",
+            "forge-triangle.sh",
+            "forge-verify.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "forge": {
+        "type": "command",
+        "path": "commands/forge.md",
+        "depends_on": {
+          "commands": [
+            "challenge",
+            "forge"
+          ],
+          "scripts": [
+            "forge-auto-state.sh",
+            "forge-enforce.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "design-system": {
+        "type": "command",
+        "path": "commands/design-system.md",
+        "depends_on": {
+          "commands": [
+            "design-audit",
+            "design-system"
+          ]
+        },
+        "depended_by": {}
+      },
+      "create-mcp": {
+        "type": "command",
+        "path": "commands/create-mcp.md",
+        "depends_on": {
+          "agents": [
+            "mcp-architect"
+          ],
+          "commands": [
+            "create-mcp"
+          ]
+        },
+        "depended_by": {}
+      },
+      "plan-tasks": {
+        "type": "command",
+        "path": "commands/plan-tasks.md",
+        "depends_on": {
+          "commands": [
+            "plan-tasks"
+          ]
+        },
+        "depended_by": {}
+      },
+      "challenge": {
+        "type": "command",
+        "path": "commands/challenge.md",
+        "depends_on": {
+          "commands": [
+            "challenge"
+          ]
+        },
+        "depended_by": {}
+      },
+      "bootstrap": {
+        "type": "command",
+        "path": "commands/bootstrap.md",
+        "depends_on": {
+          "commands": [
+            "bootstrap",
+            "generate-spec",
+            "specify"
+          ]
+        },
+        "depended_by": {}
+      },
+      "discover": {
+        "type": "command",
+        "path": "commands/discover.md",
+        "depends_on": {
+          "agents": [
+            "deep-research-agent"
+          ],
+          "commands": [
+            "discover"
+          ]
+        },
+        "depended_by": {}
+      },
+      "evolve": {
+        "type": "command",
+        "path": "commands/evolve.md",
+        "depends_on": {
+          "commands": [
+            "evolve"
+          ]
+        },
+        "depended_by": {}
+      },
+      "review": {
+        "type": "command",
+        "path": "commands/review.md",
+        "depends_on": {
+          "commands": [
+            "review"
+          ]
+        },
+        "depended_by": {}
+      },
+      "canary": {
+        "type": "command",
+        "path": "commands/canary.md",
+        "depends_on": {
+          "commands": [
+            "benchmark",
+            "canary"
+          ]
+        },
+        "depended_by": {}
+      },
+      "prune": {
+        "type": "command",
+        "path": "commands/prune.md",
+        "depends_on": {
+          "commands": [
+            "prune",
+            "retro"
+          ]
+        },
+        "depended_by": {}
+      },
+      "qa-report": {
+        "type": "command",
+        "path": "commands/qa-report.md",
+        "depends_on": {
+          "commands": [
+            "qa-report"
+          ]
+        },
+        "depended_by": {}
+      },
+      "critic": {
+        "type": "command",
+        "path": "commands/critic.md",
+        "depends_on": {
+          "agents": [
+            "playwright-critic"
+          ],
+          "commands": [
+            "critic",
+            "dashboard",
+            "documents",
+            "forge",
+            "learn",
+            "login",
+            "register",
+            "staff",
+            "workflows"
+          ]
+        },
+        "depended_by": {}
+      },
+      "ship": {
+        "type": "command",
+        "path": "commands/ship.md",
+        "depends_on": {
+          "commands": [
+            "audit-patterns",
+            "canary",
+            "gate",
+            "security-scan",
+            "ship"
+          ]
+        },
+        "depended_by": {}
+      },
+      "setup": {
+        "type": "command",
+        "path": "commands/setup.md",
+        "depends_on": {
+          "agents": [
+            "backend-architect",
+            "django-ninja-agent",
+            "django-tenants-agent",
+            "gcp-setup-agent",
+            "llm-integration-agent",
+            "rag-architect",
+            "s3-lambda-agent"
+          ],
+          "commands": [
+            "forge",
+            "setup"
+          ]
+        },
+        "depended_by": {}
+      },
+      "security-scan": {
+        "type": "command",
+        "path": "commands/security-scan.md",
+        "depends_on": {
+          "commands": [
+            "security-scan"
+          ]
+        },
+        "depended_by": {}
+      },
+      "plan-review": {
+        "type": "command",
+        "path": "commands/plan-review.md",
+        "depends_on": {
+          "agents": [
+            "business-panel-expert",
+            "system-architect"
+          ],
+          "commands": [
+            "challenge",
+            "plan-review",
+            "plan-tasks"
+          ]
+        },
+        "depended_by": {}
+      },
+      "freeze": {
+        "type": "command",
+        "path": "commands/freeze.md",
+        "depends_on": {
+          "commands": [
+            "freeze"
+          ]
+        },
+        "depended_by": {}
+      },
+      "audit-patterns": {
+        "type": "command",
+        "path": "commands/audit-patterns.md",
+        "depends_on": {
+          "agents": [
+            "pattern-auditor-agent",
+            "self-review"
+          ],
+          "commands": [
+            "audit-patterns"
+          ]
+        },
+        "depended_by": {}
+      },
+      "benchmark": {
+        "type": "command",
+        "path": "commands/benchmark.md",
+        "depends_on": {
+          "commands": [
+            "benchmark",
+            "critic"
+          ]
+        },
+        "depended_by": {}
+      },
+      "investigate": {
+        "type": "command",
+        "path": "commands/investigate.md",
+        "depends_on": {
+          "agents": [
+            "root-cause-analyst"
+          ],
+          "commands": [
+            "investigate",
+            "learn"
+          ]
+        },
+        "depended_by": {}
+      },
+      "design-doc": {
+        "type": "command",
+        "path": "commands/design-doc.md",
+        "depends_on": {
+          "agents": [
+            "backend-architect",
+            "system-architect"
+          ],
+          "commands": [
+            "design-doc",
+            "plan-tasks"
+          ]
+        },
+        "depended_by": {}
+      },
+      "guard": {
+        "type": "command",
+        "path": "commands/guard.md",
+        "depends_on": {
+          "commands": [
+            "careful",
+            "guard"
+          ]
+        },
+        "depended_by": {}
+      },
+      "learn": {
+        "type": "command",
+        "path": "commands/learn.md",
+        "depends_on": {
+          "commands": [
+            "investigate",
+            "learn",
+            "retro"
+          ]
+        },
+        "depended_by": {}
+      },
+      "design-audit": {
+        "type": "command",
+        "path": "commands/design-audit.md",
+        "depends_on": {
+          "commands": [
+            "10",
+            "design-audit"
+          ]
+        },
+        "depended_by": {}
+      },
+      "phase:cases": {
+        "type": "phase",
+        "path": "commands/forge-phases/cases.md",
+        "depends_on": {
+          "agents": [
+            "deploy-guide-agent",
+            "playbook-curator",
+            "refactoring-expert",
+            "requirements-analyst",
+            "root-cause-analyst",
+            "system-architect"
+          ],
+          "commands": [
+            "checkpoint",
+            "review"
+          ],
+          "scripts": [
+            "forge-enforce.sh",
+            "forge-review-guard.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "phase:tracking": {
+        "type": "phase",
+        "path": "commands/forge-phases/tracking.md",
+        "depends_on": {
+          "commands": [
+            "gate"
+          ]
+        },
+        "depended_by": {}
+      },
+      "phase:phase-0-2-plan": {
+        "type": "phase",
+        "path": "commands/forge-phases/phase-0-2-plan.md",
+        "depends_on": {
+          "agents": [
+            "api-architect"
+          ],
+          "commands": [
+            "bootstrap",
+            "challenge",
+            "checkpoint",
+            "design-doc",
+            "discover",
+            "feasibility",
+            "gate",
+            "generate-spec",
+            "plan-review",
+            "plan-tasks",
+            "requirements",
+            "specify"
+          ]
+        },
+        "depended_by": {}
+      },
+      "phase:phase-a-setup": {
+        "type": "phase",
+        "path": "commands/forge-phases/phase-a-setup.md",
+        "depends_on": {
+          "agents": [
+            "aws-setup-agent",
+            "backend-architect",
+            "devops-architect",
+            "django-ninja-agent",
+            "django-tenants-agent",
+            "frontend-architect",
+            "gcp-setup-agent",
+            "llm-integration-agent",
+            "requirements-analyst",
+            "s3-lambda-agent",
+            "system-architect"
+          ],
+          "commands": [
+            "challenge",
+            "forge",
+            "gate",
+            "retro"
+          ],
+          "scripts": [
+            "forge-enforce.sh",
+            "forge-stack.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "phase:phase-3-implement": {
+        "type": "phase",
+        "path": "commands/forge-phases/phase-3-implement.md",
+        "depends_on": {
+          "agents": [
+            "backend-architect",
+            "django-ninja-agent",
+            "django-tenants-agent",
+            "llm-integration-agent",
+            "s3-lambda-agent"
+          ],
+          "commands": [
+            "checkpoint",
+            "gate",
+            "review"
+          ],
+          "scripts": [
+            "forge-enforce.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "phase:phase-4-5-validate": {
+        "type": "phase",
+        "path": "commands/forge-phases/phase-4-5-validate.md",
+        "depends_on": {
+          "agents": [
+            "deploy-guide-agent",
+            "playbook-curator"
+          ],
+          "commands": [
+            "audit-patterns",
+            "autoresearch",
+            "critic",
+            "design-audit",
+            "evolve",
+            "gate",
+            "prune",
+            "retro",
+            "review",
+            "security-scan"
+          ],
+          "scripts": [
+            "forge-enforce.sh"
+          ]
+        },
+        "depended_by": {}
+      }
+    },
+    "scripts": {
+      "forge-verify.sh": {
+        "type": "script",
+        "path": "scripts/forge-verify.sh",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "forge-phase-gate.sh": {
+        "type": "script",
+        "path": "scripts/forge-phase-gate.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-deps.sh",
+            "forge-enforce.sh",
+            "forge-phase-map.sh"
+          ]
+        },
+        "depended_by": {
+          "hooks": [
+            "Stop"
+          ]
+        }
+      },
+      "forge-stack.sh": {
+        "type": "script",
+        "path": "scripts/forge-stack.sh",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "forge-observer-approve.sh": {
+        "type": "script",
+        "path": "scripts/forge-observer-approve.sh",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "forge-fsm.sh": {
+        "type": "script",
+        "path": "scripts/forge-fsm.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-deps.sh",
+            "forge-enforce.sh",
+            "forge-phase-map.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "forge-deps.sh": {
+        "type": "script",
+        "path": "scripts/forge-deps.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-deps.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "docker-state.sh": {
+        "type": "script",
+        "path": "scripts/docker-state.sh",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "forge-handshake.sh": {
+        "type": "script",
+        "path": "scripts/forge-handshake.sh",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "forge-state-sync.sh": {
+        "type": "script",
+        "path": "scripts/forge-state-sync.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-enforce.sh"
+          ]
+        },
+        "depended_by": {
+          "hooks": [
+            "UserPromptSubmit"
+          ]
+        }
+      },
+      "forge-shell.sh": {
+        "type": "script",
+        "path": "scripts/forge-shell.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-observer-approve.sh",
+            "forge-observer-check.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "forge-observer-check.sh": {
+        "type": "script",
+        "path": "scripts/forge-observer-check.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-observer-approve.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "forge-triangle.sh": {
+        "type": "script",
+        "path": "scripts/forge-triangle.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-phase-map.sh",
+            "forge-triangle.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "forge-phase-map.sh": {
+        "type": "script",
+        "path": "scripts/forge-phase-map.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-phase-map.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "forge-review-guard.sh": {
+        "type": "script",
+        "path": "scripts/forge-review-guard.sh",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "traceability.sh": {
+        "type": "script",
+        "path": "scripts/traceability.sh",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "sync-report.sh": {
+        "type": "script",
+        "path": "scripts/sync-report.sh",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "forge-grow.sh": {
+        "type": "script",
+        "path": "scripts/forge-grow.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-grow.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "forge-enforce.sh": {
+        "type": "script",
+        "path": "scripts/forge-enforce.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-deps.sh",
+            "forge-phase-map.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "forge-auto-state.sh": {
+        "type": "script",
+        "path": "scripts/forge-auto-state.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-enforce.sh",
+            "forge-phase-map.sh"
+          ]
+        },
+        "depended_by": {
+          "hooks": [
+            "PostToolUse:Agent",
+            "PostToolUse:Skill"
+          ]
+        }
+      },
+      "forge-runner.py": {
+        "type": "script",
+        "path": "scripts/forge-runner.py",
+        "depends_on": {},
+        "depended_by": {}
+      }
+    },
+    "hooks": {
+      "Stop": {
+        "type": "hook",
+        "path": "templates/hooks.json",
+        "event": "Stop",
+        "matcher": "",
+        "depends_on": {
+          "scripts": [
+            "forge-phase-gate.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "UserPromptSubmit": {
+        "type": "hook",
+        "path": "templates/hooks.json",
+        "event": "UserPromptSubmit",
+        "matcher": "",
+        "depends_on": {
+          "scripts": [
+            "forge-state-sync.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "PreToolUse:Bash": {
+        "type": "hook",
+        "path": "templates/hooks.json",
+        "event": "PreToolUse",
+        "matcher": "Bash",
+        "depends_on": {
+          "scripts": []
+        },
+        "depended_by": {}
+      },
+      "PreToolUse:Edit": {
+        "type": "hook",
+        "path": "templates/hooks.json",
+        "event": "PreToolUse",
+        "matcher": "Edit",
+        "depends_on": {
+          "scripts": []
+        },
+        "depended_by": {}
+      },
+      "PostToolUse:Write|Edit": {
+        "type": "hook",
+        "path": "templates/hooks.json",
+        "event": "PostToolUse",
+        "matcher": "Write|Edit",
+        "depends_on": {
+          "scripts": []
+        },
+        "depended_by": {}
+      },
+      "PostToolUse:Agent": {
+        "type": "hook",
+        "path": "templates/hooks.json",
+        "event": "PostToolUse",
+        "matcher": "Agent",
+        "depends_on": {
+          "scripts": [
+            "forge-auto-state.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "PostToolUse:Skill": {
+        "type": "hook",
+        "path": "templates/hooks.json",
+        "event": "PostToolUse",
+        "matcher": "Skill",
+        "depends_on": {
+          "scripts": [
+            "forge-auto-state.sh"
+          ]
+        },
+        "depended_by": {}
+      },
+      "PostToolUse:Bash": {
+        "type": "hook",
+        "path": "templates/hooks.json",
+        "event": "PostToolUse",
+        "matcher": "Bash",
+        "depends_on": {
+          "scripts": []
+        },
+        "depended_by": {}
+      }
+    },
+    "templates": {
+      "FORGE.template.md": {
+        "type": "template",
+        "path": "templates/FORGE.template.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "SPEC.template.md": {
+        "type": "template",
+        "path": "templates/SPEC.template.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "design-doc.example.md": {
+        "type": "template",
+        "path": "templates/design-doc.example.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "design-doc-completeness-checklist.md": {
+        "type": "template",
+        "path": "templates/design-doc-completeness-checklist.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "forge-trace-entry.template.md": {
+        "type": "template",
+        "path": "templates/forge-trace-entry.template.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "traceability-matrix.template.md": {
+        "type": "template",
+        "path": "templates/traceability-matrix.template.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "CLAUDE.template.md": {
+        "type": "template",
+        "path": "templates/CLAUDE.template.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "task-design-doc.template.md": {
+        "type": "template",
+        "path": "templates/task-design-doc.template.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "gate-handoff-checklists.md": {
+        "type": "template",
+        "path": "templates/gate-handoff-checklists.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "forge-timeline.template.md": {
+        "type": "template",
+        "path": "templates/forge-timeline.template.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "forge-trace-index.template.md": {
+        "type": "template",
+        "path": "templates/forge-trace-index.template.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "rules/agent-routing.md": {
+        "type": "template",
+        "path": "templates/rules/agent-routing.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "rules/sdlc-flow.md": {
+        "type": "template",
+        "path": "templates/rules/sdlc-flow.md",
+        "depends_on": {},
+        "depended_by": {}
+      }
+    },
+    "rules": {
+      "forge-philosophy.md": {
+        "type": "rule",
+        "path": "rules/forge-philosophy.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "docker.md": {
+        "type": "rule",
+        "path": "rules/docker.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "universal.md": {
+        "type": "rule",
+        "path": "rules/universal.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "forge-enforcement.md": {
+        "type": "rule",
+        "path": "rules/forge-enforcement.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "python.md": {
+        "type": "rule",
+        "path": "rules/python.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "django.md": {
+        "type": "rule",
+        "path": "rules/django.md",
+        "depends_on": {},
+        "depended_by": {}
+      },
+      "security.md": {
+        "type": "rule",
+        "path": "rules/security.md",
+        "depends_on": {},
+        "depended_by": {}
+      }
+    }
+  },
+  "edges": [
+    {
+      "from": "agents/repo-index",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/repo-index",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/refactoring-expert",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/retrospective-miner",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/retrospective-miner",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/retrospective-miner",
+      "to": "commands/retro",
+      "type": "commands"
+    },
+    {
+      "from": "agents/socratic-mentor",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/socratic-mentor",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/performance-engineer",
+      "to": "commands/benchmark",
+      "type": "commands"
+    },
+    {
+      "from": "agents/performance-engineer",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/performance-engineer",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/code-archaeologist",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/code-archaeologist",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/aws-setup-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/aws-setup-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/reviewer",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/reviewer",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/business-panel-experts",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/business-panel-experts",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/playbook-curator",
+      "to": "commands/evolve",
+      "type": "commands"
+    },
+    {
+      "from": "agents/playbook-curator",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/playbook-curator",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/playbook-curator",
+      "to": "commands/prune",
+      "type": "commands"
+    },
+    {
+      "from": "agents/playbook-curator",
+      "to": "commands/retro",
+      "type": "commands"
+    },
+    {
+      "from": "agents/devops-architect",
+      "to": "commands/app",
+      "type": "commands"
+    },
+    {
+      "from": "agents/devops-architect",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/devops-architect",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/devops-architect",
+      "to": "commands/server",
+      "type": "commands"
+    },
+    {
+      "from": "agents/deep-research-agent",
+      "to": "commands/discover",
+      "type": "commands"
+    },
+    {
+      "from": "agents/deep-research-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/frontend-architect",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/frontend-architect",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/api-architect",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/aws-setup-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/backend-architect",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/business-panel-expert",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/context-loader-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/deep-research-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/devops-architect",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/django-ninja-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/django-tenants-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/frontend-architect",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/learning-guide",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/pattern-auditor-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/playbook-curator",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/playwright-critic",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/python-expert",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/refactoring-expert",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/requirements-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/retrospective-miner",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/root-cause-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/s3-lambda-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/sdlc-enforcer",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/self-review",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/system-architect",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "agents/technical-writer",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/audit-patterns",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/autoresearch",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/bootstrap",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/challenge",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/checkpoint",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/critic",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/design-audit",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/design-doc",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/discover",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/evolve",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/feasibility",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/forge",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/gate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/generate-spec",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/guard",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/plan-tasks",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/prune",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/requirements",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/retro",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/review",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/run-with-checkpoint",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/security-scan",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pm-orchestrator",
+      "to": "commands/specify",
+      "type": "commands"
+    },
+    {
+      "from": "agents/technical-writer",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/technical-writer",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/tools-architect",
+      "to": "agents/mcp-architect",
+      "type": "agents"
+    },
+    {
+      "from": "agents/tools-architect",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/context-loader-agent",
+      "to": "agents/django-ninja-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/context-loader-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/context-loader-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/quality-engineer",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/quality-engineer",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/system-architect",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/system-architect",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/system-architect",
+      "to": "commands/requirements",
+      "type": "commands"
+    },
+    {
+      "from": "agents/self-review",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/self-review",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/learning-guide",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/learning-guide",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/playwright-critic",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/playwright-critic",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/sdlc-enforcer",
+      "to": "commands/gate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/sdlc-enforcer",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/sdlc-enforcer",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/deploy-guide-agent",
+      "to": "agents/deploy-guide-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/pattern-auditor-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/pattern-auditor-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/backend-architect",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/backend-architect",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/requirements-analyst",
+      "to": "agents/business-panel-expert",
+      "type": "agents"
+    },
+    {
+      "from": "agents/requirements-analyst",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/requirements-analyst",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/mcp-architect",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/mcp-architect",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/mcp-architect",
+      "to": "commands/mcp",
+      "type": "commands"
+    },
+    {
+      "from": "agents/python-expert",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/python-expert",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/agent-factory",
+      "to": "commands/feasibility",
+      "type": "commands"
+    },
+    {
+      "from": "agents/agent-factory",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/security-engineer",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/security-engineer",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/root-cause-analyst",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/root-cause-analyst",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/api-architect",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/api-architect",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/langsmith-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/langsmith-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/README",
+      "to": "agents/azure-openai-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/README",
+      "to": "agents/azure-setup-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/langgraph-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/langgraph-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/langchain-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/langchain-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/ai-safety-agent",
+      "to": "agents/llm-integration-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/ai-safety-agent",
+      "to": "agents/rag-architect",
+      "type": "agents"
+    },
+    {
+      "from": "agents/ai-safety-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/ai-safety-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/chatbot-builder",
+      "to": "agents/llm-integration-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/chatbot-builder",
+      "to": "agents/rag-architect",
+      "type": "agents"
+    },
+    {
+      "from": "agents/chatbot-builder",
+      "to": "agents/voice-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/chatbot-builder",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/chatbot-builder",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/agent-orchestrator",
+      "to": "agents/llm-integration-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/agent-orchestrator",
+      "to": "agents/rag-architect",
+      "type": "agents"
+    },
+    {
+      "from": "agents/agent-orchestrator",
+      "to": "agents/voice-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/agent-orchestrator",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/agent-orchestrator",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/eval-engineer",
+      "to": "agents/ai-safety-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/eval-engineer",
+      "to": "agents/llm-integration-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/eval-engineer",
+      "to": "agents/rag-architect",
+      "type": "agents"
+    },
+    {
+      "from": "agents/eval-engineer",
+      "to": "commands/generate-dataset",
+      "type": "commands"
+    },
+    {
+      "from": "agents/eval-engineer",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/eval-engineer",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/voice-agent-builder",
+      "to": "agents/llm-integration-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/voice-agent-builder",
+      "to": "agents/rag-architect",
+      "type": "agents"
+    },
+    {
+      "from": "agents/voice-agent-builder",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/voice-agent-builder",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/rag-architect",
+      "to": "agents/llm-integration-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/rag-architect",
+      "to": "agents/s3-lambda-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/rag-architect",
+      "to": "agents/voice-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/rag-architect",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/rag-architect",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/llm-integration-agent",
+      "to": "agents/rag-architect",
+      "type": "agents"
+    },
+    {
+      "from": "agents/llm-integration-agent",
+      "to": "agents/voice-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/llm-integration-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/llm-integration-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/django-tenants-agent",
+      "to": "commands/bootstrap",
+      "type": "commands"
+    },
+    {
+      "from": "agents/django-tenants-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/django-tenants-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/s3-lambda-agent",
+      "to": "agents/aws-setup-agent",
+      "type": "agents"
+    },
+    {
+      "from": "agents/s3-lambda-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/s3-lambda-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/django-ninja-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/django-ninja-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/vertex-ai-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/vertex-ai-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/gcp-setup-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/gcp-setup-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/azure-setup-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/azure-setup-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "agents/azure-openai-agent",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "agents/azure-openai-agent",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "commands/requirements",
+      "to": "agents/business-panel-expert",
+      "type": "agents"
+    },
+    {
+      "from": "commands/requirements",
+      "to": "agents/requirements-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "commands/requirements",
+      "to": "commands/discover",
+      "type": "commands"
+    },
+    {
+      "from": "commands/requirements",
+      "to": "commands/requirements",
+      "type": "commands"
+    },
+    {
+      "from": "commands/feasibility",
+      "to": "agents/system-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/feasibility",
+      "to": "commands/feasibility",
+      "type": "commands"
+    },
+    {
+      "from": "commands/feasibility",
+      "to": "commands/requirements",
+      "type": "commands"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "agents/aws-setup-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "agents/backend-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "agents/context-loader-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "agents/devops-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "agents/django-ninja-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "agents/django-tenants-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "agents/frontend-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "agents/python-expert",
+      "type": "agents"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "agents/refactoring-expert",
+      "type": "agents"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "agents/root-cause-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "agents/s3-lambda-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "agents/system-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "commands/audit-patterns",
+      "type": "commands"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "commands/autoresearch",
+      "type": "commands"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "commands/build-project",
+      "type": "commands"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "commands/checkpoint",
+      "type": "commands"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "commands/design-doc",
+      "type": "commands"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "commands/gate",
+      "type": "commands"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "commands/plan-tasks",
+      "type": "commands"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "commands/retro",
+      "type": "commands"
+    },
+    {
+      "from": "commands/build-project",
+      "to": "commands/specify",
+      "type": "commands"
+    },
+    {
+      "from": "commands/retro",
+      "to": "agents/learning-guide",
+      "type": "agents"
+    },
+    {
+      "from": "commands/retro",
+      "to": "commands/gate",
+      "type": "commands"
+    },
+    {
+      "from": "commands/retro",
+      "to": "commands/retro",
+      "type": "commands"
+    },
+    {
+      "from": "commands/specify",
+      "to": "agents/business-panel-expert",
+      "type": "agents"
+    },
+    {
+      "from": "commands/specify",
+      "to": "agents/requirements-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "commands/specify",
+      "to": "commands/design-doc",
+      "type": "commands"
+    },
+    {
+      "from": "commands/specify",
+      "to": "commands/specify",
+      "type": "commands"
+    },
+    {
+      "from": "commands/generate-spec",
+      "to": "agents/requirements-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "commands/generate-spec",
+      "to": "commands/generate-spec",
+      "type": "commands"
+    },
+    {
+      "from": "commands/checkpoint",
+      "to": "commands/checkpoint",
+      "type": "commands"
+    },
+    {
+      "from": "commands/checkpoint",
+      "to": "commands/gate",
+      "type": "commands"
+    },
+    {
+      "from": "commands/checkpoint",
+      "to": "commands/plan-tasks",
+      "type": "commands"
+    },
+    {
+      "from": "commands/checkpoint",
+      "to": "commands/retro",
+      "type": "commands"
+    },
+    {
+      "from": "commands/codex",
+      "to": "commands/codex",
+      "type": "commands"
+    },
+    {
+      "from": "commands/codex",
+      "to": "commands/security-scan",
+      "type": "commands"
+    },
+    {
+      "from": "commands/careful",
+      "to": "commands/careful",
+      "type": "commands"
+    },
+    {
+      "from": "commands/careful",
+      "to": "commands/freeze",
+      "type": "commands"
+    },
+    {
+      "from": "commands/careful",
+      "to": "commands/guard",
+      "type": "commands"
+    },
+    {
+      "from": "commands/gate",
+      "to": "commands/gate",
+      "type": "commands"
+    },
+    {
+      "from": "commands/gate",
+      "to": "scripts/forge-enforce.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "commands/gate",
+      "to": "scripts/forge-triangle.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "commands/gate",
+      "to": "scripts/forge-verify.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "commands/forge",
+      "to": "commands/challenge",
+      "type": "commands"
+    },
+    {
+      "from": "commands/forge",
+      "to": "commands/forge",
+      "type": "commands"
+    },
+    {
+      "from": "commands/forge",
+      "to": "scripts/forge-auto-state.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "commands/forge",
+      "to": "scripts/forge-enforce.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "commands/design-system",
+      "to": "commands/design-audit",
+      "type": "commands"
+    },
+    {
+      "from": "commands/design-system",
+      "to": "commands/design-system",
+      "type": "commands"
+    },
+    {
+      "from": "commands/create-mcp",
+      "to": "agents/mcp-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/create-mcp",
+      "to": "commands/create-mcp",
+      "type": "commands"
+    },
+    {
+      "from": "commands/plan-tasks",
+      "to": "commands/plan-tasks",
+      "type": "commands"
+    },
+    {
+      "from": "commands/challenge",
+      "to": "commands/challenge",
+      "type": "commands"
+    },
+    {
+      "from": "commands/bootstrap",
+      "to": "commands/bootstrap",
+      "type": "commands"
+    },
+    {
+      "from": "commands/bootstrap",
+      "to": "commands/generate-spec",
+      "type": "commands"
+    },
+    {
+      "from": "commands/bootstrap",
+      "to": "commands/specify",
+      "type": "commands"
+    },
+    {
+      "from": "commands/discover",
+      "to": "agents/deep-research-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/discover",
+      "to": "commands/discover",
+      "type": "commands"
+    },
+    {
+      "from": "commands/evolve",
+      "to": "commands/evolve",
+      "type": "commands"
+    },
+    {
+      "from": "commands/review",
+      "to": "commands/review",
+      "type": "commands"
+    },
+    {
+      "from": "commands/canary",
+      "to": "commands/benchmark",
+      "type": "commands"
+    },
+    {
+      "from": "commands/canary",
+      "to": "commands/canary",
+      "type": "commands"
+    },
+    {
+      "from": "commands/prune",
+      "to": "commands/prune",
+      "type": "commands"
+    },
+    {
+      "from": "commands/prune",
+      "to": "commands/retro",
+      "type": "commands"
+    },
+    {
+      "from": "commands/qa-report",
+      "to": "commands/qa-report",
+      "type": "commands"
+    },
+    {
+      "from": "commands/critic",
+      "to": "agents/playwright-critic",
+      "type": "agents"
+    },
+    {
+      "from": "commands/critic",
+      "to": "commands/critic",
+      "type": "commands"
+    },
+    {
+      "from": "commands/critic",
+      "to": "commands/dashboard",
+      "type": "commands"
+    },
+    {
+      "from": "commands/critic",
+      "to": "commands/documents",
+      "type": "commands"
+    },
+    {
+      "from": "commands/critic",
+      "to": "commands/forge",
+      "type": "commands"
+    },
+    {
+      "from": "commands/critic",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "commands/critic",
+      "to": "commands/login",
+      "type": "commands"
+    },
+    {
+      "from": "commands/critic",
+      "to": "commands/register",
+      "type": "commands"
+    },
+    {
+      "from": "commands/critic",
+      "to": "commands/staff",
+      "type": "commands"
+    },
+    {
+      "from": "commands/critic",
+      "to": "commands/workflows",
+      "type": "commands"
+    },
+    {
+      "from": "commands/ship",
+      "to": "commands/audit-patterns",
+      "type": "commands"
+    },
+    {
+      "from": "commands/ship",
+      "to": "commands/canary",
+      "type": "commands"
+    },
+    {
+      "from": "commands/ship",
+      "to": "commands/gate",
+      "type": "commands"
+    },
+    {
+      "from": "commands/ship",
+      "to": "commands/security-scan",
+      "type": "commands"
+    },
+    {
+      "from": "commands/ship",
+      "to": "commands/ship",
+      "type": "commands"
+    },
+    {
+      "from": "commands/setup",
+      "to": "agents/backend-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/setup",
+      "to": "agents/django-ninja-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/setup",
+      "to": "agents/django-tenants-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/setup",
+      "to": "agents/gcp-setup-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/setup",
+      "to": "agents/llm-integration-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/setup",
+      "to": "agents/rag-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/setup",
+      "to": "agents/s3-lambda-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/setup",
+      "to": "commands/forge",
+      "type": "commands"
+    },
+    {
+      "from": "commands/setup",
+      "to": "commands/setup",
+      "type": "commands"
+    },
+    {
+      "from": "commands/security-scan",
+      "to": "commands/security-scan",
+      "type": "commands"
+    },
+    {
+      "from": "commands/plan-review",
+      "to": "agents/business-panel-expert",
+      "type": "agents"
+    },
+    {
+      "from": "commands/plan-review",
+      "to": "agents/system-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/plan-review",
+      "to": "commands/challenge",
+      "type": "commands"
+    },
+    {
+      "from": "commands/plan-review",
+      "to": "commands/plan-review",
+      "type": "commands"
+    },
+    {
+      "from": "commands/plan-review",
+      "to": "commands/plan-tasks",
+      "type": "commands"
+    },
+    {
+      "from": "commands/freeze",
+      "to": "commands/freeze",
+      "type": "commands"
+    },
+    {
+      "from": "commands/audit-patterns",
+      "to": "agents/pattern-auditor-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/audit-patterns",
+      "to": "agents/self-review",
+      "type": "agents"
+    },
+    {
+      "from": "commands/audit-patterns",
+      "to": "commands/audit-patterns",
+      "type": "commands"
+    },
+    {
+      "from": "commands/benchmark",
+      "to": "commands/benchmark",
+      "type": "commands"
+    },
+    {
+      "from": "commands/benchmark",
+      "to": "commands/critic",
+      "type": "commands"
+    },
+    {
+      "from": "commands/investigate",
+      "to": "agents/root-cause-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "commands/investigate",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "commands/investigate",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "commands/design-doc",
+      "to": "agents/backend-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/design-doc",
+      "to": "agents/system-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/design-doc",
+      "to": "commands/design-doc",
+      "type": "commands"
+    },
+    {
+      "from": "commands/design-doc",
+      "to": "commands/plan-tasks",
+      "type": "commands"
+    },
+    {
+      "from": "commands/guard",
+      "to": "commands/careful",
+      "type": "commands"
+    },
+    {
+      "from": "commands/guard",
+      "to": "commands/guard",
+      "type": "commands"
+    },
+    {
+      "from": "commands/learn",
+      "to": "commands/investigate",
+      "type": "commands"
+    },
+    {
+      "from": "commands/learn",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "commands/learn",
+      "to": "commands/retro",
+      "type": "commands"
+    },
+    {
+      "from": "commands/design-audit",
+      "to": "commands/10",
+      "type": "commands"
+    },
+    {
+      "from": "commands/design-audit",
+      "to": "commands/design-audit",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:cases",
+      "to": "agents/deploy-guide-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:cases",
+      "to": "agents/playbook-curator",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:cases",
+      "to": "agents/refactoring-expert",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:cases",
+      "to": "agents/requirements-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:cases",
+      "to": "agents/root-cause-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:cases",
+      "to": "agents/system-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:cases",
+      "to": "commands/checkpoint",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:cases",
+      "to": "commands/review",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:cases",
+      "to": "scripts/forge-enforce.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "commands/phase:cases",
+      "to": "scripts/forge-review-guard.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "commands/phase:tracking",
+      "to": "commands/gate",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
+      "to": "agents/api-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
+      "to": "commands/bootstrap",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
+      "to": "commands/challenge",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
+      "to": "commands/checkpoint",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
+      "to": "commands/design-doc",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
+      "to": "commands/discover",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
+      "to": "commands/feasibility",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
+      "to": "commands/gate",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
+      "to": "commands/generate-spec",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
+      "to": "commands/plan-review",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
+      "to": "commands/plan-tasks",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
+      "to": "commands/requirements",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
+      "to": "commands/specify",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "agents/aws-setup-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "agents/backend-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "agents/devops-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "agents/django-ninja-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "agents/django-tenants-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "agents/frontend-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "agents/gcp-setup-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "agents/llm-integration-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "agents/requirements-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "agents/s3-lambda-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "agents/system-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "commands/challenge",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "commands/forge",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "commands/gate",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "commands/retro",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "scripts/forge-enforce.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "scripts/forge-stack.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
+      "to": "agents/backend-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
+      "to": "agents/django-ninja-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
+      "to": "agents/django-tenants-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
+      "to": "agents/llm-integration-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
+      "to": "agents/s3-lambda-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
+      "to": "commands/checkpoint",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
+      "to": "commands/gate",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
+      "to": "commands/review",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
+      "to": "scripts/forge-enforce.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "agents/deploy-guide-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "agents/playbook-curator",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "commands/audit-patterns",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "commands/autoresearch",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "commands/critic",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "commands/design-audit",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "commands/evolve",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "commands/gate",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "commands/prune",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "commands/retro",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "commands/review",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "commands/security-scan",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "scripts/forge-enforce.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-phase-gate.sh",
+      "to": "scripts/forge-deps.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-phase-gate.sh",
+      "to": "scripts/forge-enforce.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-phase-gate.sh",
+      "to": "scripts/forge-phase-map.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-fsm.sh",
+      "to": "scripts/forge-deps.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-fsm.sh",
+      "to": "scripts/forge-enforce.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-fsm.sh",
+      "to": "scripts/forge-phase-map.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-deps.sh",
+      "to": "scripts/forge-deps.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-state-sync.sh",
+      "to": "scripts/forge-enforce.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-shell.sh",
+      "to": "scripts/forge-observer-approve.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-shell.sh",
+      "to": "scripts/forge-observer-check.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-observer-check.sh",
+      "to": "scripts/forge-observer-approve.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-triangle.sh",
+      "to": "scripts/forge-phase-map.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-triangle.sh",
+      "to": "scripts/forge-triangle.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-phase-map.sh",
+      "to": "scripts/forge-phase-map.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-grow.sh",
+      "to": "scripts/forge-grow.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-enforce.sh",
+      "to": "scripts/forge-deps.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-enforce.sh",
+      "to": "scripts/forge-phase-map.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-auto-state.sh",
+      "to": "scripts/forge-enforce.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-auto-state.sh",
+      "to": "scripts/forge-phase-map.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/Stop",
+      "to": "scripts/forge-phase-gate.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/UserPromptSubmit",
+      "to": "scripts/forge-state-sync.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Agent",
+      "to": "scripts/forge-auto-state.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Skill",
+      "to": "scripts/forge-auto-state.sh",
+      "type": "scripts"
+    }
+  ]
+}

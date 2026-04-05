@@ -3,6 +3,14 @@
 # Detects which step just completed from the skill/agent name and updates forge-state.json
 #
 # This replaces 43 manual "update-step" lines in forge.md
+#
+# @forge-meta
+# id: forge-auto-state
+# type: script
+# depended_by.hooks: PostToolUse:Agent, PostToolUse:Skill
+# depends_on.scripts: forge-enforce.sh
+# provides: step-tracking, state-updates
+# @end-forge-meta
 
 set -uo pipefail
 

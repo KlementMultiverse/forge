@@ -28,7 +28,7 @@ AGENT ROUTING (from .claude/rules/agent-routing.md):
 
 TDD CYCLE — MANDATORY:
 1. @quality-engineer writes tests from SPEC.md → tests MUST FAIL
-2. @domain-agent writes code → tests MUST PASS
+2. Domain agent (from .claude/rules/agent-routing.md) writes code → tests MUST PASS
 3. Full suite → NO regressions
 If tests pass at step 1 → INVESTIGATE before coding
 

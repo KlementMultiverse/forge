@@ -63,6 +63,14 @@ install_global() {
     cp "$FORGE_DIR"/templates/*.py "$CLAUDE_DIR/templates/" 2>/dev/null || true
     cp "$FORGE_DIR"/templates/rules/*.md "$CLAUDE_DIR/templates/rules/" 2>/dev/null || true
 
+    # Generate registry (dependency graph)
+    echo "  Generating registry..."
+    python3 "$FORGE_DIR/scripts/forge-registry.py" "$FORGE_DIR" 2>/dev/null || true
+
+    # Run lint (non-blocking — warnings only)
+    python3 "$FORGE_DIR/scripts/forge-lint.py" "$FORGE_DIR" 2>/dev/null || true
+    echo ""
+
     # Install forge shell function
     echo "  Installing forge shell function..."
     cp "$FORGE_DIR/scripts/forge-shell.sh" "$CLAUDE_DIR/forge-shell.sh"

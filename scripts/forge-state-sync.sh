@@ -2,6 +2,14 @@
 # Forge State Sync — fixes stale forge-state.json by reading actual git history
 # Called by UserPromptSubmit hook to auto-fix state on every /forge
 #
+# @forge-meta
+# id: forge-state-sync
+# type: script
+# depended_by.hooks: UserPromptSubmit
+# depends_on.scripts: forge-enforce.sh
+# provides: state-sync, drift-fix
+# @end-forge-meta
+#
 # Usage: forge-state-sync.sh
 
 set -uo pipefail

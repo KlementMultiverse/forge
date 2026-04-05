@@ -2,6 +2,14 @@
 # Forge Phase Gate — EXPLICIT approval required from observer + CodeRabbit
 # Builder CANNOT proceed until both have explicitly approved.
 #
+# @forge-meta
+# id: forge-phase-gate
+# type: script
+# depended_by.hooks: Stop
+# depends_on.scripts: forge-enforce.sh
+# provides: gate-check, phase-approval
+# @end-forge-meta
+#
 # Returns:
 #   0 = CLEAR (both explicitly approved)
 #   1 = WAIT (still reviewing or no response yet)

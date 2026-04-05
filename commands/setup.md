@@ -101,7 +101,7 @@ Replace {{SDLC_FLOW_CONTENT}} — remove the placeholder line entirely.
 
 Fill agent matrix based on tech stack:
 - Django: @django-ninja-agent, @django-tenants-agent
-- FastAPI: @fastapi-agent (via @agent-factory if needed)
+- FastAPI: @backend-architect (or @agent-factory creates a fastapi specialist)
 - Multi-tenant: @django-tenants-agent
 - AI features: @llm-integration-agent, @rag-architect
 - File uploads: @s3-lambda-agent or @gcp-setup-agent
