@@ -14,7 +14,11 @@ When user types `/forge`, the following happens DETERMINISTICALLY:
 ### STEP 0: DETECT (hook-enforced, cannot be skipped)
 
 The UserPromptSubmit hook already ran and injected one of:
-- [FORGE] NEW_PROJECT / BUG_FIX / NEW_FEATURE / IMPROVEMENT / UNKNOWN
+- `[FORGE] CASE1_GREENFIELD` — no CLAUDE.md, no code
+- `[FORGE] CASE1_GREENFIELD (placeholder)` — CLAUDE.md has {{placeholders}}
+- `[FORGE] CASE2_SPEC_ONLY` — CLAUDE.md exists, no code
+- `[FORGE] CASE7_BROWNFIELD` — code exists, no CLAUDE.md
+- `[FORGE] EXISTING_PROJECT` — CLAUDE.md + code exist
 
 Read the hook output. Then route to the correct case below.
 
@@ -39,16 +43,17 @@ If FORGE.md does NOT exist → route based on hook detection.
 
 Detection logic:
 ```
-1. forge-state.json has violations?         → CASE 8
+1. forge-state.json has violations?         → CASE 8 (auto-fix)
 2. forge-state.json has incomplete steps?   → RESUME from next step
-3. CLAUDE.md? NO. Code? NO.                → CASE 1 (greenfield)
-4. CLAUDE.md? NO. Code? YES.               → CASE 7 (brownfield)
-5. CLAUDE.md? YES (placeholders). Code? NO. → CASE 1
-6. CLAUDE.md? YES (real). Code? NO.         → CASE 2
-7. CLAUDE.md? YES. Code? YES. Bug?          → CASE 4
-8. CLAUDE.md? YES. Code? YES. Feature?      → CASE 3
-9. CLAUDE.md? YES. Code? YES. Improve?      → CASE 5
-10. None                                    → CASE 6 (ask)
+3. Hook says CASE1_GREENFIELD              → CASE 1 (new project)
+4. Hook says CASE7_BROWNFIELD              → CASE 7 (reverse-engineer first)
+5. Hook says CASE1_GREENFIELD (placeholder) → CASE 1 (template, treat as new)
+6. Hook says CASE2_SPEC_ONLY              → CASE 2 (has CLAUDE.md, no code)
+7. Hook says EXISTING_PROJECT:
+   - $ARGUMENTS mentions "fix" / "bug"     → CASE 4 (bug fix)
+   - $ARGUMENTS mentions "add" / "feature"  → CASE 3 (new feature)
+   - $ARGUMENTS mentions "improve" / "refactor" → CASE 5 (improvement)
+   - $ARGUMENTS empty or unclear            → CASE 6 (ask user)
 ```
 
 ---
