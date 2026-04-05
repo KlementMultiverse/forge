@@ -63,6 +63,19 @@ install_global() {
     cp "$FORGE_DIR"/templates/*.py "$CLAUDE_DIR/templates/" 2>/dev/null || true
     cp "$FORGE_DIR"/templates/rules/*.md "$CLAUDE_DIR/templates/rules/" 2>/dev/null || true
 
+    # Install forge shell function
+    echo "  Installing forge shell function..."
+    cp "$FORGE_DIR/scripts/forge-shell.sh" "$CLAUDE_DIR/forge-shell.sh"
+    # Add source line to .bashrc if not already there
+    if ! grep -q "forge-shell.sh" "$HOME/.bashrc" 2>/dev/null; then
+        echo "" >> "$HOME/.bashrc"
+        echo "# Forge CLI" >> "$HOME/.bashrc"
+        echo "source \"$CLAUDE_DIR/forge-shell.sh\"" >> "$HOME/.bashrc"
+        echo "  Added forge() to ~/.bashrc"
+    else
+        echo "  forge() already in ~/.bashrc"
+    fi
+
     # Count what was installed
     AGENT_COUNT=$(ls "$CLAUDE_DIR/agents/"*.md 2>/dev/null | wc -l)
     CMD_COUNT=$(ls "$CLAUDE_DIR/commands/"*.md 2>/dev/null | wc -l)
@@ -75,6 +88,7 @@ install_global() {
     echo "  $CMD_COUNT commands"
     echo "  $RULE_COUNT rules"
     echo "  $SCRIPT_COUNT scripts"
+    echo "  forge command available (restart shell or run: source ~/.bashrc)"
     echo ""
 }
 
@@ -99,13 +113,7 @@ prep_project() {
 
     echo ""
     echo -e "${GREEN}Project ready: $PROJECT_DIR${NC}"
-    echo ""
-    echo "  Next steps:"
-    echo "    cd $PROJECT_DIR"
-    echo "    claude"
-    echo "    /forge \"describe what you want to build\""
-    echo ""
-    echo "  /forge will create CLAUDE.md, SPEC.md, scaffold, hooks — everything."
+    echo "  Type /forge at the prompt to start building."
 }
 
 # Main
