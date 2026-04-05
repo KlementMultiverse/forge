@@ -134,10 +134,14 @@ graph TD
     agents_performance_engineer --> commands_benchmark
     agents_performance_engineer --> commands_investigate
     agents_performance_engineer --> commands_learn
+    agents_code_archaeologist --> agents_performance_engineer
+    agents_code_archaeologist --> agents_security_engineer
     agents_code_archaeologist --> commands_investigate
     agents_code_archaeologist --> commands_learn
     agents_aws_setup_agent --> commands_investigate
     agents_aws_setup_agent --> commands_learn
+    agents_reviewer --> agents_performance_engineer
+    agents_reviewer --> agents_security_engineer
     agents_reviewer --> commands_investigate
     agents_reviewer --> commands_learn
     agents_business_panel_experts --> commands_investigate
@@ -167,15 +171,18 @@ graph TD
     agents_pm_orchestrator --> agents_frontend_architect
     agents_pm_orchestrator --> agents_learning_guide
     agents_pm_orchestrator --> agents_pattern_auditor_agent
+    agents_pm_orchestrator --> agents_performance_engineer
     agents_pm_orchestrator --> agents_playbook_curator
     agents_pm_orchestrator --> agents_playwright_critic
     agents_pm_orchestrator --> agents_python_expert
+    agents_pm_orchestrator --> agents_quality_engineer
     agents_pm_orchestrator --> agents_refactoring_expert
     agents_pm_orchestrator --> agents_requirements_analyst
     agents_pm_orchestrator --> agents_retrospective_miner
     agents_pm_orchestrator --> agents_root_cause_analyst
     agents_pm_orchestrator --> agents_s3_lambda_agent
     agents_pm_orchestrator --> agents_sdlc_enforcer
+    agents_pm_orchestrator --> agents_security_engineer
     agents_pm_orchestrator --> agents_self_review
     agents_pm_orchestrator --> agents_system_architect
     agents_pm_orchestrator --> agents_technical_writer
@@ -228,6 +235,8 @@ graph TD
     agents_deploy_guide_agent --> agents_deploy_guide_agent
     agents_pattern_auditor_agent --> commands_investigate
     agents_pattern_auditor_agent --> commands_learn
+    agents_backend_architect --> agents_performance_engineer
+    agents_backend_architect --> agents_security_engineer
     agents_backend_architect --> commands_investigate
     agents_backend_architect --> commands_learn
     agents_requirements_analyst --> agents_business_panel_expert
@@ -254,15 +263,18 @@ graph TD
     agents_langgraph_agent --> commands_learn
     agents_langchain_agent --> commands_investigate
     agents_langchain_agent --> commands_learn
+    agents_ai_safety_agent --> agents_eval_engineer
     agents_ai_safety_agent --> agents_llm_integration_agent
     agents_ai_safety_agent --> agents_rag_architect
     agents_ai_safety_agent --> commands_investigate
     agents_ai_safety_agent --> commands_learn
+    agents_chatbot_builder --> agents_eval_engineer
     agents_chatbot_builder --> agents_llm_integration_agent
     agents_chatbot_builder --> agents_rag_architect
     agents_chatbot_builder --> agents_voice_agent
     agents_chatbot_builder --> commands_investigate
     agents_chatbot_builder --> commands_learn
+    agents_agent_orchestrator --> agents_eval_engineer
     agents_agent_orchestrator --> agents_llm_integration_agent
     agents_agent_orchestrator --> agents_rag_architect
     agents_agent_orchestrator --> agents_voice_agent
@@ -283,6 +295,7 @@ graph TD
     agents_rag_architect --> agents_voice_agent
     agents_rag_architect --> commands_investigate
     agents_rag_architect --> commands_learn
+    agents_llm_integration_agent --> agents_eval_engineer
     agents_llm_integration_agent --> agents_rag_architect
     agents_llm_integration_agent --> agents_voice_agent
     agents_llm_integration_agent --> commands_investigate
@@ -307,6 +320,7 @@ graph TD
     commands_requirements --> agents_requirements_analyst
     commands_requirements --> commands_discover
     commands_requirements --> commands_requirements
+    commands_feasibility --> agents_security_engineer
     commands_feasibility --> agents_system_architect
     commands_feasibility --> commands_feasibility
     commands_feasibility --> commands_requirements
@@ -318,9 +332,11 @@ graph TD
     commands_build_project --> agents_django_tenants_agent
     commands_build_project --> agents_frontend_architect
     commands_build_project --> agents_python_expert
+    commands_build_project --> agents_quality_engineer
     commands_build_project --> agents_refactoring_expert
     commands_build_project --> agents_root_cause_analyst
     commands_build_project --> agents_s3_lambda_agent
+    commands_build_project --> agents_security_engineer
     commands_build_project --> agents_system_architect
     commands_build_project --> commands_audit_patterns
     commands_build_project --> commands_autoresearch
@@ -400,14 +416,17 @@ graph TD
     commands_setup --> agents_s3_lambda_agent
     commands_setup --> commands_forge
     commands_setup --> commands_setup
+    commands_security_scan --> agents_security_engineer
     commands_security_scan --> commands_security_scan
     commands_plan_review --> agents_business_panel_expert
+    commands_plan_review --> agents_security_engineer
     commands_plan_review --> agents_system_architect
     commands_plan_review --> commands_challenge
     commands_plan_review --> commands_plan_review
     commands_plan_review --> commands_plan_tasks
     commands_freeze --> commands_freeze
     commands_audit_patterns --> agents_pattern_auditor_agent
+    commands_audit_patterns --> agents_quality_engineer
     commands_audit_patterns --> agents_self_review
     commands_audit_patterns --> commands_audit_patterns
     commands_benchmark --> commands_benchmark
@@ -416,6 +435,7 @@ graph TD
     commands_investigate --> commands_investigate
     commands_investigate --> commands_learn
     commands_design_doc --> agents_backend_architect
+    commands_design_doc --> agents_security_engineer
     commands_design_doc --> agents_system_architect
     commands_design_doc --> commands_design_doc
     commands_design_doc --> commands_plan_tasks
@@ -427,6 +447,7 @@ graph TD
     commands_design_audit --> commands_10
     commands_design_audit --> commands_design_audit
     commands_phase_cases --> agents_deploy_guide_agent
+    commands_phase_cases --> agents_performance_engineer
     commands_phase_cases --> agents_playbook_curator
     commands_phase_cases --> agents_refactoring_expert
     commands_phase_cases --> agents_requirements_analyst
@@ -438,7 +459,11 @@ graph TD
     commands_phase_cases --> commands_prune
     commands_phase_cases --> commands_retro
     commands_phase_cases --> commands_review
-    commands_phase_cases --> commands_sc
+    commands_phase_cases --> commands_sc_cleanup
+    commands_phase_cases --> commands_sc_document
+    commands_phase_cases --> commands_sc_improve
+    commands_phase_cases --> commands_sc_reflect
+    commands_phase_cases --> commands_sc_save
     commands_phase_cases --> scripts_forge_enforce_sh
     commands_phase_cases --> scripts_forge_review_guard_sh
     commands_phase_tracking --> commands_gate
@@ -454,7 +479,8 @@ graph TD
     commands_phase_phase_0_2_plan --> commands_plan_review
     commands_phase_phase_0_2_plan --> commands_plan_tasks
     commands_phase_phase_0_2_plan --> commands_requirements
-    commands_phase_phase_0_2_plan --> commands_sc
+    commands_phase_phase_0_2_plan --> commands_sc_estimate
+    commands_phase_phase_0_2_plan --> commands_sc_workflow
     commands_phase_phase_0_2_plan --> commands_specify
     commands_phase_phase_a_setup --> agents_aws_setup_agent
     commands_phase_phase_a_setup --> agents_backend_architect
@@ -505,7 +531,13 @@ graph TD
     commands_phase_phase_4_5_validate --> commands_prune
     commands_phase_phase_4_5_validate --> commands_retro
     commands_phase_phase_4_5_validate --> commands_review
-    commands_phase_phase_4_5_validate --> commands_sc
+    commands_phase_phase_4_5_validate --> commands_sc_analyze
+    commands_phase_phase_4_5_validate --> commands_sc_cleanup
+    commands_phase_phase_4_5_validate --> commands_sc_document
+    commands_phase_phase_4_5_validate --> commands_sc_improve
+    commands_phase_phase_4_5_validate --> commands_sc_reflect
+    commands_phase_phase_4_5_validate --> commands_sc_save
+    commands_phase_phase_4_5_validate --> commands_sc_test
     commands_phase_phase_4_5_validate --> commands_security_scan
     commands_phase_phase_4_5_validate --> scripts_forge_enforce_sh
     scripts_forge_phase_gate_sh --> scripts_forge_deps_sh

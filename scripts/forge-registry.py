@@ -17,6 +17,7 @@ Usage:
   python3 forge-registry.py --changelog               # generate changelog from git log
   python3 forge-registry.py --changelog --since <hash> # changelog since commit
   python3 forge-registry.py --changelog --component X # changelog for component X only
+  python3 forge-registry.py --changelog --breaking    # breaking changes only
 
 Implements:
   - #34: Phase/step mapping
@@ -141,8 +142,7 @@ def scan_scripts(forge_dir):
     scripts = {}
     for ext in ["*.sh", "*.py"]:
         for f in forge_dir.glob(f"scripts/{ext}"):
-            if f.name in ("forge-registry.py", "forge-lint.py"):
-                continue
+            # Include all scripts (forge-lint.py and forge-registry.py are part of install flow)
             script_id = f.name
             content = f.read_text(errors="ignore")
             deps = extract_meta_deps(content)
@@ -285,7 +285,7 @@ def extract_meta_deps(content):
 
 def auto_detect_refs(content, source_type):
     deps = defaultdict(list)
-    for m in re.findall(r"@([\w-]+(?:-agent|expert|architect|analyst|miner|curator|fixer|critic|enforcer|guide|review|writer))", content):
+    for m in re.findall(r"@([\w-]+(?:-agent|expert|architect|analyst|miner|curator|fixer|critic|enforcer|guide|review|writer|engineer))", content):
         deps["agents"].append(m)
     for m in re.findall(r'subagent_type="([\w-]+)"', content):
         deps["agents"].append(m)
@@ -293,7 +293,8 @@ def auto_detect_refs(content, source_type):
         if m not in ("dev", "api", "etc", "bin", "usr", "home", "tmp", "var"):
             deps["commands"].append(m)
     for m in re.findall(r'skill:\s*"([\w:-]+)"', content):
-        deps["commands"].append(m.split(":")[0] if ":" in m else m)
+        # Keep full namespaced skill name (e.g., "sc:estimate") as-is
+        deps["commands"].append(m)
     for m in re.findall(r"(forge-[\w-]+\.sh)", content):
         deps["scripts"].append(m)
     return {k: sorted(set(v)) for k, v in deps.items() if v}
@@ -623,7 +624,7 @@ def _extract_files_from_block(block, skill_to_file, agent_to_file):
             files.append(agent_to_file[m])
 
     # @agent-name references
-    for m in re.findall(r"@([\w-]+(?:-agent|expert|architect|analyst|miner|curator|fixer|critic|enforcer|guide|review|writer))", block):
+    for m in re.findall(r"@([\w-]+(?:-agent|expert|architect|analyst|miner|curator|fixer|critic|enforcer|guide|review|writer|engineer))", block):
         if m in agent_to_file:
             files.append(agent_to_file[m])
 
@@ -842,21 +843,25 @@ def build_file_flows(flows):
             f = span.get("file", "")
             if f.startswith("("):  # Skip placeholders like (domain-agent)
                 continue
-            if span.get("shared"):
-                continue  # Exclude cross-cutting utilities from reverse index
-            file_flows[f].append({
+            entry = {
                 "flow": flow_name,
                 "role": span.get("role"),
                 "order": span.get("order"),
-            })
+            }
+            if span.get("shared"):
+                entry["shared"] = True
+            file_flows[f].append(entry)
     return dict(file_flows)
 
 
 # ─── Changelog (#37) ───
 
+ALLOWED_SCOPES = {"scripts", "agents", "commands", "templates", "rules", "hooks", "docs"}
+
 CONVENTIONAL_COMMIT_RE = re.compile(
     r'^(?P<type>feat|fix|chore|docs|refactor|test|perf|ci|build|revert)'
     r'(?:\((?P<scope>[^)]+)\))?'
+    r'(?P<breaking>!)?'
     r':\s*(?P<subject>.+?)(?:\s+#(?P<issue>\d+))?$'
 )
 
@@ -874,9 +879,10 @@ TYPE_TO_CHANGE = {
 REQUIRES_REINSTALL_SCOPES = {"scripts", "agents", "commands", "templates", "rules", "hooks"}
 
 
-def generate_changelog(forge_dir, since=None, component=None):
+def generate_changelog(forge_dir, since=None, component=None, breaking_only=False):
     """Generate structured changelog from git log with conventional commits."""
-    cmd = ["git", "-C", str(forge_dir), "log", "--format=%H|%aI|%s"]
+    # Use --name-only to get changed files per commit
+    cmd = ["git", "-C", str(forge_dir), "log", "--format=COMMIT:%H|%aI|%s|%b", "--name-only"]
     if since:
         cmd.append(f"{since}..HEAD")
 
@@ -888,24 +894,52 @@ def generate_changelog(forge_dir, since=None, component=None):
         return {}
 
     changelog = defaultdict(list)
+    current_commit = None
+    current_files = []
 
-    for line in result.stdout.strip().split("\n"):
-        if not line or "|" not in line:
-            continue
-        parts = line.split("|", 2)
-        if len(parts) != 3:
-            continue
-        commit_hash, date, subject = parts
+    def _flush():
+        nonlocal current_commit, current_files
+        if not current_commit:
+            return
+        commit_hash, date, subject, body = current_commit
+        full_msg = f"{subject}\n{body}" if body else subject
 
         m = CONVENTIONAL_COMMIT_RE.match(subject)
         if not m:
-            continue
+            current_commit = None
+            current_files = []
+            return
 
         scope = m.group("scope") or "general"
+        # Reject unknown scopes — map to "general" to avoid stray buckets
+        if scope not in ALLOWED_SCOPES:
+            scope = "general"
         comp = SCOPE_TO_COMPONENT.get(scope, scope)
 
         if component and comp != component:
-            continue
+            current_commit = None
+            current_files = []
+            return
+
+        is_breaking = bool(m.group("breaking")) or "BREAKING" in full_msg
+
+        if breaking_only and not is_breaking:
+            current_commit = None
+            current_files = []
+            return
+
+        # Find issue references anywhere in commit message
+        issues = re.findall(r"#(\d+)", full_msg)
+
+        # Determine requires_reinstall from actual files if available
+        reinstall = False
+        if current_files:
+            reinstall = any(
+                f.startswith(p) for f in current_files
+                for p in ("scripts/", "agents/", "commands/", "templates/", "rules/")
+            )
+        else:
+            reinstall = scope in REQUIRES_REINSTALL_SCOPES
 
         entry = {
             "date": date[:10],
@@ -913,14 +947,30 @@ def generate_changelog(forge_dir, since=None, component=None):
             "change_type": TYPE_TO_CHANGE.get(m.group("type"), m.group("type")),
             "scope": scope,
             "summary": m.group("subject"),
-            "breaking": subject.startswith("feat!") or subject.startswith("fix!") or "BREAKING" in subject,
-            "requires_reinstall": scope in REQUIRES_REINSTALL_SCOPES,
+            "breaking": is_breaking,
+            "requires_reinstall": reinstall,
         }
-        if m.group("issue"):
-            entry["issue"] = f"#{m.group('issue')}"
+        if current_files:
+            entry["files"] = current_files
+        if issues:
+            entry["issues"] = [f"#{i}" for i in issues]
 
         changelog[comp].append(entry)
+        current_commit = None
+        current_files = []
 
+    for line in result.stdout.split("\n"):
+        if line.startswith("COMMIT:"):
+            _flush()
+            parts = line[7:].split("|", 3)
+            if len(parts) >= 3:
+                body = parts[3] if len(parts) == 4 else ""
+                current_commit = (parts[0], parts[1], parts[2], body)
+                current_files = []
+        elif line.strip() and current_commit:
+            current_files.append(line.strip())
+
+    _flush()
     return dict(changelog)
 
 
@@ -966,8 +1016,21 @@ def compute_impact(file_path, registry, edges, reverse_index, file_phases, file_
                 _walk(f"{cat}/{comp_id}")
                 break
 
-    # Get action items
-    actions = get_action_items(norm)
+    # Get action items for the changed file itself
+    direct_actions = get_action_items(norm)
+
+    # Get action items per dependent
+    dependent_actions = {}
+    for dep in sorted(set(dependents)):
+        # Resolve dep path
+        dep_parts = dep.split("/", 1)
+        if len(dep_parts) == 2:
+            dep_cat, dep_id = dep_parts
+            if dep_cat in registry and dep_id in registry[dep_cat]:
+                dep_path = registry[dep_cat][dep_id].get("path", "")
+                dep_acts = get_action_items(dep_path)
+                if dep_acts:
+                    dependent_actions[dep] = dep_acts
 
     # Get phase involvement
     phases = file_phases.get(norm, [])
@@ -979,7 +1042,8 @@ def compute_impact(file_path, registry, edges, reverse_index, file_phases, file_
         "file": norm,
         "is_global_short_circuit": is_global,
         "dependents": sorted(set(dependents)),
-        "action_items": actions,
+        "action_items": direct_actions,
+        "dependent_actions": dependent_actions,
         "phases": phases,
         "flows": flows,
     }
@@ -1014,14 +1078,14 @@ def print_impact(impact):
             print(f"  ... and {len(impact['dependents']) - 20} more")
 
     if impact["phases"]:
-        print(f"\nPhase involvement:")
+        print("\nPhase involvement:")
         for p in impact["phases"]:
             steps = ", ".join(str(s) for s in p["steps"])
             gate = " [GATE]" if p.get("is_gate") else ""
             print(f"  Phase {p['phase']}: steps {steps} ({p['role']}){gate}")
 
     if impact["flows"]:
-        print(f"\nFlow participation:")
+        print("\nFlow participation:")
         for f in impact["flows"]:
             print(f"  - {f['flow']} (role: {f['role']}, order: {f['order']})")
 
@@ -1110,11 +1174,12 @@ def main():
     if "--changelog" in sys.argv:
         since = None
         component = None
+        breaking_only = "--breaking" in sys.argv
         if "--since" in sys.argv:
             since = sys.argv[sys.argv.index("--since") + 1]
         if "--component" in sys.argv:
             component = sys.argv[sys.argv.index("--component") + 1]
-        cl = generate_changelog(forge_dir, since, component)
+        cl = generate_changelog(forge_dir, since, component, breaking_only=breaking_only)
         print(json.dumps(cl, indent=2))
         return
 
