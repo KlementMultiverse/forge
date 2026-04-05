@@ -327,14 +327,78 @@ Execute: spawn Agent with subagent_type="devops-architect"
 Verify: key files exist (pyproject.toml OR package.json, Dockerfile, docker-compose.yml)
 Trace: save to docs/forge-trace/S7-scaffold/
 
-**STEP S8: GENERATE hooks** → PM (copies template)
+**STEP S8: GENERATE project infrastructure** → PM (no agent needed)
+
+PM creates all project infrastructure that /forge needs to operate:
 
 ```bash
-cp templates/hooks.json .claude/settings.json
+# 1. Hooks (ALL 8 — auto-continue, state tracking, safety, linting)
+mkdir -p .claude
+cp ~/.claude/templates/hooks.json .claude/settings.json
+
+# 2. Forge local directory (playbook, rules, agents, checkpoints)
+mkdir -p .forge/playbook .forge/rules .forge/agents .forge/checkpoints
+
+# 3. Playbook files
+cat > .forge/playbook/strategies.md << 'EOF'
+# Playbook — Strategies & Insights
+# Format: [str-NNN] helpful=N harmful=N :: insight text
+## STRATEGIES & INSIGHTS
+## COMMON MISTAKES TO AVOID
+## DOMAIN-SPECIFIC
+EOF
+
+cat > .forge/playbook/mistakes.md << 'EOF'
+# Playbook — Mistakes
+# Format: [mis-NNN] :: description + root cause + prevention
+EOF
+
+cat > .forge/playbook/archived.md << 'EOF'
+# Playbook — Archived
+# Pruned entries (harmful > helpful) are moved here.
+EOF
+
+# 4. Project-specific rules
+cat > .forge/rules/project.md << 'EOF'
+# Project-Specific Rules
+# Rules that apply ONLY to this project. Global rules are in ~/.claude/rules/
+EOF
+
+# 5. Forge local gitignore
+cat > .forge/.gitignore << 'EOF'
+checkpoints/
+EOF
+
+# 6. Docs structure
+mkdir -p docs/forge-trace docs/proposals docs/retrospectives docs/checkpoints docs/issues
+
+# 7. Forge timeline
+cat > docs/forge-timeline.md << EOF
+# Forge Timeline -- $(basename "$PWD")
+This file tracks every step of the development process.
+Updated automatically by /forge and all Forge commands.
+
+## Legend
+- DONE -- step completed successfully
+- NEEDS_REVIEW -- output needs human review
+- BLOCKED -- step failed, needs attention
+- IN_PROGRESS -- currently running
+
+---
+<!-- Timeline entries appear below, newest first -->
+EOF
+
+# 8. Copy utility scripts
+mkdir -p scripts
+cp ~/.claude/scripts/traceability.sh scripts/ 2>/dev/null || true
+cp ~/.claude/scripts/sync-report.sh scripts/ 2>/dev/null || true
+chmod +x scripts/*.sh 2>/dev/null || true
 ```
 
 Verify: .claude/settings.json exists and is valid JSON
-Trace: save to docs/forge-trace/S8-hooks/
+Verify: .forge/playbook/ exists with 3 files
+Verify: docs/forge-timeline.md exists
+Trace: save to docs/forge-trace/S8-infrastructure/
 
 **STEP S9: REVIEW all generated files** → @reviewer agent
 
@@ -346,7 +410,9 @@ Execute: spawn Agent with subagent_type="self-review"
     3. FORGE.md — has QUEUED entry?
     4. .claude/rules/ — SDLC flow complete? Agent routing filled?
     5. Scaffold — settings.py valid? Dependencies listed? Dockerfile works?
-    6. .claude/settings.json — valid JSON? Hooks defined?
+    6. .claude/settings.json — valid JSON? Has all 8 hooks (Stop, UserPromptSubmit, PreToolUse x2, PostToolUse x4)?
+    7. .forge/playbook/ — strategies.md, mistakes.md, archived.md exist?
+    8. docs/forge-timeline.md — exists with project name?
 
     Rate each 1-5. Report any issues.
 

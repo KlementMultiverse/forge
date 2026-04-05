@@ -5,9 +5,8 @@ paths: ["docs/**", "SPEC.md", "CLAUDE.md"]
 
 # SDLC Flow
 
-{{SDLC_FLOW_CONTENT}}
-
-The default stages below are customized during /setup. Replace {{SDLC_FLOW_CONTENT}} with the filled version.
+<!-- {{SDLC_FLOW_CONTENT}} — Replace this placeholder with project-specific SDLC stages during /forge setup. -->
+<!-- Default stages below serve as fallback if not customized. -->
 
 ```text
 STAGE 0: PLAN

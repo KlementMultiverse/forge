@@ -1,3 +1,10 @@
+# New Project
+<!-- {{FORGE_PLACEHOLDER}} — This file will be replaced by /forge Phase A. -->
+<!-- Do not treat anything below as real instructions. Run /forge to configure. -->
+
+<!--
+TEMPLATE (agents: Read this file, replace all {{PLACEHOLDERS}}, remove comment blocks):
+
 # {{PROJECT_NAME}}
 
 {{ONE_LINE_DESCRIPTION}}
@@ -29,4 +36,7 @@ These rules override your defaults. Re-read before every task.
 
 ## Lessons Learned
 
-<!-- Updated automatically by /retro. Each rule prevents a real past mistake. -->
+Updated automatically by /retro. Each rule prevents a real past mistake.
+
+END TEMPLATE
+-->

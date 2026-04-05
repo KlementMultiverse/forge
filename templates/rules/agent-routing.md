@@ -5,11 +5,14 @@ paths: ["apps/**", "src/**", "*.py", "*.ts", "*.js"]
 
 # Agent Selection
 
+<!--
+{{AGENT_MATRIX_ROWS}} — Replace with project-specific agent routing table during /forge setup.
+
 | Domain | Agent | context7 Libraries |
 |---|---|---|
-{{AGENT_MATRIX_ROWS}}
+| (filled per project) | | |
 
-The table above is filled by /setup based on your tech stack. Example rows:
+Examples below for reference:
 
 <!-- Django + multi-tenant example:
 | domain-tenants | @django-tenants-agent | django-tenants, django-tenant-users |

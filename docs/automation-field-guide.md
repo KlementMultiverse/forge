@@ -4,6 +4,75 @@ Everything we learned building Forge: what works, what breaks, and why.
 
 ---
 
+## Part 0: The Two Pipes (Most Important Concept)
+
+Claude Code reads files through **two different pipes**. Understanding this is the foundation of everything else.
+
+### Pipe 1: Auto-Load (CLAUDE.md, .claude/rules/*.md)
+
+```
+File on disk → strip frontmatter → strip block-level HTML comments → system prompt → LLM
+```
+
+This happens **automatically** when Claude Code starts. You don't control it. The LLM sees the **stripped** version — no frontmatter, no block-level comments.
+
+### Pipe 2: Read Tool (agent calls Read on a file)
+
+```
+File on disk → raw content as-is → tool result → LLM
+```
+
+This happens when an agent explicitly reads a file. The LLM sees **everything** — comments, frontmatter, all of it.
+
+### Why this matters
+
+Template files (CLAUDE.md, rules) get auto-loaded through Pipe 1. If they have placeholder text like `{{PROJECT_NAME}}` or fake instructions, the LLM treats them as real. That's **context poisoning**.
+
+The fix: wrap template content in block-level HTML comments.
+
+```markdown
+# New Project
+<!-- {{FORGE_PLACEHOLDER}} — detected by hooks, invisible to LLM -->
+
+<!--
+TEMPLATE (agents: Read this file, replace all {{PLACEHOLDERS}}):
+
+# {{PROJECT_NAME}}
+
+## Tech Stack
+| Layer | Technology | Notes |
+|---|---|---|
+{{TECH_STACK_ROWS}}
+
+## Architecture Rules
+{{ARCHITECTURE_RULES}}
+-->
+```
+
+**What each reader sees:**
+
+| Reader | How it reads | Sees comments? | Sees `{{PLACEHOLDERS}}`? |
+|--------|-------------|----------------|--------------------------|
+| LLM (auto-load) | Pipe 1 (stripped) | No | No — sees only `# New Project` |
+| Agent (Read tool) | Pipe 2 (raw) | Yes | Yes — knows what to replace |
+| Bash hooks/scripts | `grep` on disk | Yes | Yes — can detect placeholders |
+
+**Three audiences, one file, zero poisoning.**
+
+### Rules for template files
+
+1. Only visible text (outside comments) becomes LLM instructions
+2. Keep visible text minimal — just enough to not confuse the LLM
+3. Put all `{{PLACEHOLDERS}}` and structural references inside `<!-- ... -->` blocks
+4. Block-level comments only (own line) — inline comments `text <!-- comment --> text` are NOT stripped
+5. Detection scripts (`grep "{{" CLAUDE.md`) read from disk, so comments don't break detection
+
+### Confirmed from source
+
+Claude Code `src/utils/claudemd.ts` function `stripHtmlComments()` uses the CommonMark lexer to identify and remove block-level HTML comment tokens before content reaches the model. Frontmatter between `---` delimiters is also stripped via `frontmatterParser.ts`.
+
+---
+
 ## Part 1: The Mental Model
 
 ### Claude Code is not a chatbot — it's a runtime
@@ -121,6 +190,35 @@ Layer 5: Research            → fetched on-demand (context7 docs, web search)
 ```
 
 Each layer is smaller and more specific than the last. Layer 1 is broad ("use TDD"). Layer 5 is precise ("Django Ninja v1.3 changed router syntax to X").
+
+### HTML Comments = Invisible to the LLM (Confirmed from Source)
+
+Claude Code strips block-level HTML comments (`<!-- ... -->` on their own lines) from CLAUDE.md and rules files BEFORE sending to the model. This is implemented in `stripHtmlComments()` in `src/utils/claudemd.ts`.
+
+Use this for:
+- **Template structure references** — keep the knowledge on disk, invisible to the LLM
+- **Placeholder markers** — detection scripts (`grep`) read from disk, not LLM context
+- **Author notes** — documentation for humans/scripts that the LLM shouldn't act on
+
+```markdown
+# New Project
+<!-- {{FORGE_PLACEHOLDER}} — detected by hooks, invisible to LLM -->
+
+<!--
+STRUCTURE REFERENCE:
+## Tech Stack
+| Layer | Technology | Notes |
+This structure is preserved for agents that read the file directly,
+but the LLM never sees it as instructions.
+-->
+```
+
+**Caveat:** Inline comments within paragraphs are NOT stripped:
+```markdown
+This text <!-- VISIBLE to LLM --> stays in context
+```
+
+**Also stripped:** YAML frontmatter between `---` delimiters (the `paths:` field for conditional rules).
 
 ### Front-Load Critical Information
 
