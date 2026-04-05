@@ -167,11 +167,103 @@ def check_hooks_structure(forge_dir):
     return errors
 
 
+def check_core_registry(forge_dir):
+    """Validate forge-core.json checksums match actual files."""
+    import hashlib
+    warnings = []
+    registry_file = forge_dir / "forge-core.json"
+    if not registry_file.exists():
+        return warnings  # No registry yet — skip silently
+
+    data = json.loads(registry_file.read_text())
+    components = data.get("components", {})
+    drifted = 0
+    missing = 0
+
+    for path, info in components.items():
+        full_path = forge_dir / path
+        if not full_path.exists():
+            warnings.append(f"REGISTRY DRIFT: {path} listed in forge-core.json but file missing")
+            missing += 1
+            continue
+
+        actual = hashlib.sha256(full_path.read_bytes()).hexdigest()[:16]
+        if actual != info.get("checksum", ""):
+            drifted += 1
+
+    if drifted > 0:
+        warnings.append(f"REGISTRY DRIFT: {drifted} files changed since last forge-core.json update. Run: python3 scripts/forge-lint.py --update-registry")
+    if missing > 0:
+        warnings.append(f"REGISTRY MISSING: {missing} files in registry no longer exist")
+    return warnings
+
+
+def check_agent_frontmatter(forge_dir):
+    """Validate all agents have required frontmatter fields."""
+    errors = []
+    for f in list(forge_dir.glob("agents/universal/*.md")) + list(forge_dir.glob("agents/stacks/*/*.md")):
+        if f.name == "README.md":
+            continue
+        content = f.read_text(errors="ignore")
+        if not content.startswith("---"):
+            errors.append(f"AGENT NO FRONTMATTER: {f.relative_to(forge_dir)} — missing YAML frontmatter (name, description, tools)")
+            continue
+        fm = re.search(r"^---\s*\n(.*?)---", content, re.DOTALL)
+        if fm:
+            fm_text = fm.group(1)
+            if not re.search(r"^name:", fm_text, re.MULTILINE):
+                errors.append(f"AGENT NO NAME: {f.relative_to(forge_dir)} — frontmatter missing 'name:' field")
+            if not re.search(r"^description:", fm_text, re.MULTILINE):
+                errors.append(f"AGENT NO DESC: {f.relative_to(forge_dir)} — frontmatter missing 'description:' field")
+            if not re.search(r"^tools:", fm_text, re.MULTILINE):
+                errors.append(f"AGENT NO TOOLS: {f.relative_to(forge_dir)} — frontmatter missing 'tools:' field")
+    return errors
+
+
+def check_command_headers(forge_dir):
+    """Validate all commands have # /name — description on line 1."""
+    warnings = []
+    for f in forge_dir.glob("commands/*.md"):
+        first_line = f.read_text(errors="ignore").split("\n")[0]
+        if not re.match(r"^#\s+/\S+\s+(?:--|[—–-])\s+.+", first_line):
+            warnings.append(f"COMMAND BAD HEADER: {f.name} — line 1 should be '# /name — description'")
+    return warnings
+
+
+def update_registry(forge_dir):
+    """Regenerate checksums in forge-core.json."""
+    import hashlib
+    registry_file = forge_dir / "forge-core.json"
+    if not registry_file.exists():
+        print("No forge-core.json found. Run the generator first.")
+        return
+
+    data = json.loads(registry_file.read_text())
+    updated = 0
+    for path, info in data.get("components", {}).items():
+        full_path = forge_dir / path
+        if full_path.exists():
+            new_hash = hashlib.sha256(full_path.read_bytes()).hexdigest()[:16]
+            if new_hash != info.get("checksum", ""):
+                info["checksum"] = new_hash
+                info["last_verified"] = __import__("datetime").date.today().isoformat()
+                updated += 1
+
+    data["generated"] = __import__("datetime").datetime.now(__import__("datetime").UTC).isoformat()
+    registry_file.write_text(json.dumps(data, indent=2))
+    print(f"Updated {updated} checksums in forge-core.json")
+
+
 def main():
     forge_dir = find_forge_dir()
     if not forge_dir.exists():
         print(f"Error: {forge_dir} not found", file=sys.stderr)
         sys.exit(1)
+
+    # Handle --update-registry flag
+    if "--update-registry" in sys.argv:
+        update_registry(forge_dir)
+        return
 
     errors = []
     warnings = []
@@ -182,9 +274,12 @@ def main():
     # Run all checks
     errors.extend(check_hook_scripts(forge_dir))
     errors.extend(check_agent_files(forge_dir))
+    errors.extend(check_agent_frontmatter(forge_dir))
     errors.extend(check_hooks_structure(forge_dir))
+    warnings.extend(check_command_headers(forge_dir))
     warnings.extend(check_orphan_scripts(forge_dir))
     warnings.extend(check_orphan_agents(forge_dir))
+    warnings.extend(check_core_registry(forge_dir))
 
     # Report
     if errors:

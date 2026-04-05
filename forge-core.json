@@ -1,0 +1,1202 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-04-05T10:12:02.266446+00:00",
+  "description": "Authoritative registry of all forge core components. Changes require GitHub issue + protocol.",
+  "protocols": {
+    "agent": {
+      "required": [
+        "YAML frontmatter (name, description, tools)",
+        "# @agent-name heading",
+        "clear system prompt with instructions"
+      ],
+      "validation": "forge-lint.py checks frontmatter + orphan status",
+      "change_protocol": [
+        "Create GitHub issue",
+        "Edit agent file",
+        "Run forge-lint.py",
+        "Update forge-core.json checksum",
+        "Commit with #issue ref"
+      ]
+    },
+    "command": {
+      "required": [
+        "# /name \u2014 description on line 1",
+        "<system-reminder> if enforcement-critical"
+      ],
+      "validation": "forge-lint.py checks first line pattern + system-reminder presence for critical commands",
+      "change_protocol": [
+        "Create GitHub issue",
+        "Edit command file",
+        "Run forge-lint.py",
+        "Update forge-core.json checksum",
+        "Commit with #issue ref"
+      ]
+    },
+    "script": {
+      "required": [
+        "#!/bin/bash shebang",
+        "set -euo pipefail or set -uo pipefail",
+        "source forge-phase-map.sh if using phase mapping"
+      ],
+      "validation": "forge-lint.py checks shebang + sourcing + executable bit",
+      "change_protocol": [
+        "Create GitHub issue",
+        "Edit script",
+        "Test ALL subcommands",
+        "Run forge-lint.py",
+        "Update forge-core.json checksum",
+        "Commit with #issue ref"
+      ]
+    },
+    "hook": {
+      "required": [
+        "Valid JSON",
+        "All 4 events (Stop, UserPromptSubmit, PreToolUse, PostToolUse)",
+        "8+ total hooks"
+      ],
+      "validation": "forge-lint.py validates JSON structure + event count + script references",
+      "change_protocol": [
+        "Create GitHub issue",
+        "Edit hooks.json",
+        "Test ALL 8 hooks manually",
+        "Run forge-lint.py",
+        "Update forge-core.json checksum",
+        "Commit with #issue ref"
+      ]
+    },
+    "template": {
+      "required": [
+        "{{PLACEHOLDERS}} inside HTML comments only (Pipe 1 safety)",
+        "Visible marker for hook detection"
+      ],
+      "validation": "forge-lint.py checks no raw placeholders in auto-loaded position",
+      "change_protocol": [
+        "Create GitHub issue",
+        "Edit template",
+        "Verify Pipe 1 (auto-load) vs Pipe 2 (Read tool) behavior",
+        "Update forge-core.json checksum",
+        "Commit with #issue ref"
+      ]
+    },
+    "rule": {
+      "required": [
+        "No raw {{placeholders}}",
+        "paths: frontmatter if directory-scoped"
+      ],
+      "validation": "forge-lint.py checks for context poisoning risk",
+      "change_protocol": [
+        "Create GitHub issue",
+        "Edit rule",
+        "Verify auto-load strips correctly",
+        "Update forge-core.json checksum",
+        "Commit with #issue ref"
+      ]
+    }
+  },
+  "components": {
+    "agents/universal/agent-factory.md": {
+      "type": "agent",
+      "name": "agent-factory",
+      "checksum": "8fb503d6dd7a84a0",
+      "lines": 189,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/api-architect.md": {
+      "type": "agent",
+      "name": "api-architect",
+      "checksum": "0cb2b77b43c2c5bc",
+      "lines": 218,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/aws-setup-agent.md": {
+      "type": "agent",
+      "name": "aws-setup-agent",
+      "checksum": "c872ec384d97b090",
+      "lines": 290,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/backend-architect.md": {
+      "type": "agent",
+      "name": "backend-architect",
+      "checksum": "d9e151fc53c09d9b",
+      "lines": 313,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/business-panel-experts.md": {
+      "type": "agent",
+      "name": "business-panel-experts",
+      "checksum": "c161598d3e738e41",
+      "lines": 394,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/code-archaeologist.md": {
+      "type": "agent",
+      "name": "code-archaeologist",
+      "checksum": "e41ec34ca3e7f6de",
+      "lines": 339,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/context-loader-agent.md": {
+      "type": "agent",
+      "name": "context-loader-agent",
+      "checksum": "3f15691efbd76c7f",
+      "lines": 286,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/deep-research-agent.md": {
+      "type": "agent",
+      "name": "deep-research-agent",
+      "checksum": "378cb6b4b7edaf94",
+      "lines": 311,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/deploy-guide-agent.md": {
+      "type": "agent",
+      "name": "deploy-guide",
+      "checksum": "49d5a22c87704859",
+      "lines": 37,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/devops-architect.md": {
+      "type": "agent",
+      "name": "devops-architect",
+      "checksum": "ea0f633c6301c0b8",
+      "lines": 280,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/frontend-architect.md": {
+      "type": "agent",
+      "name": "frontend-architect",
+      "checksum": "e17e24bc7d73dc36",
+      "lines": 359,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/learning-guide.md": {
+      "type": "agent",
+      "name": "learning-guide",
+      "checksum": "5d4c0544467c7220",
+      "lines": 161,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/mcp-architect.md": {
+      "type": "agent",
+      "name": "mcp-architect",
+      "checksum": "9c95dd8b84d4bbd1",
+      "lines": 375,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/pattern-auditor-agent.md": {
+      "type": "agent",
+      "name": "pattern-auditor-agent",
+      "checksum": "55510a60fa018286",
+      "lines": 901,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/performance-engineer.md": {
+      "type": "agent",
+      "name": "performance-engineer",
+      "checksum": "0d07471918a582c9",
+      "lines": 370,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/playbook-curator.md": {
+      "type": "agent",
+      "name": "playbook-curator",
+      "checksum": "ccf0529e12dab36d",
+      "lines": 180,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/playwright-critic.md": {
+      "type": "agent",
+      "name": "playwright-critic",
+      "checksum": "d76cbd794e9a85e4",
+      "lines": 340,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/pm-orchestrator.md": {
+      "type": "agent",
+      "name": "forge-pm",
+      "checksum": "c1510a432339b30d",
+      "lines": 475,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/python-expert.md": {
+      "type": "agent",
+      "name": "python-expert",
+      "checksum": "376f11df2466aba4",
+      "lines": 204,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/quality-engineer.md": {
+      "type": "agent",
+      "name": "quality-engineer",
+      "checksum": "0467d93b61361192",
+      "lines": 317,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/refactoring-expert.md": {
+      "type": "agent",
+      "name": "refactoring-expert",
+      "checksum": "89acd2148b19b6d0",
+      "lines": 269,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/repo-index.md": {
+      "type": "agent",
+      "name": "repo-index",
+      "checksum": "1615786b983edd0d",
+      "lines": 158,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/requirements-analyst.md": {
+      "type": "agent",
+      "name": "requirements-analyst",
+      "checksum": "510bf75cdcf047c6",
+      "lines": 179,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/retrospective-miner.md": {
+      "type": "agent",
+      "name": "retrospective-miner",
+      "checksum": "0d743990f12be408",
+      "lines": 203,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/reviewer.md": {
+      "type": "agent",
+      "name": "reviewer",
+      "checksum": "5a3763b8c3369038",
+      "lines": 248,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/root-cause-analyst.md": {
+      "type": "agent",
+      "name": "root-cause-analyst",
+      "checksum": "670d76253666e055",
+      "lines": 448,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/sdlc-enforcer.md": {
+      "type": "agent",
+      "name": "sdlc-enforcer",
+      "checksum": "1ac3bb0f50440811",
+      "lines": 232,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/security-engineer.md": {
+      "type": "agent",
+      "name": "security-engineer",
+      "checksum": "b4f908fc558fa094",
+      "lines": 426,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/self-review.md": {
+      "type": "agent",
+      "name": "self-review",
+      "checksum": "c2f48302088e4378",
+      "lines": 167,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/socratic-mentor.md": {
+      "type": "agent",
+      "name": "socratic-mentor",
+      "checksum": "a1906a4d0247d3bf",
+      "lines": 428,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/system-architect.md": {
+      "type": "agent",
+      "name": "system-architect",
+      "checksum": "ce91e7ca2aaec4bd",
+      "lines": 210,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/technical-writer.md": {
+      "type": "agent",
+      "name": "technical-writer",
+      "checksum": "a4eebc00fe4261db",
+      "lines": 291,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/universal/tools-architect.md": {
+      "type": "agent",
+      "name": "tools-architect",
+      "checksum": "25d382de5ed687d7",
+      "lines": 175,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/azure/azure-openai-agent.md": {
+      "type": "agent",
+      "name": "azure-openai-agent",
+      "checksum": "12081fba0ffedd80",
+      "lines": 333,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/azure/azure-setup-agent.md": {
+      "type": "agent",
+      "name": "azure-setup-agent",
+      "checksum": "25ae754a1e683954",
+      "lines": 326,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/django/django-ninja-agent.md": {
+      "type": "agent",
+      "name": "django-ninja-agent",
+      "checksum": "077aa65420c39eca",
+      "lines": 193,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/django/django-tenants-agent.md": {
+      "type": "agent",
+      "name": "django-tenants-agent",
+      "checksum": "1ca2ee2d7679000e",
+      "lines": 168,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/django/s3-lambda-agent.md": {
+      "type": "agent",
+      "name": "s3-lambda-agent",
+      "checksum": "b5b2b76e1f172509",
+      "lines": 169,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/gcp/gcp-setup-agent.md": {
+      "type": "agent",
+      "name": "gcp-setup-agent",
+      "checksum": "7238f0efa9d7dac2",
+      "lines": 301,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/gcp/vertex-ai-agent.md": {
+      "type": "agent",
+      "name": "vertex-ai-agent",
+      "checksum": "d3c5d8e64296092c",
+      "lines": 262,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/genai/agent-orchestrator.md": {
+      "type": "agent",
+      "name": "agent-orchestrator",
+      "checksum": "29cafa94e26c33db",
+      "lines": 172,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/genai/ai-safety-agent.md": {
+      "type": "agent",
+      "name": "ai-safety-agent",
+      "checksum": "750b482ef9fb2125",
+      "lines": 178,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/genai/chatbot-builder.md": {
+      "type": "agent",
+      "name": "chatbot-builder",
+      "checksum": "cf018bb4219555ec",
+      "lines": 173,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/genai/eval-engineer.md": {
+      "type": "agent",
+      "name": "eval-engineer",
+      "checksum": "b5c43e2501e8fcd7",
+      "lines": 177,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/genai/llm-integration-agent.md": {
+      "type": "agent",
+      "name": "llm-integration-agent",
+      "checksum": "66c54fe03d0f05de",
+      "lines": 173,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/genai/rag-architect.md": {
+      "type": "agent",
+      "name": "rag-architect",
+      "checksum": "10f4c44f12f0d1f7",
+      "lines": 173,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/genai/voice-agent-builder.md": {
+      "type": "agent",
+      "name": "voice-agent-builder",
+      "checksum": "bcaeade5d9cc72eb",
+      "lines": 173,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/langchain/langchain-agent.md": {
+      "type": "agent",
+      "name": "langchain-agent",
+      "checksum": "c32c81166db0a027",
+      "lines": 315,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/langchain/langgraph-agent.md": {
+      "type": "agent",
+      "name": "langgraph-agent",
+      "checksum": "fea80ee4e25879cd",
+      "lines": 331,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "agents/stacks/langchain/langsmith-agent.md": {
+      "type": "agent",
+      "name": "langsmith-agent",
+      "checksum": "bd24bd3bbef2fb13",
+      "lines": 347,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/audit-patterns.md": {
+      "type": "command",
+      "name": "audit-patterns",
+      "checksum": "55292d2c45ed2d06",
+      "lines": 65,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/benchmark.md": {
+      "type": "command",
+      "name": "benchmark",
+      "checksum": "5f74ba6e9db70ad0",
+      "lines": 73,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/bootstrap.md": {
+      "type": "command",
+      "name": "bootstrap",
+      "checksum": "fc9c47dc34e0d24a",
+      "lines": 43,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/build-project.md": {
+      "type": "command",
+      "name": "build-project",
+      "checksum": "5eff35ca8ff65180",
+      "lines": 209,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/canary.md": {
+      "type": "command",
+      "name": "canary",
+      "checksum": "e653f0c7e22f1511",
+      "lines": 58,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/careful.md": {
+      "type": "command",
+      "name": "careful",
+      "checksum": "c57dc2da9071ebd3",
+      "lines": 32,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/challenge.md": {
+      "type": "command",
+      "name": "challenge",
+      "checksum": "20fb625595d55e4c",
+      "lines": 63,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/checkpoint.md": {
+      "type": "command",
+      "name": "checkpoint",
+      "checksum": "024c887d87013bde",
+      "lines": 159,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/codex.md": {
+      "type": "command",
+      "name": "codex",
+      "checksum": "11518248316909a3",
+      "lines": 68,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/create-mcp.md": {
+      "type": "command",
+      "name": "create-mcp",
+      "checksum": "b7d8729841aa44ee",
+      "lines": 117,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/critic.md": {
+      "type": "command",
+      "name": "critic",
+      "checksum": "f41ec3e9b9467ae1",
+      "lines": 247,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/design-audit.md": {
+      "type": "command",
+      "name": "design-audit",
+      "checksum": "018a90c481a26d99",
+      "lines": 75,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/design-doc.md": {
+      "type": "command",
+      "name": "design-doc",
+      "checksum": "3b5cd082b713c6e9",
+      "lines": 224,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/design-system.md": {
+      "type": "command",
+      "name": "design-system",
+      "checksum": "1f5149c4d1401293",
+      "lines": 85,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/discover.md": {
+      "type": "command",
+      "name": "discover",
+      "checksum": "cabf77155a367890",
+      "lines": 41,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/evolve.md": {
+      "type": "command",
+      "name": "evolve",
+      "checksum": "bb8b14f4f3008ad9",
+      "lines": 50,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/feasibility.md": {
+      "type": "command",
+      "name": "feasibility",
+      "checksum": "aca70402189ffd24",
+      "lines": 52,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/forge.md": {
+      "type": "command",
+      "name": "forge",
+      "checksum": "b8a03a3cfd2d7e27",
+      "lines": 125,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/freeze.md": {
+      "type": "command",
+      "name": "freeze",
+      "checksum": "bae49a5d75392516",
+      "lines": 28,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/gate.md": {
+      "type": "command",
+      "name": "gate",
+      "checksum": "de11be2b30a0e755",
+      "lines": 223,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/generate-spec.md": {
+      "type": "command",
+      "name": "generate-spec",
+      "checksum": "5e358b1dc63d8a6c",
+      "lines": 65,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/guard.md": {
+      "type": "command",
+      "name": "guard",
+      "checksum": "c6dd978b752f7ce6",
+      "lines": 27,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/investigate.md": {
+      "type": "command",
+      "name": "investigate",
+      "checksum": "ce1ed46a7e8d1ca5",
+      "lines": 59,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/learn.md": {
+      "type": "command",
+      "name": "learn",
+      "checksum": "c3ba19cad197b245",
+      "lines": 42,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/plan-review.md": {
+      "type": "command",
+      "name": "plan-review",
+      "checksum": "8f51026ac2e974cf",
+      "lines": 59,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/plan-tasks.md": {
+      "type": "command",
+      "name": "plan-tasks",
+      "checksum": "b858c6d0349d6396",
+      "lines": 81,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/prune.md": {
+      "type": "command",
+      "name": "prune",
+      "checksum": "c9686d9733ab7913",
+      "lines": 40,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/qa-report.md": {
+      "type": "command",
+      "name": "qa-report",
+      "checksum": "3b5d4ca3805255fb",
+      "lines": 97,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/requirements.md": {
+      "type": "command",
+      "name": "requirements",
+      "checksum": "ce8b796ca6d37994",
+      "lines": 49,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/retro.md": {
+      "type": "command",
+      "name": "retro",
+      "checksum": "84db328b3d2e8650",
+      "lines": 118,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/review.md": {
+      "type": "command",
+      "name": "review",
+      "checksum": "ec861ce15817cfd3",
+      "lines": 69,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/security-scan.md": {
+      "type": "command",
+      "name": "security-scan",
+      "checksum": "02200160fb813a0f",
+      "lines": 63,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/setup.md": {
+      "type": "command",
+      "name": "setup",
+      "checksum": "c83153316974abd4",
+      "lines": 166,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/ship.md": {
+      "type": "command",
+      "name": "ship",
+      "checksum": "9ed52cb95e739ea3",
+      "lines": 87,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/specify.md": {
+      "type": "command",
+      "name": "specify",
+      "checksum": "5bae58e138738936",
+      "lines": 171,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/forge-phases/cases.md": {
+      "type": "command",
+      "name": "cases",
+      "checksum": "76d2f2d4f9f74a15",
+      "lines": 304,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/forge-phases/phase-0-2-plan.md": {
+      "type": "command",
+      "name": "phase-0-2-plan",
+      "checksum": "0120bb4e376563c1",
+      "lines": 115,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/forge-phases/phase-3-implement.md": {
+      "type": "command",
+      "name": "phase-3-implement",
+      "checksum": "ea0e3d7095dfe4fd",
+      "lines": 155,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/forge-phases/phase-4-5-validate.md": {
+      "type": "command",
+      "name": "phase-4-5-validate",
+      "checksum": "fdf176b31b363053",
+      "lines": 128,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/forge-phases/phase-a-setup.md": {
+      "type": "command",
+      "name": "phase-a-setup",
+      "checksum": "61a7a36310e88037",
+      "lines": 533,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "commands/forge-phases/tracking.md": {
+      "type": "command",
+      "name": "tracking",
+      "checksum": "8b972ffa351a9192",
+      "lines": 128,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/docker-state.sh": {
+      "type": "script",
+      "name": "docker-state",
+      "checksum": "da5b92daa93dc2f1",
+      "lines": 225,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-auto-state.sh": {
+      "type": "script",
+      "name": "forge-auto-state",
+      "checksum": "054dc6f16f8dfc8d",
+      "lines": 95,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-deps.sh": {
+      "type": "script",
+      "name": "forge-deps",
+      "checksum": "f2650ad65cfaabea",
+      "lines": 22,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-enforce.sh": {
+      "type": "script",
+      "name": "forge-enforce",
+      "checksum": "ffbdf5a669ae1034",
+      "lines": 663,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-fsm.sh": {
+      "type": "script",
+      "name": "forge-fsm",
+      "checksum": "360010abb6ea4d27",
+      "lines": 364,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-grow.sh": {
+      "type": "script",
+      "name": "forge-grow",
+      "checksum": "40b5c862408d7409",
+      "lines": 403,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-handshake.sh": {
+      "type": "script",
+      "name": "forge-handshake",
+      "checksum": "097964ba4b9737b5",
+      "lines": 211,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-observer-approve.sh": {
+      "type": "script",
+      "name": "forge-observer-approve",
+      "checksum": "fa3319dff0173eb7",
+      "lines": 123,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-observer-check.sh": {
+      "type": "script",
+      "name": "forge-observer-check",
+      "checksum": "f77e81563b8dad18",
+      "lines": 107,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-phase-gate.sh": {
+      "type": "script",
+      "name": "forge-phase-gate",
+      "checksum": "87ef5ff3f3626386",
+      "lines": 283,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-phase-map.sh": {
+      "type": "script",
+      "name": "forge-phase-map",
+      "checksum": "a5a68aadf4db2a10",
+      "lines": 42,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-review-guard.sh": {
+      "type": "script",
+      "name": "forge-review-guard",
+      "checksum": "eb0e4e915aeccf47",
+      "lines": 127,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-shell.sh": {
+      "type": "script",
+      "name": "forge-shell",
+      "checksum": "56d188978543448f",
+      "lines": 233,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-stack.sh": {
+      "type": "script",
+      "name": "forge-stack",
+      "checksum": "4460e23f3a13bf3b",
+      "lines": 333,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-state-sync.sh": {
+      "type": "script",
+      "name": "forge-state-sync",
+      "checksum": "e135828e09f2aed8",
+      "lines": 98,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-triangle.sh": {
+      "type": "script",
+      "name": "forge-triangle",
+      "checksum": "00021a94e8ec5067",
+      "lines": 212,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-verify.sh": {
+      "type": "script",
+      "name": "forge-verify",
+      "checksum": "92f494c13bb6c3d6",
+      "lines": 343,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/sync-report.sh": {
+      "type": "script",
+      "name": "sync-report",
+      "checksum": "55fb80da04e4ed63",
+      "lines": 89,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/traceability.sh": {
+      "type": "script",
+      "name": "traceability",
+      "checksum": "c344e1b3ae9070ac",
+      "lines": 138,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-lint.py": {
+      "type": "script",
+      "name": "forge-lint",
+      "checksum": "985071dde936e7c1",
+      "lines": 212,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-registry.py": {
+      "type": "script",
+      "name": "forge-registry",
+      "checksum": "8f6feaaf781c6b14",
+      "lines": 372,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "scripts/forge-runner.py": {
+      "type": "script",
+      "name": "forge-runner",
+      "checksum": "2aa9c2e6fd00c505",
+      "lines": 334,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/CLAUDE.template.md": {
+      "type": "template",
+      "name": "CLAUDE.template",
+      "checksum": "c28f7cc573f38517",
+      "lines": 42,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/FORGE.template.md": {
+      "type": "template",
+      "name": "FORGE.template",
+      "checksum": "86616c86e523a985",
+      "lines": 26,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/SPEC.template.md": {
+      "type": "template",
+      "name": "SPEC.template",
+      "checksum": "b859f35c31fe57d6",
+      "lines": 92,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/commit-msg": {
+      "type": "template",
+      "name": "commit-msg",
+      "checksum": "d9a4a1f82814bc91",
+      "lines": 31,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/design-doc-completeness-checklist.md": {
+      "type": "template",
+      "name": "design-doc-completeness-checklist",
+      "checksum": "ce67e2546fb9d1b8",
+      "lines": 77,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/design-doc.example.md": {
+      "type": "template",
+      "name": "design-doc.example",
+      "checksum": "0b3c3b51fce4822e",
+      "lines": 664,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/docker-compose.template.yml": {
+      "type": "template",
+      "name": "docker-compose.template",
+      "checksum": "66af5e36d5f6f598",
+      "lines": 35,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/forge-timeline.template.md": {
+      "type": "template",
+      "name": "forge-timeline.template",
+      "checksum": "953f9915b88f5238",
+      "lines": 15,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/forge-trace-entry.template.md": {
+      "type": "template",
+      "name": "forge-trace-entry.template",
+      "checksum": "c5ae97682fdb7166",
+      "lines": 42,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/forge-trace-index.template.md": {
+      "type": "template",
+      "name": "forge-trace-index.template",
+      "checksum": "4b68ba64cc2394fb",
+      "lines": 8,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/gate-handoff-checklists.md": {
+      "type": "template",
+      "name": "gate-handoff-checklists",
+      "checksum": "a5a2943a4181f356",
+      "lines": 43,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/hooks.json": {
+      "type": "template",
+      "name": "hooks",
+      "checksum": "b2a349bf22333a77",
+      "lines": 84,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/mcp.json": {
+      "type": "template",
+      "name": "mcp",
+      "checksum": "5b78e56c2a3f7694",
+      "lines": 8,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/pyproject.template.toml": {
+      "type": "template",
+      "name": "pyproject.template",
+      "checksum": "8d9374257328d68f",
+      "lines": 40,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/task-design-doc.template.md": {
+      "type": "template",
+      "name": "task-design-doc.template",
+      "checksum": "ad06434667635e64",
+      "lines": 110,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/test.e2e.template.py": {
+      "type": "template",
+      "name": "test.e2e.template",
+      "checksum": "e8d95ee6ee9892b5",
+      "lines": 163,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/test.template.py": {
+      "type": "template",
+      "name": "test.template",
+      "checksum": "44ec58380c51dbe0",
+      "lines": 57,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "templates/traceability-matrix.template.md": {
+      "type": "template",
+      "name": "traceability-matrix.template",
+      "checksum": "b07f06c47849165e",
+      "lines": 28,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "rules/django.md": {
+      "type": "rule",
+      "name": "django",
+      "checksum": "ac0a4f48d3caa424",
+      "lines": 22,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "rules/docker.md": {
+      "type": "rule",
+      "name": "docker",
+      "checksum": "dd141546f7598554",
+      "lines": 23,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "rules/forge-enforcement.md": {
+      "type": "rule",
+      "name": "forge-enforcement",
+      "checksum": "262df055376f5752",
+      "lines": 90,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "rules/forge-philosophy.md": {
+      "type": "rule",
+      "name": "forge-philosophy",
+      "checksum": "1d81ba43354885b9",
+      "lines": 56,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "rules/python.md": {
+      "type": "rule",
+      "name": "python",
+      "checksum": "d602f3e011de63f5",
+      "lines": 17,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "rules/security.md": {
+      "type": "rule",
+      "name": "security",
+      "checksum": "d3c530eec74eab63",
+      "lines": 22,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    },
+    "rules/universal.md": {
+      "type": "rule",
+      "name": "universal",
+      "checksum": "c1a845343fcc869c",
+      "lines": 56,
+      "last_verified": "2026-04-05",
+      "validation_status": "PASS"
+    }
+  }
+}
