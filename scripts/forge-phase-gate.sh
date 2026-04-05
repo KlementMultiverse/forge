@@ -14,6 +14,11 @@
 
 set -uo pipefail
 
+# Source shared phase mapping and dependency checker
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/forge-phase-map.sh"
+source "$SCRIPT_DIR/forge-deps.sh" && check_forge_deps
+
 D="${PROJECT_ROOT:-$PWD}"
 APPROVAL_DIR="$D/docs/.approvals"
 REVIEWS_LOG="$D/docs/.observer-reviews.log"
@@ -22,19 +27,14 @@ REVIEWING="$D/docs/.observer-reviewing"
 mkdir -p "$APPROVAL_DIR"
 
 get_current_phase() {
-    python3 -c "
+    local step
+    step=$(python3 -c "
 import json
-d = json.load(open('$D/docs/forge-state.json'))
-step = d.get('current_step', 0)
-# Map step to phase
-if step <= 8: print(0)
-elif step <= 11: print(1)
-elif step <= 19: print(2)
-elif step <= 39: print(3)
-elif step <= 46: print(4)
-elif step <= 56: print(5)
-else: print(6)
-" 2>/dev/null || echo 0
+with open('$D/docs/forge-state.json') as f:
+    d = json.load(f)
+print(d.get('current_step', 0))
+" 2>/dev/null || echo 0)
+    get_phase_for_step "$step"
 }
 
 cmd_check() {
@@ -173,10 +173,19 @@ print(int((now - created).total_seconds() / 60))
                 ;;
         esac
     else
-        echo "  No open PR — CodeRabbit check not applicable"
-        echo "  (Create PR with /gate to enable CodeRabbit review)"
-        # No PR = skip CodeRabbit requirement
-        coderabbit_ok=true
+        local has_remote
+        has_remote=$(git -C "$D" remote -v 2>/dev/null | head -1)
+        if [ -z "$has_remote" ]; then
+            echo "  STATUS: *** NO GIT REMOTE CONFIGURED ***"
+            echo "  ERROR: CodeRabbit CANNOT review without a GitHub repo."
+            echo "  FIX: gh repo create <org>/<name> --private --source=. --push"
+            echo ""
+            echo "[PHASE-GATE] ⚠ WARNING: No remote = no CodeRabbit = reduced quality"
+            coderabbit_ok=true
+        else
+            echo "  STATUS: Remote exists but no open PR"
+            echo "  FIX: git push && gh pr create --title 'Phase $phase' --body 'Forge build'"
+        fi
     fi
 
     # ─── VERDICT ───

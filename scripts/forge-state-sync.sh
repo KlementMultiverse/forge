@@ -15,7 +15,7 @@ ENFORCE="$D/scripts/forge-enforce.sh"
 [ -f "$ENFORCE" ] || exit 0
 
 # Read current state
-current_step=$(python3 -c "import json; print(json.load(open('$STATE')).get('current_step',0))" 2>/dev/null || echo 0)
+current_step=$(python3 -c "import json; f=open('$STATE'); d=json.load(f); f.close(); print(d.get('current_step',0))" 2>/dev/null || echo 0)
 
 # Detect actual progress from git and files
 has_spec=$([ -f "$D/SPEC.md" ] && grep -c "REQ-" "$D/SPEC.md" 2>/dev/null || echo 0)
@@ -47,7 +47,8 @@ fi
 # Check phase gates from state
 phases_done=$(python3 -c "
 import json
-d = json.load(open('$STATE'))
+with open('$STATE') as f:
+    d = json.load(f)
 phases = d.get('phases', {})
 done = 0
 for p in ['0','1','2','3','4','5']:
@@ -74,14 +75,16 @@ if [ "$actual_step" -gt "$current_step" ]; then
     echo "[FORGE-SYNC] State stale: was step $current_step, actual progress is step $actual_step (phase $actual_phase)"
     python3 -c "
 import json
-d = json.load(open('$STATE'))
+with open('$STATE') as f:
+    d = json.load(f)
 d['current_step'] = $actual_step
 d['current_phase'] = $actual_phase
 d['status'] = 'IN_PROGRESS'
-json.dump(d, open('$STATE', 'w'), indent=2)
+with open('$STATE', 'w') as f:
+    json.dump(d, f, indent=2)
 "
     echo "[FORGE-SYNC] Updated to step $actual_step, phase $actual_phase"
     echo "[FORGE-SYNC] Artifacts: spec=$has_spec REQs, design=$has_design, issues=$has_issues, code=$has_app_code files, tests=$has_tests files, commits=$commit_count"
 else
-    echo "[FORGE-SYNC] State OK: step $current_step, phase $(python3 -c "import json; print(json.load(open('$STATE')).get('current_phase',0))" 2>/dev/null)"
+    echo "[FORGE-SYNC] State OK: step $current_step, phase $(python3 -c "import json; f=open('$STATE'); d=json.load(f); f.close(); print(d.get('current_phase',0))" 2>/dev/null)"
 fi

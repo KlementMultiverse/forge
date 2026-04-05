@@ -6,6 +6,10 @@
 
 set -uo pipefail
 
+# Source shared phase mapping
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/forge-phase-map.sh"
+
 D="$PWD"
 STATE="$D/docs/forge-state.json"
 [ -f "$STATE" ] || exit 0

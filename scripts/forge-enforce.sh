@@ -16,6 +16,11 @@
 
 set -euo pipefail
 
+# Source shared phase mapping and dependency checker
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/forge-phase-map.sh"
+source "$SCRIPT_DIR/forge-deps.sh" && check_forge_deps
+
 # Auto-detect project root: walk up until we find CLAUDE.md or .git
 find_project_root() {
     local dir="${1:-$PWD}"
@@ -62,6 +67,7 @@ read_step_map() {
 import json, sys
 
 # Complete forge phase/step map — ALL phases, ALL steps
+# NOTE: Canonical bash mapping is in forge-phase-map.sh. Keep in sync.
 PHASES = {
     0: {
         "name": "Genesis",

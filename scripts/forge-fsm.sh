@@ -15,6 +15,11 @@
 
 set -euo pipefail
 
+# Source shared phase mapping and dependency checker
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/forge-phase-map.sh"
+source "$SCRIPT_DIR/forge-deps.sh" && check_forge_deps
+
 # Auto-detect project root
 find_root() {
     local d="${1:-$PWD}"
@@ -147,16 +152,33 @@ try:
                        capture_output=True, text=True, cwd=D)
     pr_num = pr.stdout.strip()
     if pr_num:
-        reviews = subprocess.run(
-            ["gh", "api", f"repos/KlementMultiverse/clinical-assistant/pulls/{pr_num}/comments",
-             "--jq", '[.[] | select(.user.login | contains("coderabbit"))] | length'],
-            capture_output=True, text=True)
-        comment_count = int(reviews.stdout.strip() or "0")
-        if comment_count > 0:
-            print(f"ACTION: fix-coderabbit-comments")
-            print(f"COMMAND: Read PR #{pr_num} CodeRabbit comments → fix → push → wait")
-            print(f"REASON: PR #{pr_num} has {comment_count} CodeRabbit comment(s) to address")
-            exit(0)
+        # Auto-detect repo from git remote instead of hardcoding
+        repo_result = subprocess.run(
+            ["gh", "repo", "view", "--json", "nameWithOwner", "-q", ".nameWithOwner"],
+            capture_output=True, text=True, cwd=D)
+        repo_name = repo_result.stdout.strip()
+        if not repo_name:
+            # Fallback: parse from git remote
+            remote = subprocess.run(["git", "remote", "get-url", "origin"],
+                                    capture_output=True, text=True, cwd=D)
+            url = remote.stdout.strip()
+            # Handle both HTTPS and SSH URLs
+            import re as _re
+            m = _re.search(r'[:/]([^/]+/[^/]+?)(?:\.git)?$', url)
+            repo_name = m.group(1) if m else ""
+        if not repo_name:
+            pass  # Skip CodeRabbit check if we can't detect repo
+        else:
+            reviews = subprocess.run(
+                ["gh", "api", f"repos/{repo_name}/pulls/{pr_num}/comments",
+                 "--jq", '[.[] | select(.user.login | contains("coderabbit"))] | length'],
+                capture_output=True, text=True)
+            comment_count = int(reviews.stdout.strip() or "0")
+            if comment_count > 0:
+                print(f"ACTION: fix-coderabbit-comments")
+                print(f"COMMAND: Read PR #{pr_num} CodeRabbit comments → fix → push → wait")
+                print(f"REASON: PR #{pr_num} has {comment_count} CodeRabbit comment(s) to address")
+                exit(0)
 except Exception:
     pass
 

@@ -29,7 +29,7 @@ fi
 
 # === FILES ===
 total_files=$(find "$PROJ" -not -path "*/.git/*" -not -path "*__pycache__*" -not -path "*/.venv/*" -type f 2>/dev/null | wc -l)
-new_files=$(find "$PROJ" -not -path "*/.git/*" -not -path "*/.venv/*" -not -path "*__pycache__*" -newer "$LAST_CHECK" -name "*.py" -o -newer "$LAST_CHECK" -name "*.md" -o -newer "$LAST_CHECK" -name "*.yml" -o -newer "$LAST_CHECK" -name "*.html" 2>/dev/null | grep -v ".venv" | grep -v "__pycache__" || true)
+new_files=$(find "$PROJ" -not -path "*/.git/*" -not -path "*/.venv/*" -not -path "*__pycache__*" -newer "$LAST_CHECK" \( -name "*.py" -o -name "*.md" -o -name "*.yml" -o -name "*.html" \) 2>/dev/null || true)
 new_count=$(echo "$new_files" | grep -c "." 2>/dev/null || echo 0)
 
 # === COMMITS ===

@@ -11,6 +11,10 @@
 
 set -euo pipefail
 
+# Source shared phase mapping
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/forge-phase-map.sh"
+
 D="${PROJECT_ROOT:-$PWD}"
 SPEC="$D/SPEC.md"
 
