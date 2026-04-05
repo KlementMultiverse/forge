@@ -360,6 +360,7 @@ graph TD
     commands_design_system --> commands_design_audit
     commands_design_system --> commands_design_system
     commands_create_mcp --> agents_mcp_architect
+    commands_create_mcp --> agents_tools_architect
     commands_create_mcp --> commands_create_mcp
     commands_plan_tasks --> commands_plan_tasks
     commands_challenge --> commands_challenge
@@ -431,8 +432,13 @@ graph TD
     commands_phase_cases --> agents_requirements_analyst
     commands_phase_cases --> agents_root_cause_analyst
     commands_phase_cases --> agents_system_architect
+    commands_phase_cases --> commands_autoresearch
     commands_phase_cases --> commands_checkpoint
+    commands_phase_cases --> commands_evolve
+    commands_phase_cases --> commands_prune
+    commands_phase_cases --> commands_retro
     commands_phase_cases --> commands_review
+    commands_phase_cases --> commands_sc
     commands_phase_cases --> scripts_forge_enforce_sh
     commands_phase_cases --> scripts_forge_review_guard_sh
     commands_phase_tracking --> commands_gate
@@ -448,6 +454,7 @@ graph TD
     commands_phase_phase_0_2_plan --> commands_plan_review
     commands_phase_phase_0_2_plan --> commands_plan_tasks
     commands_phase_phase_0_2_plan --> commands_requirements
+    commands_phase_phase_0_2_plan --> commands_sc
     commands_phase_phase_0_2_plan --> commands_specify
     commands_phase_phase_a_setup --> agents_aws_setup_agent
     commands_phase_phase_a_setup --> agents_backend_architect
@@ -457,24 +464,36 @@ graph TD
     commands_phase_phase_a_setup --> agents_frontend_architect
     commands_phase_phase_a_setup --> agents_gcp_setup_agent
     commands_phase_phase_a_setup --> agents_llm_integration_agent
+    commands_phase_phase_a_setup --> agents_repo_index
     commands_phase_phase_a_setup --> agents_requirements_analyst
     commands_phase_phase_a_setup --> agents_s3_lambda_agent
+    commands_phase_phase_a_setup --> agents_self_review
     commands_phase_phase_a_setup --> agents_system_architect
     commands_phase_phase_a_setup --> commands_challenge
+    commands_phase_phase_a_setup --> commands_discover
     commands_phase_phase_a_setup --> commands_forge
     commands_phase_phase_a_setup --> commands_gate
+    commands_phase_phase_a_setup --> commands_requirements
     commands_phase_phase_a_setup --> commands_retro
     commands_phase_phase_a_setup --> scripts_forge_enforce_sh
     commands_phase_phase_a_setup --> scripts_forge_stack_sh
     commands_phase_phase_3_implement --> agents_backend_architect
+    commands_phase_phase_3_implement --> agents_context_loader_agent
     commands_phase_phase_3_implement --> agents_django_ninja_agent
     commands_phase_phase_3_implement --> agents_django_tenants_agent
     commands_phase_phase_3_implement --> agents_llm_integration_agent
+    commands_phase_phase_3_implement --> agents_quality_engineer
+    commands_phase_phase_3_implement --> agents_requirements_analyst
+    commands_phase_phase_3_implement --> agents_reviewer
+    commands_phase_phase_3_implement --> agents_root_cause_analyst
     commands_phase_phase_3_implement --> agents_s3_lambda_agent
+    commands_phase_phase_3_implement --> agents_security_engineer
     commands_phase_phase_3_implement --> commands_checkpoint
     commands_phase_phase_3_implement --> commands_gate
+    commands_phase_phase_3_implement --> commands_learn
     commands_phase_phase_3_implement --> commands_review
     commands_phase_phase_3_implement --> scripts_forge_enforce_sh
+    commands_phase_phase_4_5_validate --> agents_deploy_guide
     commands_phase_phase_4_5_validate --> agents_deploy_guide_agent
     commands_phase_phase_4_5_validate --> agents_playbook_curator
     commands_phase_phase_4_5_validate --> commands_audit_patterns
@@ -486,6 +505,7 @@ graph TD
     commands_phase_phase_4_5_validate --> commands_prune
     commands_phase_phase_4_5_validate --> commands_retro
     commands_phase_phase_4_5_validate --> commands_review
+    commands_phase_phase_4_5_validate --> commands_sc
     commands_phase_phase_4_5_validate --> commands_security_scan
     commands_phase_phase_4_5_validate --> scripts_forge_enforce_sh
     scripts_forge_phase_gate_sh --> scripts_forge_deps_sh

@@ -1,14 +1,25 @@
 {
-  "version": "1.0",
+  "version": "2.0",
+  "generated": "2026-04-05T11:47:52.924536+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
     "commands": 41,
     "scripts": 20,
     "hooks": 8,
-    "templates": 13,
+    "templates": 16,
     "rules": 7,
-    "edges": 388
+    "edges": 408,
+    "phase_mapped_components": 47,
+    "flows": 9
+  },
+  "global_short_circuit": {
+    "files": [
+      "install.sh",
+      "templates/hooks.json",
+      "rules/*.md"
+    ],
+    "action": "Flag ALL projects as requiring reinstall and full re-review"
   },
   "components": {
     "agents": {
@@ -21,7 +32,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": "A",
+            "steps": [
+              "S5-BROWNFIELD"
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "refactoring-expert": {
         "type": "agent",
@@ -30,8 +50,7 @@
           "commands": [
             "investigate"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "retrospective-miner": {
         "type": "agent",
@@ -42,8 +61,7 @@
             "learn",
             "retro"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "socratic-mentor": {
         "type": "agent",
@@ -53,8 +71,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "performance-engineer": {
         "type": "agent",
@@ -65,8 +82,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "code-archaeologist": {
         "type": "agent",
@@ -76,8 +92,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "aws-setup-agent": {
         "type": "agent",
@@ -88,7 +103,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": "A",
+            "steps": [
+              "S6"
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "reviewer": {
         "type": "agent",
@@ -99,7 +123,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 3,
+            "steps": [
+              "p3:N8"
+            ],
+            "role": "review",
+            "is_gate": false
+          }
+        ]
       },
       "business-panel-experts": {
         "type": "agent",
@@ -109,8 +142,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "playbook-curator": {
         "type": "agent",
@@ -124,7 +156,16 @@
             "retro"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 5,
+            "steps": [
+              52
+            ],
+            "role": "learning",
+            "is_gate": false
+          }
+        ]
       },
       "devops-architect": {
         "type": "agent",
@@ -137,7 +178,17 @@
             "server"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": "A",
+            "steps": [
+              "S6",
+              "S7"
+            ],
+            "role": "design",
+            "is_gate": false
+          }
+        ]
       },
       "deep-research-agent": {
         "type": "agent",
@@ -147,8 +198,7 @@
             "discover",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "frontend-architect": {
         "type": "agent",
@@ -159,7 +209,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": "A",
+            "steps": [
+              "S6"
+            ],
+            "role": "design",
+            "is_gate": false
+          }
+        ]
       },
       "pm-orchestrator": {
         "type": "agent",
@@ -218,8 +277,7 @@
             "security-scan",
             "specify"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "technical-writer": {
         "type": "agent",
@@ -229,8 +287,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "tools-architect": {
         "type": "agent",
@@ -242,8 +299,7 @@
           "commands": [
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "context-loader-agent": {
         "type": "agent",
@@ -257,7 +313,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 3,
+            "steps": [
+              "p3:N1"
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "quality-engineer": {
         "type": "agent",
@@ -268,7 +333,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 3,
+            "steps": [
+              "p3:N3"
+            ],
+            "role": "testing",
+            "is_gate": false
+          }
+        ]
       },
       "system-architect": {
         "type": "agent",
@@ -280,7 +354,19 @@
             "requirements"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": "A",
+            "steps": [
+              "S2",
+              "S3",
+              "S5-BROWNFIELD",
+              "S6"
+            ],
+            "role": "design",
+            "is_gate": false
+          }
+        ]
       },
       "self-review": {
         "type": "agent",
@@ -291,7 +377,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": "A",
+            "steps": [
+              "S9"
+            ],
+            "role": "review",
+            "is_gate": false
+          }
+        ]
       },
       "learning-guide": {
         "type": "agent",
@@ -301,8 +396,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "playwright-critic": {
         "type": "agent",
@@ -312,8 +406,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "sdlc-enforcer": {
         "type": "agent",
@@ -324,8 +417,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "deploy-guide-agent": {
         "type": "agent",
@@ -335,7 +427,16 @@
             "deploy-guide-agent"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 5,
+            "steps": [
+              51
+            ],
+            "role": "infrastructure",
+            "is_gate": false
+          }
+        ]
       },
       "pattern-auditor-agent": {
         "type": "agent",
@@ -345,8 +446,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "backend-architect": {
         "type": "agent",
@@ -357,7 +457,24 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 3,
+            "steps": [
+              "p3:N0"
+            ],
+            "role": "design",
+            "is_gate": false
+          },
+          {
+            "phase": "A",
+            "steps": [
+              "S6"
+            ],
+            "role": "design",
+            "is_gate": false
+          }
+        ]
       },
       "requirements-analyst": {
         "type": "agent",
@@ -371,7 +488,25 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 3,
+            "steps": [
+              "p3:N2"
+            ],
+            "role": "requirements",
+            "is_gate": false
+          },
+          {
+            "phase": "A",
+            "steps": [
+              "S4",
+              "S5-BROWNFIELD"
+            ],
+            "role": "requirements",
+            "is_gate": false
+          }
+        ]
       },
       "mcp-architect": {
         "type": "agent",
@@ -382,8 +517,7 @@
             "learn",
             "mcp"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "python-expert": {
         "type": "agent",
@@ -393,8 +527,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "agent-factory": {
         "type": "agent",
@@ -404,8 +537,7 @@
             "feasibility",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "security-engineer": {
         "type": "agent",
@@ -416,7 +548,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 3,
+            "steps": [
+              "p3:N7"
+            ],
+            "role": "security",
+            "is_gate": false
+          }
+        ]
       },
       "root-cause-analyst": {
         "type": "agent",
@@ -427,7 +568,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 3,
+            "steps": [
+              "p3:N4"
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "api-architect": {
         "type": "agent",
@@ -438,7 +588,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 2,
+            "steps": [
+              13
+            ],
+            "role": "design",
+            "is_gate": false
+          }
+        ]
       },
       "langsmith-agent": {
         "type": "agent",
@@ -448,8 +607,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "README": {
         "type": "agent",
@@ -459,8 +617,7 @@
             "azure-openai-agent",
             "azure-setup-agent"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "langgraph-agent": {
         "type": "agent",
@@ -470,8 +627,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "langchain-agent": {
         "type": "agent",
@@ -481,8 +637,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "ai-safety-agent": {
         "type": "agent",
@@ -496,8 +651,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "chatbot-builder": {
         "type": "agent",
@@ -512,8 +666,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "agent-orchestrator": {
         "type": "agent",
@@ -528,8 +681,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "eval-engineer": {
         "type": "agent",
@@ -545,8 +697,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "voice-agent-builder": {
         "type": "agent",
@@ -560,8 +711,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "rag-architect": {
         "type": "agent",
@@ -576,8 +726,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "llm-integration-agent": {
         "type": "agent",
@@ -592,7 +741,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": "A",
+            "steps": [
+              "S6"
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "django-tenants-agent": {
         "type": "agent",
@@ -604,7 +762,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": "A",
+            "steps": [
+              "S6"
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "s3-lambda-agent": {
         "type": "agent",
@@ -618,7 +785,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": "A",
+            "steps": [
+              "S6"
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "django-ninja-agent": {
         "type": "agent",
@@ -629,7 +805,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": "A",
+            "steps": [
+              "S6"
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "vertex-ai-agent": {
         "type": "agent",
@@ -639,8 +824,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "gcp-setup-agent": {
         "type": "agent",
@@ -651,7 +835,16 @@
             "learn"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": "A",
+            "steps": [
+              "S6"
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "azure-setup-agent": {
         "type": "agent",
@@ -661,8 +854,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "azure-openai-agent": {
         "type": "agent",
@@ -672,8 +864,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       }
     },
     "commands": {
@@ -690,7 +881,24 @@
             "requirements"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 0,
+            "steps": [
+              2
+            ],
+            "role": "requirements",
+            "is_gate": false
+          },
+          {
+            "phase": "A",
+            "steps": [
+              "S5-BROWNFIELD"
+            ],
+            "role": "requirements",
+            "is_gate": false
+          }
+        ]
       },
       "feasibility": {
         "type": "command",
@@ -704,7 +912,16 @@
             "requirements"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 0,
+            "steps": [
+              3
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "build-project": {
         "type": "command",
@@ -735,8 +952,7 @@
             "retro",
             "specify"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "retro": {
         "type": "command",
@@ -750,7 +966,16 @@
             "retro"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 5,
+            "steps": [
+              49
+            ],
+            "role": "learning",
+            "is_gate": false
+          }
+        ]
       },
       "specify": {
         "type": "command",
@@ -765,7 +990,16 @@
             "specify"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 1,
+            "steps": [
+              9
+            ],
+            "role": "requirements",
+            "is_gate": false
+          }
+        ]
       },
       "generate-spec": {
         "type": "command",
@@ -778,7 +1012,16 @@
             "generate-spec"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 0,
+            "steps": [
+              4
+            ],
+            "role": "requirements",
+            "is_gate": false
+          }
+        ]
       },
       "checkpoint": {
         "type": "command",
@@ -791,7 +1034,41 @@
             "retro"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 0,
+            "steps": [
+              7
+            ],
+            "role": "implementation",
+            "is_gate": false
+          },
+          {
+            "phase": 1,
+            "steps": [
+              10
+            ],
+            "role": "implementation",
+            "is_gate": false
+          },
+          {
+            "phase": 2,
+            "steps": [
+              18
+            ],
+            "role": "implementation",
+            "is_gate": false
+          },
+          {
+            "phase": 3,
+            "steps": [
+              38,
+              "p3:N9"
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "codex": {
         "type": "command",
@@ -801,8 +1078,7 @@
             "codex",
             "security-scan"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "careful": {
         "type": "command",
@@ -813,8 +1089,7 @@
             "freeze",
             "guard"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "gate": {
         "type": "command",
@@ -829,7 +1104,56 @@
             "forge-verify.sh"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 0,
+            "steps": [
+              8
+            ],
+            "role": "gate",
+            "is_gate": true
+          },
+          {
+            "phase": 1,
+            "steps": [
+              11
+            ],
+            "role": "gate",
+            "is_gate": true
+          },
+          {
+            "phase": 2,
+            "steps": [
+              19
+            ],
+            "role": "gate",
+            "is_gate": true
+          },
+          {
+            "phase": 3,
+            "steps": [
+              39
+            ],
+            "role": "gate",
+            "is_gate": true
+          },
+          {
+            "phase": 4,
+            "steps": [
+              46
+            ],
+            "role": "gate",
+            "is_gate": true
+          },
+          {
+            "phase": 5,
+            "steps": [
+              56
+            ],
+            "role": "gate",
+            "is_gate": true
+          }
+        ]
       },
       "forge": {
         "type": "command",
@@ -843,8 +1167,7 @@
             "forge-auto-state.sh",
             "forge-enforce.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "design-system": {
         "type": "command",
@@ -854,21 +1177,20 @@
             "design-audit",
             "design-system"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "create-mcp": {
         "type": "command",
         "path": "commands/create-mcp.md",
         "depends_on": {
           "agents": [
-            "mcp-architect"
+            "mcp-architect",
+            "tools-architect"
           ],
           "commands": [
             "create-mcp"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "plan-tasks": {
         "type": "command",
@@ -878,7 +1200,16 @@
             "plan-tasks"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 2,
+            "steps": [
+              15
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "challenge": {
         "type": "command",
@@ -888,7 +1219,16 @@
             "challenge"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 0,
+            "steps": [
+              5
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "bootstrap": {
         "type": "command",
@@ -900,7 +1240,16 @@
             "specify"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 0,
+            "steps": [
+              6
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "discover": {
         "type": "command",
@@ -913,7 +1262,24 @@
             "discover"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 0,
+            "steps": [
+              1
+            ],
+            "role": "research",
+            "is_gate": false
+          },
+          {
+            "phase": "A",
+            "steps": [
+              "S5-BROWNFIELD"
+            ],
+            "role": "research",
+            "is_gate": false
+          }
+        ]
       },
       "evolve": {
         "type": "command",
@@ -923,7 +1289,16 @@
             "evolve"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 5,
+            "steps": [
+              53
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "review": {
         "type": "command",
@@ -933,7 +1308,24 @@
             "review"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 3,
+            "steps": [
+              37
+            ],
+            "role": "review",
+            "is_gate": false
+          },
+          {
+            "phase": 4,
+            "steps": [
+              45
+            ],
+            "role": "review",
+            "is_gate": false
+          }
+        ]
       },
       "canary": {
         "type": "command",
@@ -943,8 +1335,7 @@
             "benchmark",
             "canary"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "prune": {
         "type": "command",
@@ -955,7 +1346,16 @@
             "retro"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 5,
+            "steps": [
+              53
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "qa-report": {
         "type": "command",
@@ -964,8 +1364,7 @@
           "commands": [
             "qa-report"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "critic": {
         "type": "command",
@@ -986,7 +1385,16 @@
             "workflows"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 4,
+            "steps": [
+              45
+            ],
+            "role": "review",
+            "is_gate": false
+          }
+        ]
       },
       "ship": {
         "type": "command",
@@ -999,8 +1407,7 @@
             "security-scan",
             "ship"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "setup": {
         "type": "command",
@@ -1019,8 +1426,7 @@
             "forge",
             "setup"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "security-scan": {
         "type": "command",
@@ -1030,7 +1436,16 @@
             "security-scan"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 4,
+            "steps": [
+              44
+            ],
+            "role": "security",
+            "is_gate": false
+          }
+        ]
       },
       "plan-review": {
         "type": "command",
@@ -1046,7 +1461,16 @@
             "plan-tasks"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 2,
+            "steps": [
+              12
+            ],
+            "role": "review",
+            "is_gate": false
+          }
+        ]
       },
       "freeze": {
         "type": "command",
@@ -1055,8 +1479,7 @@
           "commands": [
             "freeze"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "audit-patterns": {
         "type": "command",
@@ -1070,7 +1493,16 @@
             "audit-patterns"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 4,
+            "steps": [
+              41
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "benchmark": {
         "type": "command",
@@ -1080,8 +1512,7 @@
             "benchmark",
             "critic"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "investigate": {
         "type": "command",
@@ -1094,8 +1525,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "design-doc": {
         "type": "command",
@@ -1110,7 +1540,16 @@
             "plan-tasks"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 2,
+            "steps": [
+              14
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "guard": {
         "type": "command",
@@ -1120,8 +1559,7 @@
             "careful",
             "guard"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "learn": {
         "type": "command",
@@ -1133,7 +1571,16 @@
             "retro"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 3,
+            "steps": [
+              "p3:N9"
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "design-audit": {
         "type": "command",
@@ -1144,7 +1591,16 @@
             "design-audit"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 4,
+            "steps": [
+              45
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "phase:cases": {
         "type": "phase",
@@ -1159,15 +1615,19 @@
             "system-architect"
           ],
           "commands": [
+            "autoresearch",
             "checkpoint",
-            "review"
+            "evolve",
+            "prune",
+            "retro",
+            "review",
+            "sc"
           ],
           "scripts": [
             "forge-enforce.sh",
             "forge-review-guard.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "phase:tracking": {
         "type": "phase",
@@ -1176,8 +1636,7 @@
           "commands": [
             "gate"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "phase:phase-0-2-plan": {
         "type": "phase",
@@ -1198,10 +1657,10 @@
             "plan-review",
             "plan-tasks",
             "requirements",
+            "sc",
             "specify"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "phase:phase-a-setup": {
         "type": "phase",
@@ -1216,22 +1675,25 @@
             "frontend-architect",
             "gcp-setup-agent",
             "llm-integration-agent",
+            "repo-index",
             "requirements-analyst",
             "s3-lambda-agent",
+            "self-review",
             "system-architect"
           ],
           "commands": [
             "challenge",
+            "discover",
             "forge",
             "gate",
+            "requirements",
             "retro"
           ],
           "scripts": [
             "forge-enforce.sh",
             "forge-stack.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "phase:phase-3-implement": {
         "type": "phase",
@@ -1239,27 +1701,34 @@
         "depends_on": {
           "agents": [
             "backend-architect",
+            "context-loader-agent",
             "django-ninja-agent",
             "django-tenants-agent",
             "llm-integration-agent",
-            "s3-lambda-agent"
+            "quality-engineer",
+            "requirements-analyst",
+            "reviewer",
+            "root-cause-analyst",
+            "s3-lambda-agent",
+            "security-engineer"
           ],
           "commands": [
             "checkpoint",
             "gate",
+            "learn",
             "review"
           ],
           "scripts": [
             "forge-enforce.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "phase:phase-4-5-validate": {
         "type": "phase",
         "path": "commands/forge-phases/phase-4-5-validate.md",
         "depends_on": {
           "agents": [
+            "deploy-guide",
             "deploy-guide-agent",
             "playbook-curator"
           ],
@@ -1273,21 +1742,20 @@
             "prune",
             "retro",
             "review",
+            "sc",
             "security-scan"
           ],
           "scripts": [
             "forge-enforce.sh"
           ]
-        },
-        "depended_by": {}
+        }
       }
     },
     "scripts": {
       "forge-verify.sh": {
         "type": "script",
         "path": "scripts/forge-verify.sh",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "forge-phase-gate.sh": {
         "type": "script",
@@ -1298,24 +1766,27 @@
             "forge-enforce.sh",
             "forge-phase-map.sh"
           ]
-        },
-        "depended_by": {
-          "hooks": [
-            "Stop"
-          ]
         }
       },
       "forge-stack.sh": {
         "type": "script",
         "path": "scripts/forge-stack.sh",
         "depends_on": {},
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": "A",
+            "steps": [
+              "S2"
+            ],
+            "role": "implementation",
+            "is_gate": false
+          }
+        ]
       },
       "forge-observer-approve.sh": {
         "type": "script",
         "path": "scripts/forge-observer-approve.sh",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "forge-fsm.sh": {
         "type": "script",
@@ -1326,8 +1797,7 @@
             "forge-enforce.sh",
             "forge-phase-map.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "forge-deps.sh": {
         "type": "script",
@@ -1336,20 +1806,35 @@
           "scripts": [
             "forge-deps.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "docker-state.sh": {
         "type": "script",
         "path": "scripts/docker-state.sh",
         "depends_on": {},
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 3,
+            "steps": [
+              39
+            ],
+            "role": "enforcement",
+            "is_gate": true
+          },
+          {
+            "phase": "A",
+            "steps": [
+              "S5-BROWNFIELD"
+            ],
+            "role": "enforcement",
+            "is_gate": false
+          }
+        ]
       },
       "forge-handshake.sh": {
         "type": "script",
         "path": "scripts/forge-handshake.sh",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "forge-state-sync.sh": {
         "type": "script",
@@ -1357,11 +1842,6 @@
         "depends_on": {
           "scripts": [
             "forge-enforce.sh"
-          ]
-        },
-        "depended_by": {
-          "hooks": [
-            "UserPromptSubmit"
           ]
         }
       },
@@ -1373,8 +1853,7 @@
             "forge-observer-approve.sh",
             "forge-observer-check.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "forge-observer-check.sh": {
         "type": "script",
@@ -1383,8 +1862,7 @@
           "scripts": [
             "forge-observer-approve.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "forge-triangle.sh": {
         "type": "script",
@@ -1394,8 +1872,7 @@
             "forge-phase-map.sh",
             "forge-triangle.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "forge-phase-map.sh": {
         "type": "script",
@@ -1404,26 +1881,58 @@
           "scripts": [
             "forge-phase-map.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "forge-review-guard.sh": {
         "type": "script",
         "path": "scripts/forge-review-guard.sh",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "traceability.sh": {
         "type": "script",
         "path": "scripts/traceability.sh",
         "depends_on": {},
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 3,
+            "steps": [
+              "p3:N6"
+            ],
+            "role": "validation",
+            "is_gate": false
+          },
+          {
+            "phase": 4,
+            "steps": [
+              43
+            ],
+            "role": "validation",
+            "is_gate": false
+          },
+          {
+            "phase": "A",
+            "steps": [
+              "S8"
+            ],
+            "role": "validation",
+            "is_gate": false
+          }
+        ]
       },
       "sync-report.sh": {
         "type": "script",
         "path": "scripts/sync-report.sh",
         "depends_on": {},
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": "A",
+            "steps": [
+              "S8"
+            ],
+            "role": "validation",
+            "is_gate": false
+          }
+        ]
       },
       "forge-grow.sh": {
         "type": "script",
@@ -1432,8 +1941,7 @@
           "scripts": [
             "forge-grow.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "forge-enforce.sh": {
         "type": "script",
@@ -1444,7 +1952,34 @@
             "forge-phase-map.sh"
           ]
         },
-        "depended_by": {}
+        "phases": [
+          {
+            "phase": 3,
+            "steps": [
+              37,
+              38,
+              39
+            ],
+            "role": "enforcement",
+            "is_gate": true
+          },
+          {
+            "phase": 4,
+            "steps": [
+              46
+            ],
+            "role": "enforcement",
+            "is_gate": true
+          },
+          {
+            "phase": "A",
+            "steps": [
+              "S5-BROWNFIELD"
+            ],
+            "role": "enforcement",
+            "is_gate": false
+          }
+        ]
       },
       "forge-auto-state.sh": {
         "type": "script",
@@ -1454,19 +1989,12 @@
             "forge-enforce.sh",
             "forge-phase-map.sh"
           ]
-        },
-        "depended_by": {
-          "hooks": [
-            "PostToolUse:Agent",
-            "PostToolUse:Skill"
-          ]
         }
       },
       "forge-runner.py": {
         "type": "script",
         "path": "scripts/forge-runner.py",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       }
     },
     "hooks": {
@@ -1479,8 +2007,7 @@
           "scripts": [
             "forge-phase-gate.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "UserPromptSubmit": {
         "type": "hook",
@@ -1491,8 +2018,7 @@
           "scripts": [
             "forge-state-sync.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "PreToolUse:Bash": {
         "type": "hook",
@@ -1501,8 +2027,7 @@
         "matcher": "Bash",
         "depends_on": {
           "scripts": []
-        },
-        "depended_by": {}
+        }
       },
       "PreToolUse:Edit": {
         "type": "hook",
@@ -1511,8 +2036,7 @@
         "matcher": "Edit",
         "depends_on": {
           "scripts": []
-        },
-        "depended_by": {}
+        }
       },
       "PostToolUse:Write|Edit": {
         "type": "hook",
@@ -1521,8 +2045,7 @@
         "matcher": "Write|Edit",
         "depends_on": {
           "scripts": []
-        },
-        "depended_by": {}
+        }
       },
       "PostToolUse:Agent": {
         "type": "hook",
@@ -1533,8 +2056,7 @@
           "scripts": [
             "forge-auto-state.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "PostToolUse:Skill": {
         "type": "hook",
@@ -1545,8 +2067,7 @@
           "scripts": [
             "forge-auto-state.sh"
           ]
-        },
-        "depended_by": {}
+        }
       },
       "PostToolUse:Bash": {
         "type": "hook",
@@ -1555,132 +2076,126 @@
         "matcher": "Bash",
         "depends_on": {
           "scripts": []
-        },
-        "depended_by": {}
+        }
       }
     },
     "templates": {
       "FORGE.template.md": {
         "type": "template",
         "path": "templates/FORGE.template.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "SPEC.template.md": {
         "type": "template",
         "path": "templates/SPEC.template.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "design-doc.example.md": {
         "type": "template",
         "path": "templates/design-doc.example.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "design-doc-completeness-checklist.md": {
         "type": "template",
         "path": "templates/design-doc-completeness-checklist.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "forge-trace-entry.template.md": {
         "type": "template",
         "path": "templates/forge-trace-entry.template.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "traceability-matrix.template.md": {
         "type": "template",
         "path": "templates/traceability-matrix.template.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "CLAUDE.template.md": {
         "type": "template",
         "path": "templates/CLAUDE.template.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "task-design-doc.template.md": {
         "type": "template",
         "path": "templates/task-design-doc.template.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "gate-handoff-checklists.md": {
         "type": "template",
         "path": "templates/gate-handoff-checklists.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "forge-timeline.template.md": {
         "type": "template",
         "path": "templates/forge-timeline.template.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "forge-trace-index.template.md": {
         "type": "template",
         "path": "templates/forge-trace-index.template.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
+      },
+      "mcp.json": {
+        "type": "template",
+        "path": "templates/mcp.json",
+        "depends_on": {}
+      },
+      "hooks.json": {
+        "type": "template",
+        "path": "templates/hooks.json",
+        "depends_on": {}
       },
       "rules/agent-routing.md": {
         "type": "template",
         "path": "templates/rules/agent-routing.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "rules/sdlc-flow.md": {
         "type": "template",
         "path": "templates/rules/sdlc-flow.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
+      },
+      "commit-msg": {
+        "type": "template",
+        "path": "templates/commit-msg",
+        "depends_on": {}
       }
     },
     "rules": {
       "forge-philosophy.md": {
         "type": "rule",
         "path": "rules/forge-philosophy.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "docker.md": {
         "type": "rule",
         "path": "rules/docker.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "universal.md": {
         "type": "rule",
         "path": "rules/universal.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "forge-enforcement.md": {
         "type": "rule",
         "path": "rules/forge-enforcement.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "python.md": {
         "type": "rule",
         "path": "rules/python.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "django.md": {
         "type": "rule",
         "path": "rules/django.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       },
       "security.md": {
         "type": "rule",
         "path": "rules/security.md",
-        "depends_on": {},
-        "depended_by": {}
+        "depends_on": {}
       }
     }
   },
@@ -2872,6 +3387,11 @@
     },
     {
       "from": "commands/create-mcp",
+      "to": "agents/tools-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/create-mcp",
       "to": "commands/create-mcp",
       "type": "commands"
     },
@@ -3227,12 +3747,37 @@
     },
     {
       "from": "commands/phase:cases",
+      "to": "commands/autoresearch",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:cases",
       "to": "commands/checkpoint",
       "type": "commands"
     },
     {
       "from": "commands/phase:cases",
+      "to": "commands/evolve",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:cases",
+      "to": "commands/prune",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:cases",
+      "to": "commands/retro",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:cases",
       "to": "commands/review",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:cases",
+      "to": "commands/sc",
       "type": "commands"
     },
     {
@@ -3312,6 +3857,11 @@
     },
     {
       "from": "commands/phase:phase-0-2-plan",
+      "to": "commands/sc",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-0-2-plan",
       "to": "commands/specify",
       "type": "commands"
     },
@@ -3357,12 +3907,22 @@
     },
     {
       "from": "commands/phase:phase-a-setup",
+      "to": "agents/repo-index",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
       "to": "agents/requirements-analyst",
       "type": "agents"
     },
     {
       "from": "commands/phase:phase-a-setup",
       "to": "agents/s3-lambda-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "agents/self-review",
       "type": "agents"
     },
     {
@@ -3377,12 +3937,22 @@
     },
     {
       "from": "commands/phase:phase-a-setup",
+      "to": "commands/discover",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
       "to": "commands/forge",
       "type": "commands"
     },
     {
       "from": "commands/phase:phase-a-setup",
       "to": "commands/gate",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-a-setup",
+      "to": "commands/requirements",
       "type": "commands"
     },
     {
@@ -3407,6 +3977,11 @@
     },
     {
       "from": "commands/phase:phase-3-implement",
+      "to": "agents/context-loader-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
       "to": "agents/django-ninja-agent",
       "type": "agents"
     },
@@ -3422,7 +3997,32 @@
     },
     {
       "from": "commands/phase:phase-3-implement",
+      "to": "agents/quality-engineer",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
+      "to": "agents/requirements-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
+      "to": "agents/reviewer",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
+      "to": "agents/root-cause-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
       "to": "agents/s3-lambda-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
+      "to": "agents/security-engineer",
       "type": "agents"
     },
     {
@@ -3437,6 +4037,11 @@
     },
     {
       "from": "commands/phase:phase-3-implement",
+      "to": "commands/learn",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-3-implement",
       "to": "commands/review",
       "type": "commands"
     },
@@ -3444,6 +4049,11 @@
       "from": "commands/phase:phase-3-implement",
       "to": "scripts/forge-enforce.sh",
       "type": "scripts"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "agents/deploy-guide",
+      "type": "agents"
     },
     {
       "from": "commands/phase:phase-4-5-validate",
@@ -3498,6 +4108,11 @@
     {
       "from": "commands/phase:phase-4-5-validate",
       "to": "commands/review",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-4-5-validate",
+      "to": "commands/sc",
       "type": "commands"
     },
     {
@@ -3625,5 +4240,2475 @@
       "to": "scripts/forge-auto-state.sh",
       "type": "scripts"
     }
-  ]
+  ],
+  "indexes": {
+    "phase_index": [
+      {
+        "phase": 0,
+        "step": 1,
+        "is_gate": false,
+        "files": [
+          "commands/discover.md"
+        ]
+      },
+      {
+        "phase": 0,
+        "step": 2,
+        "is_gate": false,
+        "files": [
+          "commands/requirements.md"
+        ]
+      },
+      {
+        "phase": 0,
+        "step": 3,
+        "is_gate": false,
+        "files": [
+          "commands/feasibility.md"
+        ]
+      },
+      {
+        "phase": 0,
+        "step": 4,
+        "is_gate": false,
+        "files": [
+          "commands/generate-spec.md"
+        ]
+      },
+      {
+        "phase": 0,
+        "step": 5,
+        "is_gate": false,
+        "files": [
+          "commands/challenge.md"
+        ]
+      },
+      {
+        "phase": 0,
+        "step": 6,
+        "is_gate": false,
+        "files": [
+          "commands/bootstrap.md"
+        ]
+      },
+      {
+        "phase": 0,
+        "step": 7,
+        "is_gate": false,
+        "files": [
+          "commands/checkpoint.md"
+        ]
+      },
+      {
+        "phase": 0,
+        "step": 8,
+        "is_gate": true,
+        "files": [
+          "commands/gate.md"
+        ]
+      },
+      {
+        "phase": 1,
+        "step": 10,
+        "is_gate": false,
+        "files": [
+          "commands/checkpoint.md"
+        ]
+      },
+      {
+        "phase": 1,
+        "step": 11,
+        "is_gate": true,
+        "files": [
+          "commands/gate.md"
+        ]
+      },
+      {
+        "phase": 1,
+        "step": 9,
+        "is_gate": false,
+        "files": [
+          "commands/specify.md"
+        ]
+      },
+      {
+        "phase": 2,
+        "step": 12,
+        "is_gate": false,
+        "files": [
+          "commands/plan-review.md"
+        ]
+      },
+      {
+        "phase": 2,
+        "step": 13,
+        "is_gate": false,
+        "files": [
+          "agents/universal/api-architect.md"
+        ]
+      },
+      {
+        "phase": 2,
+        "step": 14,
+        "is_gate": false,
+        "files": [
+          "commands/design-doc.md"
+        ]
+      },
+      {
+        "phase": 2,
+        "step": 15,
+        "is_gate": false,
+        "files": [
+          "commands/plan-tasks.md"
+        ]
+      },
+      {
+        "phase": 2,
+        "step": 18,
+        "is_gate": false,
+        "files": [
+          "commands/checkpoint.md"
+        ]
+      },
+      {
+        "phase": 2,
+        "step": 19,
+        "is_gate": true,
+        "files": [
+          "commands/gate.md"
+        ]
+      },
+      {
+        "phase": 3,
+        "step": 37,
+        "is_gate": false,
+        "files": [
+          "commands/review.md",
+          "scripts/forge-enforce.sh"
+        ]
+      },
+      {
+        "phase": 3,
+        "step": 38,
+        "is_gate": false,
+        "files": [
+          "commands/checkpoint.md",
+          "scripts/forge-enforce.sh"
+        ]
+      },
+      {
+        "phase": 3,
+        "step": 39,
+        "is_gate": true,
+        "files": [
+          "commands/gate.md",
+          "scripts/docker-state.sh",
+          "scripts/forge-enforce.sh"
+        ]
+      },
+      {
+        "phase": 3,
+        "step": "p3:N0",
+        "is_gate": false,
+        "files": [
+          "agents/universal/backend-architect.md"
+        ]
+      },
+      {
+        "phase": 3,
+        "step": "p3:N1",
+        "is_gate": false,
+        "files": [
+          "agents/universal/context-loader-agent.md"
+        ]
+      },
+      {
+        "phase": 3,
+        "step": "p3:N2",
+        "is_gate": false,
+        "files": [
+          "agents/universal/requirements-analyst.md"
+        ]
+      },
+      {
+        "phase": 3,
+        "step": "p3:N3",
+        "is_gate": false,
+        "files": [
+          "agents/universal/quality-engineer.md"
+        ]
+      },
+      {
+        "phase": 3,
+        "step": "p3:N4",
+        "is_gate": false,
+        "files": [
+          "agents/universal/root-cause-analyst.md"
+        ]
+      },
+      {
+        "phase": 3,
+        "step": "p3:N6",
+        "is_gate": false,
+        "files": [
+          "scripts/traceability.sh"
+        ]
+      },
+      {
+        "phase": 3,
+        "step": "p3:N7",
+        "is_gate": false,
+        "files": [
+          "agents/universal/security-engineer.md"
+        ]
+      },
+      {
+        "phase": 3,
+        "step": "p3:N8",
+        "is_gate": false,
+        "files": [
+          "agents/universal/reviewer.md"
+        ]
+      },
+      {
+        "phase": 3,
+        "step": "p3:N9",
+        "is_gate": false,
+        "files": [
+          "commands/checkpoint.md",
+          "commands/learn.md"
+        ]
+      },
+      {
+        "phase": 4,
+        "step": 41,
+        "is_gate": false,
+        "files": [
+          "commands/audit-patterns.md"
+        ]
+      },
+      {
+        "phase": 4,
+        "step": 43,
+        "is_gate": false,
+        "files": [
+          "scripts/traceability.sh"
+        ]
+      },
+      {
+        "phase": 4,
+        "step": 44,
+        "is_gate": false,
+        "files": [
+          "commands/security-scan.md"
+        ]
+      },
+      {
+        "phase": 4,
+        "step": 45,
+        "is_gate": false,
+        "files": [
+          "commands/critic.md",
+          "commands/design-audit.md",
+          "commands/review.md"
+        ]
+      },
+      {
+        "phase": 4,
+        "step": 46,
+        "is_gate": true,
+        "files": [
+          "commands/gate.md",
+          "scripts/forge-enforce.sh"
+        ]
+      },
+      {
+        "phase": 5,
+        "step": 49,
+        "is_gate": false,
+        "files": [
+          "commands/retro.md"
+        ]
+      },
+      {
+        "phase": 5,
+        "step": 51,
+        "is_gate": false,
+        "files": [
+          "agents/universal/deploy-guide-agent.md"
+        ]
+      },
+      {
+        "phase": 5,
+        "step": 52,
+        "is_gate": false,
+        "files": [
+          "agents/universal/playbook-curator.md"
+        ]
+      },
+      {
+        "phase": 5,
+        "step": 53,
+        "is_gate": false,
+        "files": [
+          "commands/evolve.md",
+          "commands/prune.md"
+        ]
+      },
+      {
+        "phase": 5,
+        "step": 56,
+        "is_gate": true,
+        "files": [
+          "commands/gate.md"
+        ]
+      },
+      {
+        "phase": "A",
+        "step": "S2",
+        "is_gate": false,
+        "files": [
+          "agents/universal/system-architect.md",
+          "scripts/forge-stack.sh"
+        ]
+      },
+      {
+        "phase": "A",
+        "step": "S3",
+        "is_gate": false,
+        "files": [
+          "agents/universal/system-architect.md"
+        ]
+      },
+      {
+        "phase": "A",
+        "step": "S4",
+        "is_gate": false,
+        "files": [
+          "agents/universal/requirements-analyst.md"
+        ]
+      },
+      {
+        "phase": "A",
+        "step": "S5-BROWNFIELD",
+        "is_gate": false,
+        "files": [
+          "agents/universal/repo-index.md",
+          "agents/universal/requirements-analyst.md",
+          "agents/universal/system-architect.md",
+          "commands/discover.md",
+          "commands/requirements.md",
+          "scripts/docker-state.sh",
+          "scripts/forge-enforce.sh"
+        ]
+      },
+      {
+        "phase": "A",
+        "step": "S6",
+        "is_gate": false,
+        "files": [
+          "agents/stacks/django/django-ninja-agent.md",
+          "agents/stacks/django/django-tenants-agent.md",
+          "agents/stacks/django/s3-lambda-agent.md",
+          "agents/stacks/gcp/gcp-setup-agent.md",
+          "agents/stacks/genai/llm-integration-agent.md",
+          "agents/universal/aws-setup-agent.md",
+          "agents/universal/backend-architect.md",
+          "agents/universal/devops-architect.md",
+          "agents/universal/frontend-architect.md",
+          "agents/universal/system-architect.md"
+        ]
+      },
+      {
+        "phase": "A",
+        "step": "S7",
+        "is_gate": false,
+        "files": [
+          "agents/universal/devops-architect.md"
+        ]
+      },
+      {
+        "phase": "A",
+        "step": "S8",
+        "is_gate": false,
+        "files": [
+          "scripts/sync-report.sh",
+          "scripts/traceability.sh"
+        ]
+      },
+      {
+        "phase": "A",
+        "step": "S9",
+        "is_gate": false,
+        "files": [
+          "agents/universal/self-review.md"
+        ]
+      }
+    ],
+    "reverse_deps": {
+      "commands/investigate": {
+        "agents": [
+          "repo-index",
+          "refactoring-expert",
+          "retrospective-miner",
+          "socratic-mentor",
+          "performance-engineer",
+          "code-archaeologist",
+          "aws-setup-agent",
+          "reviewer",
+          "business-panel-experts",
+          "playbook-curator",
+          "devops-architect",
+          "frontend-architect",
+          "pm-orchestrator",
+          "technical-writer",
+          "context-loader-agent",
+          "quality-engineer",
+          "system-architect",
+          "self-review",
+          "learning-guide",
+          "playwright-critic",
+          "sdlc-enforcer",
+          "pattern-auditor-agent",
+          "backend-architect",
+          "requirements-analyst",
+          "mcp-architect",
+          "python-expert",
+          "security-engineer",
+          "root-cause-analyst",
+          "api-architect",
+          "langsmith-agent",
+          "langgraph-agent",
+          "langchain-agent",
+          "ai-safety-agent",
+          "chatbot-builder",
+          "agent-orchestrator",
+          "eval-engineer",
+          "voice-agent-builder",
+          "rag-architect",
+          "llm-integration-agent",
+          "django-tenants-agent",
+          "s3-lambda-agent",
+          "django-ninja-agent",
+          "vertex-ai-agent",
+          "gcp-setup-agent",
+          "azure-setup-agent",
+          "azure-openai-agent"
+        ],
+        "commands": [
+          "investigate",
+          "learn"
+        ]
+      },
+      "commands/learn": {
+        "agents": [
+          "repo-index",
+          "retrospective-miner",
+          "socratic-mentor",
+          "performance-engineer",
+          "code-archaeologist",
+          "aws-setup-agent",
+          "reviewer",
+          "business-panel-experts",
+          "playbook-curator",
+          "devops-architect",
+          "deep-research-agent",
+          "frontend-architect",
+          "pm-orchestrator",
+          "technical-writer",
+          "tools-architect",
+          "context-loader-agent",
+          "quality-engineer",
+          "system-architect",
+          "self-review",
+          "learning-guide",
+          "playwright-critic",
+          "sdlc-enforcer",
+          "pattern-auditor-agent",
+          "backend-architect",
+          "requirements-analyst",
+          "mcp-architect",
+          "python-expert",
+          "agent-factory",
+          "security-engineer",
+          "root-cause-analyst",
+          "api-architect",
+          "langsmith-agent",
+          "langgraph-agent",
+          "langchain-agent",
+          "ai-safety-agent",
+          "chatbot-builder",
+          "agent-orchestrator",
+          "eval-engineer",
+          "voice-agent-builder",
+          "rag-architect",
+          "llm-integration-agent",
+          "django-tenants-agent",
+          "s3-lambda-agent",
+          "django-ninja-agent",
+          "vertex-ai-agent",
+          "gcp-setup-agent",
+          "azure-setup-agent",
+          "azure-openai-agent"
+        ],
+        "commands": [
+          "critic",
+          "investigate",
+          "learn",
+          "phase:phase-3-implement"
+        ]
+      },
+      "commands/retro": {
+        "agents": [
+          "retrospective-miner",
+          "playbook-curator",
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project",
+          "retro",
+          "checkpoint",
+          "prune",
+          "learn",
+          "phase:cases",
+          "phase:phase-a-setup",
+          "phase:phase-4-5-validate"
+        ]
+      },
+      "commands/benchmark": {
+        "agents": [
+          "performance-engineer"
+        ],
+        "commands": [
+          "canary",
+          "benchmark"
+        ]
+      },
+      "commands/evolve": {
+        "agents": [
+          "playbook-curator",
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "evolve",
+          "phase:cases",
+          "phase:phase-4-5-validate"
+        ]
+      },
+      "commands/prune": {
+        "agents": [
+          "playbook-curator",
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "prune",
+          "phase:cases",
+          "phase:phase-4-5-validate"
+        ]
+      },
+      "commands/discover": {
+        "agents": [
+          "deep-research-agent",
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "requirements",
+          "discover",
+          "phase:phase-0-2-plan",
+          "phase:phase-a-setup"
+        ]
+      },
+      "agents/api-architect": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "phase:phase-0-2-plan"
+        ]
+      },
+      "agents/aws-setup-agent": {
+        "agents": [
+          "pm-orchestrator",
+          "s3-lambda-agent"
+        ],
+        "commands": [
+          "build-project",
+          "phase:phase-a-setup"
+        ]
+      },
+      "agents/backend-architect": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project",
+          "setup",
+          "design-doc",
+          "phase:phase-a-setup",
+          "phase:phase-3-implement"
+        ]
+      },
+      "agents/context-loader-agent": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project",
+          "phase:phase-3-implement"
+        ]
+      },
+      "agents/deep-research-agent": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "discover"
+        ]
+      },
+      "agents/devops-architect": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project",
+          "phase:phase-a-setup"
+        ]
+      },
+      "agents/django-ninja-agent": {
+        "agents": [
+          "pm-orchestrator",
+          "context-loader-agent"
+        ],
+        "commands": [
+          "build-project",
+          "setup",
+          "phase:phase-a-setup",
+          "phase:phase-3-implement"
+        ]
+      },
+      "agents/django-tenants-agent": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project",
+          "setup",
+          "phase:phase-a-setup",
+          "phase:phase-3-implement"
+        ]
+      },
+      "agents/frontend-architect": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project",
+          "phase:phase-a-setup"
+        ]
+      },
+      "agents/learning-guide": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "retro"
+        ]
+      },
+      "agents/pattern-auditor-agent": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "audit-patterns"
+        ]
+      },
+      "agents/playbook-curator": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "phase:cases",
+          "phase:phase-4-5-validate"
+        ]
+      },
+      "agents/playwright-critic": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "critic"
+        ]
+      },
+      "agents/python-expert": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project"
+        ]
+      },
+      "agents/refactoring-expert": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project",
+          "phase:cases"
+        ]
+      },
+      "agents/requirements-analyst": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "requirements",
+          "specify",
+          "generate-spec",
+          "phase:cases",
+          "phase:phase-a-setup",
+          "phase:phase-3-implement"
+        ]
+      },
+      "agents/retrospective-miner": {
+        "agents": [
+          "pm-orchestrator"
+        ]
+      },
+      "agents/root-cause-analyst": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project",
+          "investigate",
+          "phase:cases",
+          "phase:phase-3-implement"
+        ]
+      },
+      "agents/s3-lambda-agent": {
+        "agents": [
+          "pm-orchestrator",
+          "rag-architect"
+        ],
+        "commands": [
+          "build-project",
+          "setup",
+          "phase:phase-a-setup",
+          "phase:phase-3-implement"
+        ]
+      },
+      "agents/sdlc-enforcer": {
+        "agents": [
+          "pm-orchestrator"
+        ]
+      },
+      "agents/self-review": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "audit-patterns",
+          "phase:phase-a-setup"
+        ]
+      },
+      "agents/system-architect": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "feasibility",
+          "build-project",
+          "plan-review",
+          "design-doc",
+          "phase:cases",
+          "phase:phase-a-setup"
+        ]
+      },
+      "agents/technical-writer": {
+        "agents": [
+          "pm-orchestrator"
+        ]
+      },
+      "commands/audit-patterns": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project",
+          "ship",
+          "audit-patterns",
+          "phase:phase-4-5-validate"
+        ]
+      },
+      "commands/bootstrap": {
+        "agents": [
+          "pm-orchestrator",
+          "django-tenants-agent"
+        ],
+        "commands": [
+          "bootstrap",
+          "phase:phase-0-2-plan"
+        ]
+      },
+      "commands/challenge": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "forge",
+          "challenge",
+          "plan-review",
+          "phase:phase-0-2-plan",
+          "phase:phase-a-setup"
+        ]
+      },
+      "commands/checkpoint": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project",
+          "checkpoint",
+          "phase:cases",
+          "phase:phase-0-2-plan",
+          "phase:phase-3-implement"
+        ]
+      },
+      "commands/critic": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "critic",
+          "benchmark",
+          "phase:phase-4-5-validate"
+        ]
+      },
+      "commands/design-audit": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "design-system",
+          "design-audit",
+          "phase:phase-4-5-validate"
+        ]
+      },
+      "commands/design-doc": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project",
+          "specify",
+          "design-doc",
+          "phase:phase-0-2-plan"
+        ]
+      },
+      "commands/feasibility": {
+        "agents": [
+          "pm-orchestrator",
+          "agent-factory"
+        ],
+        "commands": [
+          "feasibility",
+          "phase:phase-0-2-plan"
+        ]
+      },
+      "commands/forge": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "forge",
+          "critic",
+          "setup",
+          "phase:phase-a-setup"
+        ]
+      },
+      "commands/gate": {
+        "agents": [
+          "pm-orchestrator",
+          "sdlc-enforcer"
+        ],
+        "commands": [
+          "build-project",
+          "retro",
+          "checkpoint",
+          "gate",
+          "ship",
+          "phase:tracking",
+          "phase:phase-0-2-plan",
+          "phase:phase-a-setup",
+          "phase:phase-3-implement",
+          "phase:phase-4-5-validate"
+        ]
+      },
+      "commands/generate-spec": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "generate-spec",
+          "bootstrap",
+          "phase:phase-0-2-plan"
+        ]
+      },
+      "commands/guard": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "careful",
+          "guard"
+        ]
+      },
+      "commands/plan-tasks": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project",
+          "checkpoint",
+          "plan-tasks",
+          "plan-review",
+          "design-doc",
+          "phase:phase-0-2-plan"
+        ]
+      },
+      "commands/requirements": {
+        "agents": [
+          "pm-orchestrator",
+          "system-architect"
+        ],
+        "commands": [
+          "requirements",
+          "feasibility",
+          "phase:phase-0-2-plan",
+          "phase:phase-a-setup"
+        ]
+      },
+      "commands/review": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "review",
+          "phase:cases",
+          "phase:phase-3-implement",
+          "phase:phase-4-5-validate"
+        ]
+      },
+      "commands/security-scan": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "codex",
+          "ship",
+          "security-scan",
+          "phase:phase-4-5-validate"
+        ]
+      },
+      "commands/specify": {
+        "agents": [
+          "pm-orchestrator"
+        ],
+        "commands": [
+          "build-project",
+          "specify",
+          "bootstrap",
+          "phase:phase-0-2-plan"
+        ]
+      },
+      "agents/mcp-architect": {
+        "agents": [
+          "tools-architect"
+        ],
+        "commands": [
+          "create-mcp"
+        ]
+      },
+      "agents/deploy-guide-agent": {
+        "agents": [
+          "deploy-guide-agent"
+        ],
+        "commands": [
+          "phase:cases",
+          "phase:phase-4-5-validate"
+        ]
+      },
+      "agents/azure-openai-agent": {
+        "agents": [
+          "README"
+        ]
+      },
+      "agents/azure-setup-agent": {
+        "agents": [
+          "README"
+        ]
+      },
+      "agents/llm-integration-agent": {
+        "agents": [
+          "ai-safety-agent",
+          "chatbot-builder",
+          "agent-orchestrator",
+          "eval-engineer",
+          "voice-agent-builder",
+          "rag-architect"
+        ],
+        "commands": [
+          "setup",
+          "phase:phase-a-setup",
+          "phase:phase-3-implement"
+        ]
+      },
+      "agents/rag-architect": {
+        "agents": [
+          "ai-safety-agent",
+          "chatbot-builder",
+          "agent-orchestrator",
+          "eval-engineer",
+          "voice-agent-builder",
+          "llm-integration-agent"
+        ],
+        "commands": [
+          "setup"
+        ]
+      },
+      "agents/ai-safety-agent": {
+        "agents": [
+          "eval-engineer"
+        ]
+      },
+      "commands/build-project": {
+        "commands": [
+          "build-project"
+        ]
+      },
+      "commands/codex": {
+        "commands": [
+          "codex"
+        ]
+      },
+      "commands/careful": {
+        "commands": [
+          "careful",
+          "guard"
+        ]
+      },
+      "commands/freeze": {
+        "commands": [
+          "careful",
+          "freeze"
+        ]
+      },
+      "scripts/forge-enforce.sh": {
+        "commands": [
+          "gate",
+          "forge",
+          "phase:cases",
+          "phase:phase-a-setup",
+          "phase:phase-3-implement",
+          "phase:phase-4-5-validate"
+        ],
+        "scripts": [
+          "forge-phase-gate.sh",
+          "forge-fsm.sh",
+          "forge-state-sync.sh",
+          "forge-auto-state.sh"
+        ]
+      },
+      "scripts/forge-triangle.sh": {
+        "commands": [
+          "gate"
+        ],
+        "scripts": [
+          "forge-triangle.sh"
+        ]
+      },
+      "scripts/forge-verify.sh": {
+        "commands": [
+          "gate"
+        ]
+      },
+      "scripts/forge-auto-state.sh": {
+        "commands": [
+          "forge"
+        ],
+        "hooks": [
+          "PostToolUse:Agent",
+          "PostToolUse:Skill"
+        ]
+      },
+      "commands/design-system": {
+        "commands": [
+          "design-system"
+        ]
+      },
+      "agents/tools-architect": {
+        "commands": [
+          "create-mcp"
+        ]
+      },
+      "commands/create-mcp": {
+        "commands": [
+          "create-mcp"
+        ]
+      },
+      "commands/canary": {
+        "commands": [
+          "canary",
+          "ship"
+        ]
+      },
+      "commands/qa-report": {
+        "commands": [
+          "qa-report"
+        ]
+      },
+      "commands/ship": {
+        "commands": [
+          "ship"
+        ]
+      },
+      "agents/gcp-setup-agent": {
+        "commands": [
+          "setup",
+          "phase:phase-a-setup"
+        ]
+      },
+      "commands/setup": {
+        "commands": [
+          "setup"
+        ]
+      },
+      "commands/plan-review": {
+        "commands": [
+          "plan-review",
+          "phase:phase-0-2-plan"
+        ]
+      },
+      "scripts/forge-review-guard.sh": {
+        "commands": [
+          "phase:cases"
+        ]
+      },
+      "agents/repo-index": {
+        "commands": [
+          "phase:phase-a-setup"
+        ]
+      },
+      "scripts/forge-stack.sh": {
+        "commands": [
+          "phase:phase-a-setup"
+        ]
+      },
+      "agents/quality-engineer": {
+        "commands": [
+          "phase:phase-3-implement"
+        ]
+      },
+      "agents/reviewer": {
+        "commands": [
+          "phase:phase-3-implement"
+        ]
+      },
+      "agents/security-engineer": {
+        "commands": [
+          "phase:phase-3-implement"
+        ]
+      },
+      "scripts/forge-deps.sh": {
+        "scripts": [
+          "forge-phase-gate.sh",
+          "forge-fsm.sh",
+          "forge-deps.sh",
+          "forge-enforce.sh"
+        ]
+      },
+      "scripts/forge-phase-map.sh": {
+        "scripts": [
+          "forge-phase-gate.sh",
+          "forge-fsm.sh",
+          "forge-triangle.sh",
+          "forge-phase-map.sh",
+          "forge-enforce.sh",
+          "forge-auto-state.sh"
+        ]
+      },
+      "scripts/forge-observer-approve.sh": {
+        "scripts": [
+          "forge-shell.sh",
+          "forge-observer-check.sh"
+        ]
+      },
+      "scripts/forge-observer-check.sh": {
+        "scripts": [
+          "forge-shell.sh"
+        ]
+      },
+      "scripts/forge-grow.sh": {
+        "scripts": [
+          "forge-grow.sh"
+        ]
+      },
+      "scripts/forge-phase-gate.sh": {
+        "hooks": [
+          "Stop"
+        ]
+      },
+      "scripts/forge-state-sync.sh": {
+        "hooks": [
+          "UserPromptSubmit"
+        ]
+      }
+    },
+    "file_flows": {
+      "install.sh": [
+        {
+          "flow": "install",
+          "role": "orchestrator",
+          "order": 1
+        }
+      ],
+      "scripts/forge-lint.py": [
+        {
+          "flow": "install",
+          "role": "validator",
+          "order": 2
+        }
+      ],
+      "scripts/forge-registry.py": [
+        {
+          "flow": "install",
+          "role": "indexer",
+          "order": 2
+        }
+      ],
+      "templates/hooks.json": [
+        {
+          "flow": "hook_execution",
+          "role": "config",
+          "order": 1
+        },
+        {
+          "flow": "project_bootstrap",
+          "role": "template",
+          "order": 4
+        }
+      ],
+      "scripts/forge-phase-gate.sh": [
+        {
+          "flow": "hook_execution",
+          "role": "gate-checker",
+          "order": 2
+        },
+        {
+          "flow": "phase_transition",
+          "role": "approval-checker",
+          "order": 2
+        }
+      ],
+      "scripts/forge-auto-state.sh": [
+        {
+          "flow": "hook_execution",
+          "role": "state-updater",
+          "order": 3
+        }
+      ],
+      "scripts/forge-state-sync.sh": [
+        {
+          "flow": "hook_execution",
+          "role": "state-syncer",
+          "order": 4
+        }
+      ],
+      "scripts/forge-fsm.sh": [
+        {
+          "flow": "phase_transition",
+          "role": "state-machine",
+          "order": 3
+        }
+      ],
+      "commands/forge-phases/phase-a-setup.md": [
+        {
+          "flow": "project_bootstrap",
+          "role": "orchestrator",
+          "order": 1
+        }
+      ],
+      "templates/CLAUDE.template.md": [
+        {
+          "flow": "project_bootstrap",
+          "role": "template",
+          "order": 2
+        }
+      ],
+      "templates/SPEC.template.md": [
+        {
+          "flow": "project_bootstrap",
+          "role": "template",
+          "order": 3
+        }
+      ],
+      "templates/commit-msg": [
+        {
+          "flow": "project_bootstrap",
+          "role": "template",
+          "order": 5
+        }
+      ],
+      "commands/discover.md": [
+        {
+          "flow": "planning",
+          "role": "researcher",
+          "order": 1
+        }
+      ],
+      "commands/requirements.md": [
+        {
+          "flow": "planning",
+          "role": "analyst",
+          "order": 2
+        }
+      ],
+      "commands/feasibility.md": [
+        {
+          "flow": "planning",
+          "role": "evaluator",
+          "order": 3
+        }
+      ],
+      "commands/generate-spec.md": [
+        {
+          "flow": "planning",
+          "role": "specifier",
+          "order": 4
+        }
+      ],
+      "commands/challenge.md": [
+        {
+          "flow": "planning",
+          "role": "challenger",
+          "order": 5
+        }
+      ],
+      "commands/bootstrap.md": [
+        {
+          "flow": "planning",
+          "role": "scaffolder",
+          "order": 6
+        }
+      ],
+      "commands/specify.md": [
+        {
+          "flow": "planning",
+          "role": "detailer",
+          "order": 7
+        }
+      ],
+      "commands/design-doc.md": [
+        {
+          "flow": "planning",
+          "role": "designer",
+          "order": 8
+        }
+      ],
+      "commands/plan-tasks.md": [
+        {
+          "flow": "planning",
+          "role": "planner",
+          "order": 9
+        }
+      ],
+      "agents/universal/backend-architect.md": [
+        {
+          "flow": "tdd_cycle",
+          "role": "designer",
+          "order": 1
+        }
+      ],
+      "agents/universal/context-loader-agent.md": [
+        {
+          "flow": "tdd_cycle",
+          "role": "context",
+          "order": 2
+        }
+      ],
+      "agents/universal/requirements-analyst.md": [
+        {
+          "flow": "tdd_cycle",
+          "role": "spec",
+          "order": 3
+        }
+      ],
+      "agents/universal/quality-engineer.md": [
+        {
+          "flow": "tdd_cycle",
+          "role": "tester",
+          "order": 4
+        }
+      ],
+      "scripts/traceability.sh": [
+        {
+          "flow": "tdd_cycle",
+          "role": "validator",
+          "order": 6
+        }
+      ],
+      "agents/universal/security-engineer.md": [
+        {
+          "flow": "tdd_cycle",
+          "role": "security",
+          "order": 7
+        }
+      ],
+      "agents/universal/reviewer.md": [
+        {
+          "flow": "tdd_cycle",
+          "role": "reviewer",
+          "order": 8
+        }
+      ],
+      "commands/review.md": [
+        {
+          "flow": "review_cycle",
+          "role": "reviewer",
+          "order": 1
+        }
+      ],
+      "commands/checkpoint.md": [
+        {
+          "flow": "review_cycle",
+          "role": "self-check",
+          "order": 2
+        }
+      ],
+      "commands/gate.md": [
+        {
+          "flow": "review_cycle",
+          "role": "gate",
+          "order": 3
+        },
+        {
+          "flow": "ship",
+          "role": "gate",
+          "order": 3
+        }
+      ],
+      "commands/audit-patterns.md": [
+        {
+          "flow": "ship",
+          "role": "auditor",
+          "order": 1
+        }
+      ],
+      "commands/security-scan.md": [
+        {
+          "flow": "ship",
+          "role": "scanner",
+          "order": 2
+        }
+      ],
+      "scripts/forge-shell.sh": [
+        {
+          "flow": "observer_approval",
+          "role": "initiator",
+          "order": 1
+        }
+      ],
+      "scripts/forge-observer-check.sh": [
+        {
+          "flow": "observer_approval",
+          "role": "checker",
+          "order": 2
+        }
+      ],
+      "scripts/forge-observer-approve.sh": [
+        {
+          "flow": "observer_approval",
+          "role": "approver",
+          "order": 3
+        }
+      ]
+    }
+  },
+  "flows": {
+    "install": {
+      "description": "Global installation of forge components to ~/.claude/",
+      "trigger": "./install.sh",
+      "spans": [
+        {
+          "order": 1,
+          "file": "install.sh",
+          "role": "orchestrator",
+          "action": "copies agents, commands, rules, scripts, templates to ~/.claude/"
+        },
+        {
+          "order": 2,
+          "file": "scripts/forge-lint.py",
+          "role": "validator",
+          "action": "validates all components",
+          "parallel_group": "validate"
+        },
+        {
+          "order": 2,
+          "file": "scripts/forge-registry.py",
+          "role": "indexer",
+          "action": "generates dependency graph",
+          "parallel_group": "validate"
+        }
+      ]
+    },
+    "hook_execution": {
+      "description": "Runtime hook pipeline on each Claude Code event",
+      "trigger": "Claude Code event (Stop, UserPromptSubmit, PreToolUse, PostToolUse)",
+      "spans": [
+        {
+          "order": 1,
+          "file": "templates/hooks.json",
+          "role": "config",
+          "action": "defines 8 hooks with matchers and commands"
+        },
+        {
+          "order": 2,
+          "file": "scripts/forge-phase-gate.sh",
+          "role": "gate-checker",
+          "triggered_by": "Stop hook",
+          "action": "checks observer + CodeRabbit approval",
+          "on_failure": {
+            "action": "block_and_wait",
+            "exits_flow": false
+          }
+        },
+        {
+          "order": 3,
+          "file": "scripts/forge-auto-state.sh",
+          "role": "state-updater",
+          "triggered_by": "PostToolUse Agent/Skill hooks",
+          "action": "maps agent/skill to step number, updates forge-state.json"
+        },
+        {
+          "order": 4,
+          "file": "scripts/forge-state-sync.sh",
+          "role": "state-syncer",
+          "triggered_by": "UserPromptSubmit hook",
+          "action": "syncs project state before each prompt"
+        }
+      ]
+    },
+    "phase_transition": {
+      "description": "Moving between phases via gate approval",
+      "trigger": "/gate phase-N",
+      "spans": [
+        {
+          "order": 1,
+          "file": "scripts/forge-enforce.sh",
+          "role": "gate-validator",
+          "action": "check-gate verifies all steps complete",
+          "shared": true
+        },
+        {
+          "order": 2,
+          "file": "scripts/forge-phase-gate.sh",
+          "role": "approval-checker",
+          "action": "checks observer + CodeRabbit approval",
+          "on_failure": {
+            "action": "circuit_breaker",
+            "exits_flow": true
+          }
+        },
+        {
+          "order": 3,
+          "file": "scripts/forge-fsm.sh",
+          "role": "state-machine",
+          "action": "drives phase transition logic"
+        },
+        {
+          "order": 4,
+          "file": "scripts/forge-phase-map.sh",
+          "role": "boundary-resolver",
+          "action": "maps step to phase",
+          "shared": true
+        }
+      ]
+    },
+    "project_bootstrap": {
+      "description": "Phase A: new project setup from empty directory",
+      "trigger": "/forge on empty directory (no CLAUDE.md)",
+      "spans": [
+        {
+          "order": 1,
+          "file": "commands/forge-phases/phase-a-setup.md",
+          "role": "orchestrator",
+          "action": "10 steps: detect stack, create CLAUDE.md, SPEC.md, scaffold"
+        },
+        {
+          "order": 2,
+          "file": "templates/CLAUDE.template.md",
+          "role": "template",
+          "action": "read by Step S3, provides CLAUDE.md skeleton"
+        },
+        {
+          "order": 3,
+          "file": "templates/SPEC.template.md",
+          "role": "template",
+          "action": "read by Step S4, provides SPEC.md skeleton"
+        },
+        {
+          "order": 4,
+          "file": "templates/hooks.json",
+          "role": "template",
+          "action": "copied to .claude/settings.json in Step S8"
+        },
+        {
+          "order": 5,
+          "file": "templates/commit-msg",
+          "role": "template",
+          "action": "copied to .git/hooks/commit-msg in Step S8"
+        }
+      ]
+    },
+    "planning": {
+      "description": "Phases 0-2: research, requirements, feasibility, architecture, and design",
+      "trigger": "/forge on initialized project (steps 1-19)",
+      "spans": [
+        {
+          "order": 1,
+          "file": "commands/discover.md",
+          "role": "researcher",
+          "action": "deep domain research"
+        },
+        {
+          "order": 2,
+          "file": "commands/requirements.md",
+          "role": "analyst",
+          "action": "elicit and validate requirements"
+        },
+        {
+          "order": 3,
+          "file": "commands/feasibility.md",
+          "role": "evaluator",
+          "action": "architecture feasibility check"
+        },
+        {
+          "order": 4,
+          "file": "commands/generate-spec.md",
+          "role": "specifier",
+          "action": "generate full SPEC.md"
+        },
+        {
+          "order": 5,
+          "file": "commands/challenge.md",
+          "role": "challenger",
+          "action": "stress-test spec",
+          "on_failure": {
+            "action": "RETHINK_stop",
+            "exits_flow": true
+          }
+        },
+        {
+          "order": 6,
+          "file": "commands/bootstrap.md",
+          "role": "scaffolder",
+          "action": "create project scaffold"
+        },
+        {
+          "order": 7,
+          "file": "commands/specify.md",
+          "role": "detailer",
+          "action": "detailed proposal with Given/When/Then"
+        },
+        {
+          "order": 8,
+          "file": "commands/design-doc.md",
+          "role": "designer",
+          "action": "10-section design document"
+        },
+        {
+          "order": 9,
+          "file": "commands/plan-tasks.md",
+          "role": "planner",
+          "action": "break design into ordered GitHub issues"
+        }
+      ]
+    },
+    "tdd_cycle": {
+      "description": "Phase 3: per-issue TDD loop with strict agent separation",
+      "trigger": "Each GitHub issue in dependency order",
+      "spans": [
+        {
+          "order": 1,
+          "file": "agents/universal/backend-architect.md",
+          "role": "designer",
+          "action": "task design doc (N0)",
+          "step_pattern": "N0"
+        },
+        {
+          "order": 2,
+          "file": "agents/universal/context-loader-agent.md",
+          "role": "context",
+          "action": "fetch library docs via context7 (N1)",
+          "step_pattern": "N1"
+        },
+        {
+          "order": 3,
+          "file": "agents/universal/requirements-analyst.md",
+          "role": "spec",
+          "action": "add REQ to SPEC.md (N2)",
+          "step_pattern": "N2"
+        },
+        {
+          "order": 4,
+          "file": "agents/universal/quality-engineer.md",
+          "role": "tester",
+          "action": "write tests from SPEC, must FAIL (N3)",
+          "step_pattern": "N3",
+          "loop_until": "tests_fail"
+        },
+        {
+          "order": 5,
+          "file": "(domain-agent)",
+          "role": "coder",
+          "action": "write code to make tests PASS (N4)",
+          "step_pattern": "N4",
+          "loop_until": "tests_pass",
+          "max_iterations": 3
+        },
+        {
+          "order": 6,
+          "file": "scripts/traceability.sh",
+          "role": "validator",
+          "action": "100% REQ coverage check (N6)",
+          "step_pattern": "N6"
+        },
+        {
+          "order": 7,
+          "file": "agents/universal/security-engineer.md",
+          "role": "security",
+          "action": "security review (N7)",
+          "step_pattern": "N7"
+        },
+        {
+          "order": 8,
+          "file": "agents/universal/reviewer.md",
+          "role": "reviewer",
+          "action": "rate 1-5, must be >=4 (N8)",
+          "step_pattern": "N8",
+          "on_failure": {
+            "action": "fix_and_retry",
+            "exits_flow": false
+          }
+        }
+      ]
+    },
+    "review_cycle": {
+      "description": "Code review and gate approval",
+      "trigger": "/review command at phase boundary",
+      "spans": [
+        {
+          "order": 1,
+          "file": "commands/review.md",
+          "role": "reviewer",
+          "action": "inline code review of all changes"
+        },
+        {
+          "order": 2,
+          "file": "commands/checkpoint.md",
+          "role": "self-check",
+          "action": "self-review checkpoint"
+        },
+        {
+          "order": 3,
+          "file": "commands/gate.md",
+          "role": "gate",
+          "action": "observer + CodeRabbit approval"
+        }
+      ]
+    },
+    "ship": {
+      "description": "Final release: audit, security, gate, and PR merge",
+      "trigger": "Phase 5 gate pass (step 56)",
+      "spans": [
+        {
+          "order": 1,
+          "file": "commands/audit-patterns.md",
+          "role": "auditor",
+          "action": "pattern compliance check (>90%)"
+        },
+        {
+          "order": 2,
+          "file": "commands/security-scan.md",
+          "role": "scanner",
+          "action": "OWASP top 10 security audit"
+        },
+        {
+          "order": 3,
+          "file": "commands/gate.md",
+          "role": "gate",
+          "action": "final gate check \u2192 merge PR"
+        }
+      ]
+    },
+    "observer_approval": {
+      "description": "Human-in-the-loop approval for gate checks",
+      "trigger": "forge observe <project> command",
+      "spans": [
+        {
+          "order": 1,
+          "file": "scripts/forge-shell.sh",
+          "role": "initiator",
+          "action": "observer session management"
+        },
+        {
+          "order": 2,
+          "file": "scripts/forge-observer-check.sh",
+          "role": "checker",
+          "action": "verifies observer presence and reviews"
+        },
+        {
+          "order": 3,
+          "file": "scripts/forge-observer-approve.sh",
+          "role": "approver",
+          "action": "records approval, unblocks gate"
+        }
+      ]
+    }
+  },
+  "changelog": {
+    "general": [
+      {
+        "date": "2026-04-05",
+        "commit": "fc32d339",
+        "change_type": "documentation",
+        "scope": "general",
+        "summary": "comprehensive README with full system documentation",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "91d17188",
+        "change_type": "documentation",
+        "scope": "general",
+        "summary": "add error handling patterns to field guide (Part 10)",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "4300b7cd",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "circuit breaker for gate polling with auto-reset",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "635d0255",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "add error classification + consecutive retry tracking",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "b7a03010",
+        "change_type": "documentation",
+        "scope": "general",
+        "summary": "add error handling protocol document",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "90c95c13",
+        "change_type": "performance",
+        "scope": "general",
+        "summary": "run registry + lint in parallel during install",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "98becee5",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "add monotonic event sequence + session lineage to forge-state",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "5de8fd35",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "hook warns when CLAUDE.md + rules exceed 40K char limit",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "112cd185",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "add context:fork to 8 heavy commands for isolated context",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "2d66154a",
+        "change_type": "documentation",
+        "scope": "general",
+        "summary": "add Claude Code internals deep-dive (Part 9) to field guide",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "272d888d",
+        "change_type": "documentation",
+        "scope": "general",
+        "summary": "add core component registry pattern to field guide",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "9d3b384b",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "core component registry + enhanced linter validation",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "f04351d1",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "prevent current_step regression in update-step",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "d7c96284",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "add deploy-guide frontmatter + system-reminder to critical commands",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "ea4de7ed",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "correct subagent_type values + remove missing run-e2e.sh refs",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "b862b529",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "align forge.md routing labels with actual hook output",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "f3797ea4",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "git commit-msg hook enforces issue-first workflow",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "7a683d28",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "UserPromptSubmit hook checks GitHub remote before proceeding",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "4c0e8e9e",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "linter false-positive on frontmatter name aliases + reference @tools-architect",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "45088e4f",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "standardize SPEC.template.md placeholders to {{}} style (fixes #7)",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "d296fe35",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "add dependency registry, lint validation, fix 3 missing agents",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "947ea3a7",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "forge shell function + observer auto-detect fix",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "744d780c",
+        "change_type": "refactor",
+        "scope": "general",
+        "summary": "fix context poisoning, merge hooks, redesign install.sh",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-04",
+        "commit": "62102574",
+        "change_type": "documentation",
+        "scope": "general",
+        "summary": "add automation field guide \u2014 consolidated lessons for building on Claude Code",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-04",
+        "commit": "44966478",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "forge v2 \u2014 stack registry, enforcement, observer, protocols",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-03",
+        "commit": "b6bdb966",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "simplify init message \u2014 just 'Type: /forge'",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-03",
+        "commit": "085ac666",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "hooks format \u2014 use hooks array, not flat command (Claude Code requirement)",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-03",
+        "commit": "a4a6faed",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "Session 1 uses concrete subagents \u2014 no PM writing files directly",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "f0ea0c69",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "execution trace system \u2014 full input/output saved per step",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "a90f054c",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "close all 12 gaps \u2014 zero remaining",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "09835d3b",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "4 audit failures \u2014 hooks path, dead rules, orphan agents",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "4b0b2129",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "all 7 edge cases in deterministic hooks + brownfield onboarding",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "fbdaf51b",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "unified /forge command \u2014 one entry point, all cases, timeline tracking",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "edc1f892",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "deterministic hooks for flow routing + TDD + safety enforcement",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "a6416f6a",
+        "change_type": "test",
+        "scope": "general",
+        "summary": "real build test passes \u2014 27 tests, 100% REQ traceability, triangle works",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "87f95d80",
+        "change_type": "refactor",
+        "scope": "general",
+        "summary": "rebuild CLAUDE.md system based on research findings",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "1c6e1607",
+        "change_type": "documentation",
+        "scope": "general",
+        "summary": "honest E2E evaluation \u2014 speed run vs quality run analysis",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "b7516e77",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "close all 10 remaining gaps \u2014 forge system complete",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "9bb45b89",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "add intent detection + 5 flow paths to /forge master command",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "9512e095",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "E2E flow fixes \u2014 commands installed, hardcoded refs removed, graceful fallbacks",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "d1407ff4",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "complete forge system \u2014 49 agents, 16 stacks, 320+ autoresearch runs",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "5bbdc29b",
+        "change_type": "chore",
+        "scope": "general",
+        "summary": "save session state \u2014 15/33 agents tested, 18 remaining",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "4580bd17",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "add 5 production quality gates from research + verify deep-researcher fix",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "ce4f86c7",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "close 2 unfixed gaps from testing",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "e64aef5c",
+        "change_type": "test",
+        "scope": "general",
+        "summary": "comprehensive testing summary + clinic-portal test results",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "45d34682",
+        "change_type": "test",
+        "scope": "general",
+        "summary": "autoresearch runs 5-8 \u2014 5 more agents tested",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "5d3716da",
+        "change_type": "test",
+        "scope": "general",
+        "summary": "autoresearch runs 3-4 \u2014 root-cause-analyst + playwright-critic tested",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "3bc22ff9",
+        "change_type": "test",
+        "scope": "general",
+        "summary": "real execution testing \u2014 5 agents tested, reviewer checklist expanded",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "fefe3d6f",
+        "change_type": "test",
+        "scope": "general",
+        "summary": "autoresearch with real execution \u2014 Phase 0 agents tested",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "3db7825f",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "autoresearch passes 4-10 \u2014 wording, reinforcement, verification",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "0bd04c6e",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "autoresearch round 3b \u2014 stack agents + agent-factory with domain-specific Forge Cell",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "d4b1e2b6",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "autoresearch round 3 \u2014 implementer agents with specific Bash commands",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "e8f9b4e8",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "autoresearch round 2 \u2014 role-specific Forge Cell for 9 mixed agents",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "ded0b908",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "autoresearch round 1 \u2014 role-appropriate Forge integration per agent",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "51a5fc00",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "implement 4 drift-prevention patterns from Claude Code internals",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "ae4df5cf",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "enforce Forge Cell compliance across all 30 agents",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "4d8c56f3",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "add 7 commands from GStack comparison \u2014 now at 87% coverage",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "3c792a31",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "add research-first + self-executing patterns \u2014 the 2 biggest gaps",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "6aae6222",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "enhanced PM orchestrator \u2014 knows ALL Forge capabilities",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "4b5b8b94",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "absorb SDLC practices, contract patterns, and agent archetypes",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "3c1d3933",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "absorb patterns from community repos \u2014 agents, hooks, protocols",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "ec8c146b",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "infuse all capabilities into Forge \u2014 13 agents + 15 command connections",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "5dda55d8",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "add Playwright critic agent + E2E test template",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "e023c38a",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "add /critic \u2014 autonomous Playwright frontend testing agent",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "45af284d",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "ensure reviewer + CodeRabbit flows are explicit and never skipped",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "da8801bd",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "connect all 4 disconnected commands into /forge master flow",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "e5b17720",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "close all gaps from repo comparison \u2014 9 new additions",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "b24f903f",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "add all universal agents + update agent-factory for on-demand stack creation",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "6b5e7a2c",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "complete all planned items \u2014 safety commands, templates, scripts",
+        "breaking": false,
+        "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-02",
+        "commit": "f8320638",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "initialize Forge \u2014 autonomous software development framework",
+        "breaking": false,
+        "requires_reinstall": false
+      }
+    ]
+  }
 }

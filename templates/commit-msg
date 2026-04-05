@@ -1,6 +1,6 @@
 #!/bin/bash
-# Forge commit-msg hook — enforces issue-first workflow
-# Every commit must reference a GitHub issue (#N, Fixes #N, Closes #N)
+# Forge commit-msg hook — enforces issue-first workflow + conventional commits
+# Every commit must reference a GitHub issue (#N) and use conventional commit format
 # Installed by /forge Phase A Step S8
 
 MSG=$(cat "$1")
@@ -15,17 +15,38 @@ if echo "$MSG" | grep -qE "^initial commit|^Initial commit|^init:"; then
   exit 0
 fi
 
+# Allow Co-Authored-By lines (multi-line commit messages)
+FIRST_LINE=$(echo "$MSG" | head -1)
+
 # Check for issue reference
-if echo "$MSG" | grep -qE '#[0-9]+'; then
-  exit 0
+if ! echo "$MSG" | grep -qE '#[0-9]+'; then
+  echo ""
+  echo "[FORGE] BLOCKED: Commit must reference a GitHub issue."
+  echo "[FORGE] Add #N anywhere in your commit message."
+  echo "[FORGE] Example: feat(scripts): add retry tracking #14"
+  echo ""
+  echo "[FORGE] No issue yet? Create one first:"
+  echo "[FORGE]   gh issue create --title 'describe change' --label 'bug'"
+  echo ""
+  exit 1
 fi
 
-echo ""
-echo "[FORGE] BLOCKED: Commit must reference a GitHub issue."
-echo "[FORGE] Add #N anywhere in your commit message."
-echo "[FORGE] Example: fix: resolve login bug #14"
-echo ""
-echo "[FORGE] No issue yet? Create one first:"
-echo "[FORGE]   gh issue create --title 'describe change' --label 'bug'"
-echo ""
-exit 1
+# Check conventional commit format: type(scope): subject
+# Types: feat|fix|chore|docs|refactor|test|perf|ci|build|revert
+# Scopes: scripts|agents|commands|templates|rules|hooks|docs
+TYPES="feat|fix|chore|docs|refactor|test|perf|ci|build|revert"
+SCOPES="scripts|agents|commands|templates|rules|hooks|docs"
+
+if ! echo "$FIRST_LINE" | grep -qE "^($TYPES)(\(($SCOPES)\))?:"; then
+  echo ""
+  echo "[FORGE] WARNING: Commit does not follow conventional format."
+  echo "[FORGE] Expected: type(scope): subject #N"
+  echo "[FORGE] Types: $TYPES"
+  echo "[FORGE] Scopes: $SCOPES"
+  echo "[FORGE] Example: feat(scripts): add retry tracking #14"
+  echo ""
+  echo "[FORGE] Proceeding anyway (scope is recommended, not required for now)."
+  echo ""
+fi
+
+exit 0
