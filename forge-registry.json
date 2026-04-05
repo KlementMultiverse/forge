@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-05T11:47:52.924536+00:00",
+  "generated": "2026-04-05T11:55:21.234286+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -130,7 +130,8 @@
               "p3:N8"
             ],
             "role": "review",
-            "is_gate": false
+            "is_gate": false,
+            "step_pattern": "N8"
           }
         ]
       },
@@ -320,7 +321,8 @@
               "p3:N1"
             ],
             "role": "implementation",
-            "is_gate": false
+            "is_gate": false,
+            "step_pattern": "N1"
           }
         ]
       },
@@ -340,7 +342,8 @@
               "p3:N3"
             ],
             "role": "testing",
-            "is_gate": false
+            "is_gate": false,
+            "step_pattern": "N3"
           }
         ]
       },
@@ -464,7 +467,8 @@
               "p3:N0"
             ],
             "role": "design",
-            "is_gate": false
+            "is_gate": false,
+            "step_pattern": "N0"
           },
           {
             "phase": "A",
@@ -495,7 +499,8 @@
               "p3:N2"
             ],
             "role": "requirements",
-            "is_gate": false
+            "is_gate": false,
+            "step_pattern": "N2"
           },
           {
             "phase": "A",
@@ -555,7 +560,8 @@
               "p3:N7"
             ],
             "role": "security",
-            "is_gate": false
+            "is_gate": false,
+            "step_pattern": "N7"
           }
         ]
       },
@@ -575,7 +581,8 @@
               "p3:N4"
             ],
             "role": "implementation",
-            "is_gate": false
+            "is_gate": false,
+            "step_pattern": "N4"
           }
         ]
       },
@@ -1066,7 +1073,8 @@
               "p3:N9"
             ],
             "role": "implementation",
-            "is_gate": false
+            "is_gate": false,
+            "step_pattern": "N9"
           }
         ]
       },
@@ -1578,7 +1586,8 @@
               "p3:N9"
             ],
             "role": "implementation",
-            "is_gate": false
+            "is_gate": false,
+            "step_pattern": "N9"
           }
         ]
       },
@@ -1899,7 +1908,8 @@
               "p3:N6"
             ],
             "role": "validation",
-            "is_gate": false
+            "is_gate": false,
+            "step_pattern": "N6"
           },
           {
             "phase": 4,
@@ -6078,6 +6088,18 @@
     }
   },
   "changelog": {
+    "scripts": [
+      {
+        "date": "2026-04-05",
+        "commit": "a101b7c6",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "add full traceability \u2014 phase mapping, reverse deps, flow tracking, changelog #34 #35 #36",
+        "breaking": false,
+        "requires_reinstall": true,
+        "issue": "#37"
+      }
+    ],
     "general": [
       {
         "date": "2026-04-05",

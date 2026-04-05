@@ -477,20 +477,27 @@ def scan_phase_mapping(forge_dir, registry, phase_map):
     # Consolidate: merge steps within same phase for same file
     consolidated = {}
     for f, entries in file_phases.items():
-        by_phase = defaultdict(lambda: {"steps": [], "role": None, "is_gate": False})
+        by_phase = defaultdict(lambda: {"steps": [], "role": None, "is_gate": False, "step_pattern": None})
         for entry in entries:
             key = str(entry["phase"])
             by_phase[key]["steps"].extend(entry["steps"])
             by_phase[key]["role"] = entry.get("role")
             if entry.get("is_gate"):
                 by_phase[key]["is_gate"] = True
-        consolidated[f] = [
-            {"phase": k if not k.isdigit() else int(k),
-             "steps": sorted(set(v["steps"]), key=lambda x: (isinstance(x, str), str(x))),
-             "role": v["role"],
-             "is_gate": v["is_gate"]}
-            for k, v in sorted(by_phase.items())
-        ]
+            if entry.get("step_pattern"):
+                by_phase[key]["step_pattern"] = entry["step_pattern"]
+        result = []
+        for k, v in sorted(by_phase.items()):
+            entry = {
+                "phase": k if not k.isdigit() else int(k),
+                "steps": sorted(set(v["steps"]), key=lambda x: (isinstance(x, str), str(x))),
+                "role": v["role"],
+                "is_gate": v["is_gate"],
+            }
+            if v["step_pattern"]:
+                entry["step_pattern"] = v["step_pattern"]
+            result.append(entry)
+        consolidated[f] = result
 
     # Build reverse index: phase→step→files
     phase_index = []

@@ -15,10 +15,9 @@ if echo "$MSG" | grep -qE "^initial commit|^Initial commit|^init:"; then
   exit 0
 fi
 
-# Allow Co-Authored-By lines (multi-line commit messages)
 FIRST_LINE=$(echo "$MSG" | head -1)
 
-# Check for issue reference
+# Check for issue reference (#N)
 if ! echo "$MSG" | grep -qE '#[0-9]+'; then
   echo ""
   echo "[FORGE] BLOCKED: Commit must reference a GitHub issue."
@@ -37,16 +36,20 @@ fi
 TYPES="feat|fix|chore|docs|refactor|test|perf|ci|build|revert"
 SCOPES="scripts|agents|commands|templates|rules|hooks|docs"
 
-if ! echo "$FIRST_LINE" | grep -qE "^($TYPES)(\(($SCOPES)\))?:"; then
+# Must match type(scope): format — scope is REQUIRED
+if ! echo "$FIRST_LINE" | grep -qE "^($TYPES)\(($SCOPES)\):"; then
   echo ""
-  echo "[FORGE] WARNING: Commit does not follow conventional format."
-  echo "[FORGE] Expected: type(scope): subject #N"
-  echo "[FORGE] Types: $TYPES"
-  echo "[FORGE] Scopes: $SCOPES"
+  echo "[FORGE] BLOCKED: Commit must use conventional format with scope."
+  echo "[FORGE] Format: type(scope): subject #N"
+  echo "[FORGE]"
+  echo "[FORGE] Types:  feat|fix|chore|docs|refactor|test|perf|ci|build|revert"
+  echo "[FORGE] Scopes: scripts|agents|commands|templates|rules|hooks|docs"
+  echo "[FORGE]"
   echo "[FORGE] Example: feat(scripts): add retry tracking #14"
+  echo "[FORGE]          fix(agents): correct reviewer prompt #22"
+  echo "[FORGE]          docs(docs): update architecture reference #30"
   echo ""
-  echo "[FORGE] Proceeding anyway (scope is recommended, not required for now)."
-  echo ""
+  exit 1
 fi
 
 exit 0
