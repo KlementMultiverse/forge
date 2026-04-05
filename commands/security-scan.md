@@ -2,6 +2,15 @@
 
 Comprehensive security audit using OWASP Top 10 + STRIDE threat modeling. Scans code, config, and architecture for vulnerabilities.
 
+<system-reminder>
+CRITICAL RULES:
+- Check ALL items in ~/.claude/rules/security.md — do not skip any
+- OWASP Top 10 is the minimum checklist — check every category
+- CRITICAL and HIGH findings MUST be fixed before proceeding
+- Check for hardcoded secrets, SQL injection, XSS, CSRF, tenant isolation
+- Read .env.example — every secret MUST come from env vars
+</system-reminder>
+
 ## Input
 $ARGUMENTS — optional scope (e.g., "auth", "storage", "all"). Default: "all"
 

@@ -2,6 +2,14 @@
 
 Create a new project folder with all infrastructure from templates.
 
+<system-reminder>
+CRITICAL RULES:
+- Read CLAUDE.md FIRST — follow all architecture rules
+- ALL credentials from env vars — NEVER hardcode secrets
+- Read ~/.claude/rules/docker.md for Docker rules
+- Scaffold must match the tech stack in CLAUDE.md exactly
+</system-reminder>
+
 ## Input
 $ARGUMENTS — project name (e.g., "clinic-portal")
 

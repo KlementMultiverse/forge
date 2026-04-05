@@ -73,6 +73,60 @@ Claude Code `src/utils/claudemd.ts` function `stripHtmlComments()` uses the Comm
 
 ---
 
+## Part 0.5: Command & Agent File Structure (from source code)
+
+Claude Code has **three types of custom files**, each loaded differently:
+
+### Agents (`~/.claude/agents/*.md`)
+**YAML frontmatter is required.** Fields:
+```yaml
+---
+name: agent-name          # Used in subagent_type= parameter
+description: "..."        # Shown in agent list, used for routing
+tools: Read, Glob, Grep   # Tools this agent can use
+category: backend         # For organization
+---
+```
+The `name:` field is what you pass to `subagent_type=`. The filename is secondary.
+
+### Commands (`~/.claude/commands/*.md`)
+**Frontmatter is optional but powerful.** Key fields:
+```yaml
+---
+description: "..."        # Shown in skill list
+allowed-tools: Read,Grep  # Restrict tools (default: all)
+model: haiku              # Override model (haiku/sonnet/opus)
+effort: high              # Thinking effort (low/medium/high/max)
+user-invocable: true      # Can user type /command-name?
+context: fork             # inline (default) or fork (run as sub-agent)
+agent: backend-architect  # Agent type when forked
+---
+```
+
+Without frontmatter, description comes from `# /name — description` on line 1.
+
+**`context: fork` is powerful:** Commands with `context: fork` run as sub-agents in isolated context. Heavy commands that produce lots of output won't pollute the main conversation.
+
+### `<system-reminder>` in Commands
+System-reminder tags inside command markdown are seen as high-priority instructions by the LLM. Use them for **critical enforcement rules** that must not be ignored:
+```markdown
+<system-reminder>
+Read CLAUDE.md FIRST — follow all architecture rules.
+ALL credentials from env vars — NEVER hardcode secrets.
+</system-reminder>
+```
+Not every command needs them. Use for: security-critical steps, data integrity rules, architectural constraints.
+
+### Rules (`~/.claude/rules/*.md`)
+Auto-loaded via Pipe 1 (stripped of frontmatter + comments). Frontmatter `paths:` field controls which directories the rule applies to:
+```yaml
+---
+paths: ["apps/**", "tests/**"]
+---
+```
+
+---
+
 ## Part 1: The Mental Model
 
 ### Claude Code is not a chatbot — it's a runtime

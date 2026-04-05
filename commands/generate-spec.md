@@ -2,6 +2,14 @@
 
 Synthesize discovery, requirements, and feasibility into a complete SPEC.md.
 
+<system-reminder>
+CRITICAL RULES:
+- Every requirement MUST have [REQ-xxx] tag — no untagged requirements
+- Minimum 15 [REQ-xxx] tags — if fewer, add non-functional requirements
+- Read templates/SPEC.template.md via Read tool for structure
+- Models MUST have exact field types (CharField(max_length=200), not "string")
+</system-reminder>
+
 ## Input
 Three documents:
 - docs/discovery-report.md
