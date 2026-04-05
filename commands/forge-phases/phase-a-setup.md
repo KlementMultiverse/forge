@@ -393,6 +393,10 @@ mkdir -p scripts
 cp ~/.claude/scripts/traceability.sh scripts/ 2>/dev/null || true
 cp ~/.claude/scripts/sync-report.sh scripts/ 2>/dev/null || true
 chmod +x scripts/*.sh 2>/dev/null || true
+
+# 9. Install git commit-msg hook (enforces issue-first workflow)
+cp ~/.claude/templates/commit-msg .git/hooks/commit-msg 2>/dev/null || true
+chmod +x .git/hooks/commit-msg 2>/dev/null || true
 ```
 
 Verify: .claude/settings.json exists and is valid JSON
