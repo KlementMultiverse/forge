@@ -12,3 +12,7 @@
 ## From forge-ops (2026-04-04)
 - docker-compose.yml scaffold missing volume mount for live reload — always include `.:/app` with `/app/.venv` excluded
 - Builder ran `uv sync` on host creating 4600+ .venv files — Docker build handles deps, not host
+- Never dump all tests into one tests.py file — split by domain (tests_models.py, tests_api.py, etc.) to stay under 300 lines per file
+- N+1 on queryset iteration: use `.update()` for bulk field changes instead of looping `.save()` on individual instances
+- Django Ninja router imports don't depend on NinjaAPI instance — import at top of urls.py, create api after imports
+- Use `grep -F` in traceability scripts — REQ IDs with brackets break regex grep

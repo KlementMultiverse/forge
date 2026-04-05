@@ -31,6 +31,15 @@
             "command": "bash -c 'CMD=\"$CLAUDE_TOOL_INPUT_COMMAND\"; if echo \"$CMD\" | grep -qE \"rm -rf|git push --force|git reset --hard|git clean -f\"; then echo \"[FORGE] BLOCKED: Destructive command\" && exit 2; fi'"
           }
         ]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'F=$(echo $CLAUDE_TOOL_INPUT | jq -r \".file_path // \\\"\\\"\" 2>/dev/null); OLD=$(echo $CLAUDE_TOOL_INPUT | jq -r \".old_string // \\\"\\\"\" 2>/dev/null); NEW=$(echo $CLAUDE_TOOL_INPUT | jq -r \".new_string // \\\"\\\"\" 2>/dev/null); if [ -n \"$OLD\" ] && [ -n \"$F\" ]; then OLD_LC=$(echo \"$OLD\" | wc -l); NEW_LC=$(echo \"$NEW\" | wc -l); DIFF=$((OLD_LC - NEW_LC)); if [ \"$DIFF\" -gt 10 ]; then echo \"[FORGE] WARNING: Removing $DIFF lines from $F. Old: $OLD_LC lines → New: $NEW_LC lines. Ensure no critical logic is lost.\"; fi; fi; true'"
+          }
+        ]
       }
     ],
     "PostToolUse": [
