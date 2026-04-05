@@ -115,10 +115,15 @@ def check_orphan_agents(forge_dir):
     """Find agents that no command references."""
     warnings = []
     agent_files = set()
-    for f in forge_dir.glob("agents/universal/*.md"):
+    # Map: frontmatter name → filename stem (so @forge-pm counts for pm-orchestrator)
+    name_to_file = {}
+    for f in list(forge_dir.glob("agents/universal/*.md")) + list(forge_dir.glob("agents/stacks/*/*.md")):
         agent_files.add(f.stem)
-    for f in forge_dir.glob("agents/stacks/*/*.md"):
-        agent_files.add(f.stem)
+        # Read frontmatter name field
+        content = f.read_text(errors="ignore")
+        m = re.search(r"^name:\s*(\S+)", content, re.MULTILINE)
+        if m and m.group(1) != f.stem:
+            name_to_file[m.group(1)] = f.stem
 
     # Find all agent references
     referenced = set()
@@ -127,6 +132,9 @@ def check_orphan_agents(forge_dir):
             content = f.read_text(errors="ignore")
             for m in re.findall(r"@([\w-]+)", content):
                 referenced.add(m)
+                # If @forge-pm is referenced, also mark pm-orchestrator as referenced
+                if m in name_to_file:
+                    referenced.add(name_to_file[m])
 
     orphans = agent_files - referenced
     # Skip READMEs and known non-agent files

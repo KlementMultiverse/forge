@@ -24,6 +24,11 @@ Spawn `@mcp-architect` with:
   CONTEXT: MCP SDK docs + project CLAUDE.md
   EXPECTED OUTPUT: Tool definitions, resource definitions, transport choice, auth requirements
 
+Then spawn `@tools-architect` to review tool schemas:
+  TASK: Review tool definitions for clarity, typed parameters, error handling, idempotency
+  INPUT: Tool definitions from @mcp-architect
+  EXPECTED OUTPUT: Improved tool schemas with clear descriptions, typed params, error responses
+
 ## Phase 2: Scaffold
 
 Choose SDK based on project stack:
