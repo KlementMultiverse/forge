@@ -305,8 +305,10 @@ if missing:
     sys.exit(1)
 
 print(f'Project:    {state[\"project\"]}')
+print(f'Session:    {state.get(\"session_id\", \"n/a\")}' + (f' (parent: {state[\"parent_session_id\"]})' if state.get('parent_session_id') else ''))
 print(f'Phase:      {state[\"current_phase\"]} ({state[\"phases\"].get(str(state[\"current_phase\"]), {}).get(\"name\", \"unknown\")})')
 print(f'Step:       {state[\"current_step\"]}')
+print(f'Event seq:  {state.get(\"event_seq\", 0)}')
 print(f'Status:     {state[\"status\"]}')
 
 # Count gate status
@@ -455,6 +457,7 @@ else:
     state['phases'][cp]['steps'][str(step)] = {'name': 'step-$step', 'status': status, 'trace_complete': False}
 
 state['current_step'] = max(state.get('current_step', 0), step)
+state['event_seq'] = state.get('event_seq', 0) + 1
 state['last_updated'] = datetime.datetime.now(datetime.UTC).isoformat()
 state['status'] = 'IN_PROGRESS' if status in ('DONE', 'IN_PROGRESS') else status
 
@@ -499,12 +502,17 @@ cmd_init() {
     python3 -c "
 import json, datetime
 
+import uuid
 state = {
-    'version': '1.0.0',
+    'version': '1.1.0',
     'project': '$project_name',
     'current_phase': 0,
     'current_step': 0,
+    'event_seq': 0,
     'status': 'NOT_STARTED',
+    'session_id': str(uuid.uuid4())[:8],
+    'parent_session_id': None,
+    'session_history': [],
     'last_updated': datetime.datetime.now(datetime.UTC).isoformat(),
     'phases': {
         '0': {'name': 'Genesis',       'status': 'NOT_STARTED', 'gate_passed': False, 'steps': {}},
