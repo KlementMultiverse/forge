@@ -503,4 +503,326 @@ File size limit: 300 lines
 
 ---
 
+## Part 9: Claude Code Internals (from source analysis)
+
+Everything below comes from analyzing the Claude Code v2.1.88 source (~500K lines).
+Source: `~/projects/claudecode-leak/claude-code-beita-buildable/`
+
+### The Main Loop — How It Actually Works
+
+```
+User starts `claude`
+    ↓
+main.tsx (line 598): Entry point
+  ├── Parallel init: keychain prefetch + MDM policy read
+  ├── CLI arg parsing (commander.js)
+  ├── Client type detection (CLI/SDK/VSCode/desktop)
+  └── run() → preAction hook → init()
+    ↓
+buildEffectiveSystemPrompt() (systemPrompt.ts):
+  Priority: override > coordinator > agent > custom > default
+  Agent prompt either REPLACES or APPENDS to default
+    ↓
+getMemoryFiles() (claudemd.ts):
+  Load order: /etc/ → ~/.claude/ → ./CLAUDE.md → .claude/rules/ → CLAUDE.local.md
+  MAX_MEMORY_CHARACTER_COUNT = 40,000 chars
+  @include directives for cross-file references
+    ↓
+launchRepl() → React REPL component (Ink framework)
+    ↓
+Message loop:
+  1. User input → PromptInput
+  2. UserPromptSubmit hooks fire
+  3. normalizeMessagesForAPI()
+  4. attachContext() → system prompt + memory + attachments
+  5. checkTokenBudget()
+  6. client.messages.create(stream: true)
+  7. Stream events: text blocks + tool_use blocks
+  8. For each tool_use:
+     a. PreToolUse hooks
+     b. Permission check (canUse())
+     c. tool.invoke()
+     d. PostToolUse hooks
+  9. Continue until stop_reason === 'end_turn'
+  10. Stop hooks fire
+  11. Back to step 1
+```
+
+### CLAUDE.md Loading — The Exact Path
+
+```
+Source: src/utils/claudemd.ts
+
+Load order (low to high priority):
+  1. /etc/claude-code/CLAUDE.md     (enterprise policy — managed)
+  2. ~/.claude/CLAUDE.md            (user global)
+  3. ./CLAUDE.md                    (project root)
+  4. ./.claude/CLAUDE.md            (project hidden)
+  5. ./.claude/rules/*.md           (project rules)
+  6. ./CLAUDE.local.md              (local private — not committed)
+
+Processing:
+  - YAML frontmatter stripped (--- ... ---)
+  - Block-level HTML comments stripped (<!-- ... -->)
+  - Inline comments NOT stripped
+  - @include directives resolved (prevents circular refs)
+  - Result injected as system prompt section
+
+Key constant: MAX_MEMORY_CHARACTER_COUNT = 40,000
+If total exceeds this, content is truncated.
+```
+
+### Hook System — Every Event Type
+
+```
+Source: src/utils/hooks.ts (3600+ lines)
+
+ALL hook events (from source):
+  Setup              → on init (before trust dialog)
+  SessionStart       → on session start
+  SessionEnd         → on shutdown (1500ms timeout!)
+  PreToolUse:<tool>  → before tool execution (can BLOCK with exit 2)
+  PostToolUse:<tool> → after tool execution
+  PostToolUseFailure → tool execution failed
+  Stop               → when model's turn stops
+  UserPromptSubmit   → before user message sent to API
+  Notification       → send notification to user
+  PermissionDenied   → permission check failed
+  ConfigChange       → settings changed
+  FileChanged        → file modified on disk
+  InstructionsLoaded → CLAUDE.md loaded/reloaded
+  PermissionRequest  → permission decision needed
+  SubagentStart      → sub-agent spawned
+  SubagentStop       → sub-agent finished
+  TaskCreated        → task tool used
+  TaskCompleted      → task finished
+
+Hook execution:
+  1. Check trust dialog accepted (security — untrusted repos)
+  2. Find hooks matching event + tool name (matcher field)
+  3. Execute shell command
+  4. Parse JSON output
+  5. Return result to model (injected as context)
+
+Timeout: 600 seconds for most hooks
+         1500ms for SessionEnd (fast shutdown)
+
+CRITICAL SECURITY: Hooks blocked until trust dialog accepted.
+Reason: .claude/settings.json is attacker-controllable in cloned repos.
+```
+
+### Settings Merge — Priority Order
+
+```
+Source: src/utils/settings/settings.ts
+
+Priority (highest wins):
+  1. --settings <json>           (inline CLI flag)
+  2. --settings <file>           (file CLI flag)
+  3. .claude/settings.local.json (project local — gitignored)
+  4. .claude/settings.json       (project — committed)
+  5. ~/.claude/settings.json     (user global)
+  6. managed-settings.json       (enterprise MDM)
+  7. managed-settings.d/*.json   (enterprise drop-in, alphabetical)
+  8. Built-in defaults
+
+Merge rules:
+  - Arrays: REPLACED (not merged/concatenated)
+  - Objects: recursively deep-merged
+  - Primitives: later values override earlier
+
+Cache strategy:
+  - In-memory cache per source
+  - Cloned before returning (prevent mutation bugs)
+  - Invalidated by file watcher events
+```
+
+### Agent Spawning — What Sub-Agents Get
+
+```
+Source: src/tools/AgentTool/runAgent.ts
+
+When you spawn Agent with subagent_type="backend-architect":
+
+  1. Create new agentId (UUID)
+  2. Track parentAgentId (for nesting)
+  3. Load agent definition:
+     - System prompt from agent .md file
+     - Tools filtered by agent's tools: field
+     - Model override if specified
+  4. Build messages array (prompt from parent)
+  5. Enter SAME query loop as main thread:
+     - normalizeMessages → API call → tool execution → repeat
+  6. Sub-agent has ISOLATED context:
+     - Own agentId
+     - Own tool budget
+     - Own token limits
+     - Filtered tool set (only what frontmatter allows)
+  7. Return result to parent when stop_reason = 'end_turn'
+
+Key insight: Sub-agents run the EXACT same code as the main loop.
+They're not a different system — they're the same loop with a different
+system prompt and filtered tools.
+```
+
+### Skill Execution — /command Flow
+
+```
+Source: src/tools/SkillTool/SkillTool.ts
+
+When you type /discover:
+
+  1. SkillTool.invoke() called
+  2. Skill found by name from:
+     - Built-in skills (hardcoded)
+     - Bundled skills (from plugins)
+     - Plugin skills (from ~/.claude/commands/)
+     - MCP skills (from MCP servers)
+  3. Check context: field:
+     - "inline" (default): skill prompt injected into CURRENT conversation
+     - "fork": skill runs as SUB-AGENT in isolated context
+  4. If forked:
+     - New agentId created
+     - Skill prompt loaded as agent system prompt
+     - Runs in isolation (same as Agent spawning above)
+  5. Result returned to main conversation
+
+Key insight: context: fork is powerful.
+Heavy skills that produce lots of output won't pollute the main window.
+```
+
+### Token Management — Context Window as RAM
+
+```
+Source: src/utils/tokens.ts (lines 226-261)
+
+tokenCountWithEstimation() — THE source of truth:
+  - Uses last API response usage (exact)
+  - Adds rough estimation for new messages since
+  - Handles parallel tool calls: walks back past siblings
+
+Budget enforcement:
+  - Checked BEFORE API call (checkTokenBudget)
+  - Checked AFTER each response (applyTokenBudget)
+  - Terminates query early if exhausted
+
+Token types tracked separately:
+  - input_tokens (prompt)
+  - cache_creation_input_tokens (new cache writes)
+  - cache_read_input_tokens (cache hits)
+  - output_tokens (model response)
+
+Context window vs billing:
+  - Context = input + cache_read (what model "sees")
+  - Billing = input + cache_creation + output (what you pay for)
+```
+
+### Permission System — Three-Way Decisions
+
+```
+Source: src/utils/permissions/
+
+Permission modes:
+  default      → ask user every time
+  plan         → paused (no execution)
+  acceptEdits  → auto-approve file edits
+  bypassAll    → skip all checks
+  dontAsk      → deny all
+  auto         → classifier-based (Anthropic internal)
+
+Denial tracking (denialTracking.ts):
+  - 3 consecutive denials → fallback to prompting
+  - 20 total denials → fallback to prompting
+  - Prevents "classifier thrashing"
+
+Rule sources (hierarchical):
+  CLI args → settings files → command-level → session-only
+```
+
+### Memory System — Auto-Memory Implementation
+
+```
+Source: src/memdir/memdir.ts
+
+Directory: ~/.claude/projects/<project-slug>/memory/
+Index: MEMORY.md (max 200 lines, 25KB)
+
+Truncation rules:
+  - Lines > 200 → truncate + warning
+  - Bytes > 25,000 → truncate at last newline + warning
+
+Memory types: user, feedback, project, reference
+
+Frontmatter format:
+  ---
+  name: "required"
+  description: "required"
+  type: user | feedback | project | reference
+  ---
+
+Key behavior: Memory directory pre-created.
+The system prompt tells the model "directory already exists —
+write to it directly, don't check existence."
+This prevents wasted tool calls.
+```
+
+### Session Persistence
+
+```
+Source: src/services/SessionMemory/sessionMemory.ts
+
+Session memory extraction:
+  - Runs ASYNCHRONOUSLY in background
+  - Uses forked sub-agent (isolated from main loop)
+  - Tracks init threshold + update threshold
+  - Uses same token count metric as autocompact
+  - Last summarized message ID tracked (no re-summarize)
+
+Session state (bootstrap/state.ts):
+  - sessionId: unique per session
+  - parentSessionId: for plan → implementation lineage
+  - sessionSource: origin tracking
+  - sessionPersistenceDisabled: for ephemeral sessions
+```
+
+### Worktree Isolation — How It Works
+
+```
+Source: src/utils/worktree.ts
+
+When Agent runs with isolation: "worktree":
+  1. Create git worktree (temporary branch)
+  2. Validate slug (max 64 chars, no traversal)
+  3. Symlink large dirs (node_modules) from main repo
+  4. Agent works on isolated copy
+  5. If changes made → return worktree path + branch
+  6. If no changes → auto-cleanup
+
+Security:
+  - Path traversal blocked (.. sequences)
+  - Segment validation (alphanumeric + dots/underscores/dashes)
+  - commondir validation (prevents malicious gitdir: pointers)
+
+Two roots tracked:
+  - originalCwd: where session started
+  - projectRoot: stable identity (never updated mid-session)
+```
+
+### Patterns to Replicate in Any Automation
+
+```
+1. PARALLEL INIT: Start expensive I/O (keychain, settings, git) in parallel
+2. CACHE + CLONE: Cache settings, clone before returning (prevent mutation)
+3. TRUST BOUNDARY: Block hooks until trust accepted (untrusted repos)
+4. DENIAL STATE MACHINE: Track consecutive + total denials, fallback gracefully
+5. MONOTONIC EVENTS: Use sequence counter for event ordering
+6. FORKED CONTEXT: Heavy operations in sub-agents (isolated context window)
+7. PRE-CREATE DIRS: Tell model "dir exists, write directly" (saves tool calls)
+8. CHECKSUM REGISTRY: Detect unauthorized changes via hash comparison
+9. FEATURE GATES: Compile-time (dead code elimination) + runtime (env vars)
+10. SESSION LINEAGE: Track parent→child sessions for continuity
+```
+
+---
+
 *This document is a living artifact. Every build teaches something new. Update it.*
