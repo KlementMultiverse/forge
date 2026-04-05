@@ -1,3 +1,6 @@
+---
+context: fork
+---
 # /retro — Retrospective (BEFORE PR)
 
 Generate a retrospective using Steve's AI-First SDLC template. MUST be written BEFORE creating the PR — Steve's requirement. Updates CLAUDE.md with lessons learned.

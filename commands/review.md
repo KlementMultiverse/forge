@@ -1,3 +1,6 @@
+---
+context: fork
+---
 # /review — Inline Code Review (Before PR)
 
 Staff-engineer-level code review that runs BEFORE creating a PR. Catches issues that CodeRabbit misses — architecture violations, security gaps, incomplete implementations.

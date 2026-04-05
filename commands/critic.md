@@ -1,3 +1,6 @@
+---
+context: fork
+---
 # /critic — Autonomous Frontend Critic (Playwright)
 
 Playwright-powered autonomous testing agent that maps the ENTIRE frontend, tests every flow in depth and breadth, auto-creates GitHub Issues for failures, and triggers the fix cycle with full spec↔test↔code sync.

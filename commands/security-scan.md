@@ -1,3 +1,6 @@
+---
+context: fork
+---
 # /security-scan — Security Audit
 
 Comprehensive security audit using OWASP Top 10 + STRIDE threat modeling. Scans code, config, and architecture for vulnerabilities.

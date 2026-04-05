@@ -221,12 +221,18 @@ def check_agent_frontmatter(forge_dir):
 
 
 def check_command_headers(forge_dir):
-    """Validate all commands have # /name — description on line 1."""
+    """Validate all commands have # /name — description (after optional frontmatter)."""
     warnings = []
     for f in forge_dir.glob("commands/*.md"):
-        first_line = f.read_text(errors="ignore").split("\n")[0]
+        content = f.read_text(errors="ignore")
+        # Skip YAML frontmatter if present
+        if content.startswith("---"):
+            fm_end = content.find("---", 3)
+            if fm_end != -1:
+                content = content[fm_end + 3:].lstrip("\n")
+        first_line = content.split("\n")[0] if content else ""
         if not re.match(r"^#\s+/\S+\s+(?:--|[—–-])\s+.+", first_line):
-            warnings.append(f"COMMAND BAD HEADER: {f.name} — line 1 should be '# /name — description'")
+            warnings.append(f"COMMAND BAD HEADER: {f.name} — first heading should be '# /name — description'")
     return warnings
 
 

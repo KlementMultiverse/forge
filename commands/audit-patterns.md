@@ -1,3 +1,6 @@
+---
+context: fork
+---
 # /audit-patterns — Pattern Audit
 
 Run the pattern-auditor-agent to scan the project against all learned patterns (170+ checks from Weeks 1-4 + context engineering article).

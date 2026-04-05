@@ -1,3 +1,6 @@
+---
+context: fork
+---
 # /checkpoint — Self-Improving Execution Feedback Loop
 
 Every agent or command execution produces a checkpoint file. The checkpoint captures input, output, evaluation, and any prompt mutations needed. This makes the automation layer self-improving — every run makes future runs better.

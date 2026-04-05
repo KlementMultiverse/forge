@@ -1,3 +1,6 @@
+---
+context: fork
+---
 # /design-doc — Architecture Design Document
 
 Generate a design document following the Week 3 template exactly. 10 sections. Every decision uses "Will implement X because" format with trade-offs and alternatives.

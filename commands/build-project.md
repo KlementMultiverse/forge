@@ -1,3 +1,6 @@
+---
+context: fork
+---
 # /build-project — Full SDLC Orchestrator
 
 Runs the ENTIRE project build flow autonomously. From SPEC to deployed app. Delegates everything to specialist agents via /run-with-checkpoint. Uses /gate at every stage boundary. Never writes code directly — only orchestrates.

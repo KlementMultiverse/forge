@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated": "2026-04-05T10:12:02.266446+00:00",
+  "generated": "2026-04-05T10:29:29.906929+00:00",
   "description": "Authoritative registry of all forge core components. Changes require GitHub issue + protocol.",
   "protocols": {
     "agent": {
@@ -497,7 +497,7 @@
     "commands/audit-patterns.md": {
       "type": "command",
       "name": "audit-patterns",
-      "checksum": "55292d2c45ed2d06",
+      "checksum": "2c7e40c9a0f1d66c",
       "lines": 65,
       "last_verified": "2026-04-05",
       "validation_status": "PASS"
@@ -521,7 +521,7 @@
     "commands/build-project.md": {
       "type": "command",
       "name": "build-project",
-      "checksum": "5eff35ca8ff65180",
+      "checksum": "cae531c688fec784",
       "lines": 209,
       "last_verified": "2026-04-05",
       "validation_status": "PASS"
@@ -553,7 +553,7 @@
     "commands/checkpoint.md": {
       "type": "command",
       "name": "checkpoint",
-      "checksum": "024c887d87013bde",
+      "checksum": "4f01c5609862457f",
       "lines": 159,
       "last_verified": "2026-04-05",
       "validation_status": "PASS"
@@ -577,7 +577,7 @@
     "commands/critic.md": {
       "type": "command",
       "name": "critic",
-      "checksum": "f41ec3e9b9467ae1",
+      "checksum": "483c0056a9461544",
       "lines": 247,
       "last_verified": "2026-04-05",
       "validation_status": "PASS"
@@ -593,7 +593,7 @@
     "commands/design-doc.md": {
       "type": "command",
       "name": "design-doc",
-      "checksum": "3b5cd082b713c6e9",
+      "checksum": "bc303e6df73775d6",
       "lines": 224,
       "last_verified": "2026-04-05",
       "validation_status": "PASS"
@@ -729,7 +729,7 @@
     "commands/retro.md": {
       "type": "command",
       "name": "retro",
-      "checksum": "84db328b3d2e8650",
+      "checksum": "ff54e8b07488d048",
       "lines": 118,
       "last_verified": "2026-04-05",
       "validation_status": "PASS"
@@ -737,7 +737,7 @@
     "commands/review.md": {
       "type": "command",
       "name": "review",
-      "checksum": "ec861ce15817cfd3",
+      "checksum": "8766e4390d8aa106",
       "lines": 69,
       "last_verified": "2026-04-05",
       "validation_status": "PASS"
@@ -745,7 +745,7 @@
     "commands/security-scan.md": {
       "type": "command",
       "name": "security-scan",
-      "checksum": "02200160fb813a0f",
+      "checksum": "96284c088a99b3ee",
       "lines": 63,
       "last_verified": "2026-04-05",
       "validation_status": "PASS"
@@ -977,7 +977,7 @@
     "scripts/forge-lint.py": {
       "type": "script",
       "name": "forge-lint",
-      "checksum": "985071dde936e7c1",
+      "checksum": "eae4c128a56856f7",
       "lines": 212,
       "last_verified": "2026-04-05",
       "validation_status": "PASS"
