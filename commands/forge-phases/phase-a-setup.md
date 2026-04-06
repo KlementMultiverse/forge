@@ -11,34 +11,29 @@ SESSION 1 RULES:
 - NO CODE IS WRITTEN in Session 1 — only planning/spec/config files
 </system-reminder>
 
-**STEP S1: ASSESS** (PM scans folder — no agents)
+**STEP S1: PREPARE** (PM prepares workspace — no agents)
+
+NOTE: Project type detection (GREENFIELD/BROWNFIELD/EXISTING) was already done by the UserPromptSubmit hook before reaching this file. S1 does NOT re-detect — it only prepares the workspace.
 
 ```bash
-# PM runs these checks automatically
-
-# Guard: ensure git repo exists (user may have forgotten git init)
+# 1. Ensure git repo (user may have forgotten git init)
 if [ ! -d ".git" ]; then
     git init -b main
     echo "[FORGE] Initialized git repository"
 fi
 
-# Guard: ensure docs/forge-trace exists (S3-S7 write traces here)
-mkdir -p docs/forge-trace
+# 2. Create directories needed by S3-S9
+mkdir -p docs/forge-trace docs/proposals docs/retrospectives
 
-ls CLAUDE.md 2>/dev/null          # exists?
-ls SPEC.md 2>/dev/null            # exists?
-ls FORGE.md 2>/dev/null           # exists?
-ls .forge/ 2>/dev/null            # forge initialized?
-ls .claude/ 2>/dev/null           # claude rules exist?
-find . -maxdepth 4 \( -name "*.py" -o -name "*.ts" -o -name "*.tsx" -o -name "*.jsx" -o -name "*.js" -o -name "*.go" -o -name "*.rb" -o -name "*.java" -o -name "*.rs" -o -name "*.php" \) ! -path "*node_modules*" ! -path "*.venv*" ! -path "*.git*" ! -path "*/vendor/*" 2>/dev/null | head -1  # code exists?
-cat CLAUDE.md 2>/dev/null | grep -E "FORGE_TEMPLATE|{{PROJECT_NAME}}|{{DESCRIPTION}}" | head -1  # forge placeholder?
+# 3. Check for partial setup (Phase A was interrupted previously)
+# If CLAUDE.md exists but SPEC.md or .forge/ is missing → resume from missing step
 ```
 
-Based on scan:
-- EMPTY folder → continue to STEP S2 (full setup)
-- Code exists, no CLAUDE.md → jump to STEP S5-BROWNFIELD
-- CLAUDE.md with placeholders → continue to STEP S2
-- Incomplete setup (CLAUDE.md but missing SPEC.md or scaffold or .forge/) → resume from missing step
+Based on partial setup check:
+- Nothing exists → continue to STEP S2 (full setup)
+- CLAUDE.md exists but no SPEC.md → resume at S4
+- CLAUDE.md + SPEC.md but no scaffold → resume at S7
+- Incomplete setup (CLAUDE.md but missing .forge/) → resume from missing step
 - Everything exists → "Setup already complete. Run /forge again to build."
 
 **STEP S2: DISCOVERY CONVERSATION** (PM only — gathers information)
