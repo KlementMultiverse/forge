@@ -35,7 +35,7 @@ What gets installed (to `~/.claude/`, shared by all projects):
 | Rules | 7 | ~/.claude/rules/ | Global rules (security, python, docker, etc.) |
 | Scripts | 30 | ~/.claude/scripts/ | Enforcement, traceability, ownership, testing |
 | Templates | 22 | ~/.claude/templates/ | Project scaffolding (CLAUDE.md, SPEC.md, hooks, etc.) |
-| Tests | 346 | tests/ | BATS + pytest test suite (100% script coverage) |
+| Tests | 351 | tests/ | BATS + pytest test suite (100% script coverage) |
 | Shell fn | 1 | ~/.bashrc / ~/.zshrc | `forge` terminal command |
 
 ---

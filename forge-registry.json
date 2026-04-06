@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-06T12:35:31.397065+00:00",
+  "generated": "2026-04-06T12:43:09.830102+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -2256,8 +2256,8 @@
         "matcher": "Write|Edit",
         "depends_on": {
           "scripts": [
-            "forge-change-validator.sh",
-            "forge-auto-sync.sh"
+            "forge-auto-sync.sh",
+            "forge-change-validator.sh"
           ]
         }
       },
@@ -4686,12 +4686,12 @@
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-change-validator.sh",
+      "to": "scripts/forge-auto-sync.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-auto-sync.sh",
+      "to": "scripts/forge-change-validator.sh",
       "type": "scripts"
     },
     {
@@ -6656,6 +6656,34 @@
   },
   "changelog": {
     "commands": [
+      {
+        "date": "2026-04-06",
+        "commit": "bf71e57a",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "Phase A Batch 3 \u2014 S6-S8 infrastructure fixes #136 #137 #145 #157",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "tests/bash/unit/phase-a-fixes.bats"
+        ],
+        "issues": [
+          "#136",
+          "#137",
+          "#145",
+          "#157",
+          "#158",
+          "#158",
+          "#136",
+          "#137",
+          "#145",
+          "#157"
+        ]
+      },
       {
         "date": "2026-04-06",
         "commit": "aa742c1a",

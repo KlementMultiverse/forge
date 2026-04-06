@@ -118,3 +118,35 @@ teardown() {
     run grep "all 8 hooks\|Has all 8" "$PHASE_A"
     assert_failure
 }
+
+# ─── Batch 5: Brownfield Fixes ───
+
+# #148: S7 brownfield skip enforced
+@test "Phase A S7 has brownfield skip condition" {
+    run grep -iE "BROWNFIELD.*skip|skip.*scaffold.*code.*exist|If.*brownfield|If.*code.*exist.*skip" "$PHASE_A"
+    assert_success
+}
+
+# #149: Brownfield adds missing infra files
+@test "Phase A brownfield checks for missing Dockerfile/compose" {
+    run grep -iE "missing.*Dockerfile|missing.*docker.compose|add.*only.*missing|brownfield.*infra" "$PHASE_A"
+    assert_success
+}
+
+# #150: Brownfield REQ threshold based on size
+@test "Phase A brownfield REQ threshold mentions project size" {
+    run grep -iE "at least 10|small.*project|codebase.*size|based on.*size" "$PHASE_A"
+    assert_success
+}
+
+# #151: Index quality check not just existence
+@test "Phase A brownfield index verifies content not just existence" {
+    run grep -iE "model.*endpoint.*test|meaningful|categories|at least.*found" "$PHASE_A"
+    assert_success
+}
+
+# #152: Multi-framework resolution
+@test "Phase A brownfield handles multi-framework repos" {
+    run grep -iE "multiple.*framework|both.*and|which.*focus|Django.*React|backend.*frontend" "$PHASE_A"
+    assert_success
+}
