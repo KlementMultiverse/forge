@@ -32,10 +32,10 @@ What gets installed (to `~/.claude/`, shared by all projects):
 |-----------|-------|----------|---------|
 | Agents | 53 | ~/.claude/agents/ | Specialist AI agents (backend, security, reviewer, etc.) |
 | Commands | 45 | ~/.claude/commands/ | Slash commands (/forge, /discover, /gate, sc:*, etc.) |
-| Rules | 7 | ~/.claude/rules/ | Global rules (security, python, docker, etc.) |
+| Rules | 8 | ~/.claude/rules/ | Global rules (security, python, docker, PM behaviors, etc.) |
 | Scripts | 30 | ~/.claude/scripts/ | Enforcement, traceability, ownership, testing |
 | Templates | 22 | ~/.claude/templates/ | Project scaffolding (CLAUDE.md, SPEC.md, hooks, etc.) |
-| Tests | 351 | tests/ | BATS + pytest test suite (100% script coverage) |
+| Tests | 368 | tests/ | BATS + pytest test suite (100% script coverage) |
 | Shell fn | 1 | ~/.bashrc / ~/.zshrc | `forge` terminal command |
 
 ---

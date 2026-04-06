@@ -74,9 +74,19 @@ copies to ~/.claude/:              checks if forge installed
 ├── agents/           ← agent definitions (loaded by Agent tool)
 ├── commands/         ← skill definitions (loaded as /slash commands)
 │   └── forge-phases/ ← phase execution files (read by /forge)
-├── rules/            ← global rules (auto-loaded in all projects)
+├── rules/            ← global rules (auto-loaded in all projects via Pipe 1)
+│   ├── pm-behaviors.md    ← PM orchestrator behaviors (self-correction, anti-patterns, handoff)
+│   ├── forge-enforcement.md ← hard rules for forge flow
+│   ├── security.md        ← security rules
+│   ├── universal.md       ← universal rules with governance levels
+│   ├── python.md, django.md, docker.md, forge-philosophy.md
 ├── scripts/          ← automation scripts (called by hooks)
 └── templates/        ← project templates (read by Phase A)
+
+Architecture separation (who vs what):
+  rules/pm-behaviors.md           → WHO: PM behaviors (auto-loaded, ~100 lines)
+  agents/universal/pm-orchestrator.md → REFERENCE: routing tables, detailed patterns
+  commands/forge-phases/*.md      → WHAT: task steps for each phase
 
 ~/projects/my-app/                 (PROJECT — created by /forge Phase A)
 ├── CLAUDE.md         ← project instructions (auto-loaded, Pipe 1)

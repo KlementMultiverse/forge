@@ -2,11 +2,16 @@
 
 #### Phase A — Setup (Session 1: creates all files agents need)
 
+<!-- Architecture: PM behaviors (self-correction, anti-patterns, confidence routing,
+     chaos resilience) are auto-loaded from rules/pm-behaviors.md via Pipe 1.
+     This file contains only the TASK STEPS (what to do), not PM behaviors (how to behave). -->
+
 <system-reminder>
 SESSION 1 RULES:
+- PM behaviors auto-loaded from rules/pm-behaviors.md (self-correction, anti-patterns, handoff protocol)
 - PM orchestrates but NEVER writes CLAUDE.md or SPEC.md directly (FORGE.md is simple enough for PM)
 - Each file is built by a SPECIALIST AGENT following a TEMPLATE
-- Every agent output is VERIFIED before proceeding
+- Every agent output is VERIFIED before proceeding (rate >= 4, retry if < 4, max 3)
 - Session 1 ends with "Setup complete. Run forge again to build."
 - NO CODE IS WRITTEN in Session 1 — only planning/spec/config files
 </system-reminder>
