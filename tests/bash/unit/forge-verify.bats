@@ -38,7 +38,7 @@ teardown() {
 @test "verify-step passes when trace exists and manifest present" {
     cd "$TEST_PROJECT"
     # forge-verify.sh requires forge-manifest.json
-    echo '{"steps":[{"id":1,"name":"discover"}]}' > forge-manifest.json
+    echo '{"steps":[{"id":1,"name":"discover"}]}' > docs/forge-manifest.json
     mkdir -p docs/forge-trace/001-discover
     echo "input" > docs/forge-trace/001-discover/input.md
     echo "output" > docs/forge-trace/001-discover/output.md
@@ -51,7 +51,7 @@ teardown() {
 
 @test "next-gap runs without crashing" {
     cd "$TEST_PROJECT"
-    echo '{"steps":[{"id":1,"name":"discover"}]}' > forge-manifest.json
+    echo '{"steps":[{"id":1,"name":"discover"}]}' > docs/forge-manifest.json
     run bash "$FORGE_DIR/scripts/forge-verify.sh" next-gap
     [[ "$status" -le 1 ]]
 }
@@ -60,7 +60,7 @@ teardown() {
 
 @test "metrics runs without crashing" {
     cd "$TEST_PROJECT"
-    echo '{"steps":[{"id":1,"name":"discover"}]}' > forge-manifest.json
+    echo '{"steps":[{"id":1,"name":"discover"}]}' > docs/forge-manifest.json
     run bash "$FORGE_DIR/scripts/forge-verify.sh" metrics
     [[ "$status" -le 1 ]]
 }
