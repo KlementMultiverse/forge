@@ -43,6 +43,7 @@ If FORGE.md does NOT exist → route based on hook detection.
 
 Detection logic:
 ```
+0. Hook says CASE_RESUME (step N)          → RESUME from step N (HIGHEST PRIORITY — skips all below)
 1. forge-state.json has violations?         → CASE 8 (auto-fix)
 2. forge-state.json has incomplete steps?   → RESUME from next step
 3. Hook says CASE1_GREENFIELD              → CASE 1 (new project)
