@@ -38,6 +38,7 @@ Based on scan:
 - EMPTY folder → continue to STEP S2 (full setup)
 - Code exists, no CLAUDE.md → jump to STEP S5-BROWNFIELD
 - CLAUDE.md with placeholders → continue to STEP S2
+- Incomplete setup (CLAUDE.md but missing SPEC.md or scaffold or .forge/) → resume from missing step
 - Everything exists → "Setup already complete. Run /forge again to build."
 
 **STEP S2: DISCOVERY CONVERSATION** (PM only — gathers information)
