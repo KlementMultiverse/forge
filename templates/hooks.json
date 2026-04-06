@@ -59,7 +59,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'F=\"${CLAUDE_TOOL_INPUT_FILE_PATH:-}\"; D=\"$PWD\"; mkdir -p \"$D/docs\"; echo \"$(date -u +%H:%M:%S) WRITE $F\" >> \"$D/docs/.builder-activity.log\"; if echo \"$F\" | grep -q \"\\.py$\"; then python -m ruff check --fix \"$F\" 2>/dev/null; LC=$(wc -l < \"$F\" 2>/dev/null || echo 0); if [ \"$LC\" -gt 300 ]; then echo \"[FORGE] FILE TOO LONG: $F is $LC lines (limit 300). You MUST split it now.\"; fi; fi; bash ~/.claude/scripts/forge-change-validator.sh post-edit \"$F\" 2>/dev/null; true'"
+            "command": "bash -c 'F=\"${CLAUDE_TOOL_INPUT_FILE_PATH:-}\"; D=\"$PWD\"; mkdir -p \"$D/docs\"; echo \"$(date -u +%H:%M:%S) WRITE $F\" >> \"$D/docs/.builder-activity.log\"; if echo \"$F\" | grep -q \"\\.py$\"; then python -m ruff check --fix \"$F\" 2>/dev/null; LC=$(wc -l < \"$F\" 2>/dev/null || echo 0); if [ \"$LC\" -gt 300 ]; then echo \"[FORGE] FILE TOO LONG: $F is $LC lines (limit 300). You MUST split it now.\"; fi; fi; bash ~/.claude/scripts/forge-change-validator.sh post-edit \"$F\" 2>/dev/null; bash ~/.claude/scripts/forge-auto-sync.sh queue \"$F\" 2>/dev/null; true'"
           }
         ]
       },

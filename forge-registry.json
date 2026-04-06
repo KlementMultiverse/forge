@@ -1,15 +1,15 @@
 {
   "version": "2.0",
-  "generated": "2026-04-06T08:17:26.475856+00:00",
+  "generated": "2026-04-06T08:30:15.213115+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
     "commands": 51,
-    "scripts": 28,
+    "scripts": 29,
     "hooks": 9,
     "templates": 17,
     "rules": 7,
-    "edges": 453,
+    "edges": 456,
     "phase_mapped_components": 49,
     "flows": 9
   },
@@ -2022,6 +2022,16 @@
           ]
         }
       },
+      "forge-auto-sync.sh": {
+        "type": "script",
+        "path": "scripts/forge-auto-sync.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-readme-sync.sh",
+            "forge-triangle.sh"
+          ]
+        }
+      },
       "forge-review-guard.sh": {
         "type": "script",
         "path": "scripts/forge-review-guard.sh",
@@ -2237,7 +2247,8 @@
         "matcher": "Write|Edit",
         "depends_on": {
           "scripts": [
-            "forge-change-validator.sh"
+            "forge-change-validator.sh",
+            "forge-auto-sync.sh"
           ]
         }
       },
@@ -4610,6 +4621,16 @@
       "type": "scripts"
     },
     {
+      "from": "scripts/forge-auto-sync.sh",
+      "to": "scripts/forge-readme-sync.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-auto-sync.sh",
+      "to": "scripts/forge-triangle.sh",
+      "type": "scripts"
+    },
+    {
       "from": "scripts/forge-grow.sh",
       "to": "scripts/forge-grow.sh",
       "type": "scripts"
@@ -4652,6 +4673,11 @@
     {
       "from": "hooks/PostToolUse:Write|Edit",
       "to": "scripts/forge-change-validator.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Write|Edit",
+      "to": "scripts/forge-auto-sync.sh",
       "type": "scripts"
     },
     {
@@ -5824,7 +5850,8 @@
         ],
         "scripts": [
           "forge-change-validator.sh",
-          "forge-triangle.sh"
+          "forge-triangle.sh",
+          "forge-auto-sync.sh"
         ]
       },
       "scripts/forge-verify.sh": {
@@ -5933,7 +5960,8 @@
       "scripts/forge-readme-sync.sh": {
         "scripts": [
           "forge-change-validator.sh",
-          "forge-readme-sync.sh"
+          "forge-readme-sync.sh",
+          "forge-auto-sync.sh"
         ]
       },
       "scripts/forge-test-guard.sh": {
@@ -5970,6 +5998,11 @@
       "scripts/forge-change-validator.sh": {
         "hooks": [
           "PreToolUse:Edit",
+          "PostToolUse:Write|Edit"
+        ]
+      },
+      "scripts/forge-auto-sync.sh": {
+        "hooks": [
           "PostToolUse:Write|Edit"
         ]
       }
@@ -6603,6 +6636,59 @@
     }
   },
   "changelog": {
+    "hooks": [
+      {
+        "date": "2026-04-06",
+        "commit": "d0aa943c",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "fix broken JSON in hooks.json \u2014 unescaped quotes around CLAUDE_TOOL_INPUT",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#103"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "e0c652fe",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "improve GitHub setup guidance \u2014 detect gh CLI, auth, provide links",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/hooks.json",
+          "tests/bash/integration/github-setup.bats"
+        ],
+        "issues": [
+          "#94"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "80d0b029",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "refactor UserPromptSubmit \u2014 gate on /forge, add SessionStart, add CASE_RESUME",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/forge-state-sync.sh",
+          "templates/hooks.json",
+          "tests/bash/integration/hook-routing.bats"
+        ],
+        "issues": [
+          "#92"
+        ]
+      }
+    ],
     "scripts": [
       {
         "date": "2026-04-06",
@@ -7172,41 +7258,6 @@
         ],
         "issues": [
           "#48"
-        ]
-      }
-    ],
-    "hooks": [
-      {
-        "date": "2026-04-06",
-        "commit": "e0c652fe",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "improve GitHub setup guidance \u2014 detect gh CLI, auth, provide links",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/hooks.json",
-          "tests/bash/integration/github-setup.bats"
-        ],
-        "issues": [
-          "#94"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "80d0b029",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "refactor UserPromptSubmit \u2014 gate on /forge, add SessionStart, add CASE_RESUME",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "scripts/forge-state-sync.sh",
-          "templates/hooks.json",
-          "tests/bash/integration/hook-routing.bats"
-        ],
-        "issues": [
-          "#92"
         ]
       }
     ],

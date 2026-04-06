@@ -1,9 +1,15 @@
 #!/bin/bash
-# Forge pre-commit hook — REQ impact analysis + test guard
-# 1. Blocks commits that remove REQ tags from code files
-# 2. Warns when REQ-linked code is modified
+# Forge pre-commit hook — REQ impact + test guard + auto-sync
+# 1. Auto-syncs all pending changes (README, registry, etc.)
+# 2. Blocks commits that remove REQ tags
 # 3. Warns when scripts changed without test updates
 # Installed by /forge Phase A Step S8
+
+# Auto-sync — run all pending syncs before commit
+AUTO_SYNC="$HOME/.claude/scripts/forge-auto-sync.sh"
+if [ -f "$AUTO_SYNC" ]; then
+    bash "$AUTO_SYNC" run 2>/dev/null
+fi
 
 # REQ impact check
 IMPACT_SCRIPT="$HOME/.claude/scripts/req-impact-check.py"
@@ -19,7 +25,6 @@ fi
 TEST_GUARD="$HOME/.claude/scripts/forge-test-guard.sh"
 if [ -f "$TEST_GUARD" ]; then
     bash "$TEST_GUARD" --changed 2>/dev/null
-    # Advisory only — doesn't block commit
 fi
 
 exit 0
