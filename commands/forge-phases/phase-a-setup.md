@@ -337,6 +337,7 @@ Execute: spawn Agent with subagent_type="devops-architect"
     - docker-compose.yml (with volume mount + next dev for dev)
     - .dockerignore
     - next.config.js
+    - tsconfig.json (TypeScript config)
     - .env.example
     - .gitignore
 
