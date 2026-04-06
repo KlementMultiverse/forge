@@ -16,12 +16,18 @@ teardown() {
 
 # ─── #129: git init guard in S1 ───
 
-@test "Phase A S1 has git init if .git missing" {
-    # S1 ASSESS should check for .git and init if missing
-    run grep -A3 "STEP S1" "$PHASE_A"
-    assert_success
-    # The S1 section should contain git init guard
+@test "Phase A S1 has git init guard" {
     run grep "git init" "$PHASE_A"
+    assert_success
+}
+
+@test "Phase A S1 does NOT re-detect project type" {
+    run grep -iE "already done|NOT re-detect|hook.*before|UserPromptSubmit" "$PHASE_A"
+    assert_success
+}
+
+@test "Phase A S1 creates directories for S3-S9" {
+    run grep "mkdir.*docs/forge-trace" "$PHASE_A"
     assert_success
 }
 
