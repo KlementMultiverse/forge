@@ -48,7 +48,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'F=$(echo $CLAUDE_TOOL_INPUT | jq -r \".file_path // \\\"\\\"\" 2>/dev/null); OLD=$(echo $CLAUDE_TOOL_INPUT | jq -r \".old_string // \\\"\\\"\" 2>/dev/null); NEW=$(echo $CLAUDE_TOOL_INPUT | jq -r \".new_string // \\\"\\\"\" 2>/dev/null); if [ -n \"$OLD\" ] && [ -n \"$F\" ]; then OLD_LC=$(echo \"$OLD\" | wc -l); NEW_LC=$(echo \"$NEW\" | wc -l); DIFF=$((OLD_LC - NEW_LC)); if [ \"$DIFF\" -gt 10 ]; then echo \"[FORGE] WARNING: Removing $DIFF lines from $F. Old: $OLD_LC lines → New: $NEW_LC lines. Ensure no critical logic is lost.\"; fi; fi; if [ -n \"$F\" ] && echo \"$F\" | grep -q \"\\.py$\"; then REQS=$(grep -oP \"REQ-[A-Z]+-[0-9]+\" \"$F\" 2>/dev/null | sort -u | tr \"\\n\" \", \" | sed \"s/, $//\"); if [ -n \"$REQS\" ]; then echo \"[FORGE] IMPACT: Editing $F which serves $REQS\"; fi; fi; true'"
+            "command": "bash -c 'F=$(echo "$CLAUDE_TOOL_INPUT" | jq -r \".file_path // \\\"\\\"\" 2>/dev/null); OLD=$(echo "$CLAUDE_TOOL_INPUT" | jq -r \".old_string // \\\"\\\"\" 2>/dev/null); NEW=$(echo "$CLAUDE_TOOL_INPUT" | jq -r \".new_string // \\\"\\\"\" 2>/dev/null); if [ -n \"$OLD\" ] && [ -n \"$F\" ]; then OLD_LC=$(echo \"$OLD\" | wc -l); NEW_LC=$(echo \"$NEW\" | wc -l); DIFF=$((OLD_LC - NEW_LC)); if [ \"$DIFF\" -gt 10 ]; then echo \"[FORGE] WARNING: Removing $DIFF lines from $F. Old: $OLD_LC lines → New: $NEW_LC lines. Ensure no critical logic is lost.\"; fi; fi; if [ -n \"$F\" ]; then bash ~/.claude/scripts/forge-change-validator.sh pre-edit \"$F\" 2>/dev/null; fi; true'"
           }
         ]
       }
@@ -59,7 +59,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'F=\"${CLAUDE_TOOL_INPUT_FILE_PATH:-}\"; D=\"$PWD\"; mkdir -p \"$D/docs\"; echo \"$(date -u +%H:%M:%S) WRITE $F\" >> \"$D/docs/.builder-activity.log\"; if echo \"$F\" | grep -q \"\\.py$\"; then python -m ruff check --fix \"$F\" 2>/dev/null; LC=$(wc -l < \"$F\" 2>/dev/null || echo 0); if [ \"$LC\" -gt 300 ]; then BN=$(basename \"$F\" .py); DN=$(dirname \"$F\"); echo \"[FORGE] FILE TOO LONG: $F is $LC lines (limit 300). You MUST split it now.\"; fi; fi; if echo \"$F\" | grep -qE \"\\.(py|sh|js|ts)$\" && grep -q \"FORGE TRACE\" \"$F\" 2>/dev/null; then echo \"[FORGE] TRACE: $F has FORGE TRACE block — update it after changes.\"; fi; true'"
+            "command": "bash -c 'F=\"${CLAUDE_TOOL_INPUT_FILE_PATH:-}\"; D=\"$PWD\"; mkdir -p \"$D/docs\"; echo \"$(date -u +%H:%M:%S) WRITE $F\" >> \"$D/docs/.builder-activity.log\"; if echo \"$F\" | grep -q \"\\.py$\"; then python -m ruff check --fix \"$F\" 2>/dev/null; LC=$(wc -l < \"$F\" 2>/dev/null || echo 0); if [ \"$LC\" -gt 300 ]; then echo \"[FORGE] FILE TOO LONG: $F is $LC lines (limit 300). You MUST split it now.\"; fi; fi; bash ~/.claude/scripts/forge-change-validator.sh post-edit \"$F\" 2>/dev/null; true'"
           }
         ]
       },
