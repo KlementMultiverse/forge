@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-06T13:36:59.882406+00:00",
+  "generated": "2026-04-06T13:46:19.410376+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -6685,6 +6685,40 @@
     "commands": [
       {
         "date": "2026-04-06",
+        "commit": "c0833eae",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "add conftest.py to scaffold + split tests + missing tests from PR",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "tests/bash/unit/phase-a-fixes.bats"
+        ],
+        "issues": [
+          "#144",
+          "#153",
+          "#154",
+          "#167"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "9bca6a72",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "address remaining CR comments \u2014 scaffold test, registry regenerate",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "forge-registry.json"
+        ],
+        "issues": [
+          "#154"
+        ]
+      },
+      {
+        "date": "2026-04-06",
         "commit": "cf85b472",
         "change_type": "bugfix",
         "scope": "commands",
@@ -6696,8 +6730,7 @@
         ],
         "issues": [
           "#154",
-          "#167",
-          "#154"
+          "#167"
         ]
       },
       {
@@ -6733,8 +6766,6 @@
         ],
         "issues": [
           "#149",
-          "#152",
-          "#149",
           "#152"
         ]
       },
@@ -6756,9 +6787,6 @@
         "issues": [
           "#132",
           "#156",
-          "#159",
-          "#156",
-          "#132",
           "#159"
         ]
       },
@@ -6782,12 +6810,7 @@
           "#137",
           "#145",
           "#157",
-          "#158",
-          "#158",
-          "#136",
-          "#137",
-          "#145",
-          "#157"
+          "#158"
         ]
       },
       {
@@ -6810,12 +6833,7 @@
           "#133",
           "#139",
           "#140",
-          "#143",
-          "#131",
-          "#140",
-          "#143",
-          "#133",
-          "#139"
+          "#143"
         ]
       },
       {
@@ -6837,11 +6855,7 @@
           "#135",
           "#138",
           "#146",
-          "#147",
-          "#135",
-          "#147",
-          "#138",
-          "#146"
+          "#147"
         ]
       },
       {
@@ -7068,11 +7082,6 @@
           "#118",
           "#120",
           "#121",
-          "#123",
-          "#118",
-          "#118",
-          "#120",
-          "#121",
           "#123"
         ]
       },
@@ -7179,8 +7188,8 @@
           "tests/bash/unit/forge-change-validator.bats"
         ],
         "issues": [
-          "#101",
-          "#100"
+          "#100",
+          "#101"
         ]
       },
       {
@@ -7322,8 +7331,8 @@
           "tests/bash/unit/forge-verify.bats"
         ],
         "issues": [
-          "#72",
-          "#62"
+          "#62",
+          "#72"
         ]
       },
       {
@@ -7413,8 +7422,8 @@
           "scripts/forge-trace-update.sh"
         ],
         "issues": [
-          "#55",
-          "#51"
+          "#51",
+          "#55"
         ]
       },
       {
@@ -7459,8 +7468,8 @@
           "install.sh"
         ],
         "issues": [
-          "#47",
-          "#39"
+          "#39",
+          "#47"
         ]
       },
       {
@@ -7476,12 +7485,12 @@
           "scripts/forge-registry.py"
         ],
         "issues": [
+          "#2",
           "#40",
           "#41",
           "#42",
           "#43",
-          "#44",
-          "#2"
+          "#44"
         ]
       },
       {
@@ -7500,12 +7509,12 @@
           "scripts/req-impact-check.py"
         ],
         "issues": [
-          "#45",
           "#40",
           "#41",
           "#42",
           "#43",
-          "#44"
+          "#44",
+          "#45"
         ]
       },
       {
@@ -7520,14 +7529,7 @@
           "install.sh"
         ],
         "issues": [
-          "#39",
-          "#46",
           "#1",
-          "#4",
-          "#5",
-          "#7",
-          "#8",
-          "#9",
           "#10",
           "#11",
           "#12",
@@ -7536,7 +7538,14 @@
           "#17",
           "#2",
           "#22",
-          "#6"
+          "#39",
+          "#4",
+          "#46",
+          "#5",
+          "#6",
+          "#7",
+          "#8",
+          "#9"
         ]
       },
       {
@@ -7565,11 +7574,6 @@
           "#41",
           "#42",
           "#43",
-          "#44",
-          "#40",
-          "#42",
-          "#43",
-          "#41",
           "#44"
         ]
       },

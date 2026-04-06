@@ -929,7 +929,7 @@ def generate_changelog(forge_dir, since=None, component=None, breaking_only=Fals
             continue
 
         # Find issue references anywhere in commit message
-        issues = re.findall(r"#(\d+)", full_msg)
+        issues = sorted(set(re.findall(r"#(\d+)", full_msg)))
 
         # Get file list using git diff-tree (plumbing, clean — no message body)
         files = []
