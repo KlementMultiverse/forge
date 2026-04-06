@@ -13,27 +13,29 @@ Autonomous software development framework built on Claude Code. One command buil
 ## Install
 
 ```bash
-# Clone and install globally
+# 1. Install forge (once)
 git clone https://github.com/KlementMultiverse/forge.git
 cd forge
 ./install.sh
 
-# Start a new project
-./install.sh ~/projects/my-app
+# 2. Start a new project
+mkdir ~/projects/my-app
 cd ~/projects/my-app
-# type /forge at the Claude Code prompt
+git init
+claude
+# type /forge at the prompt
 ```
 
-What gets installed:
+What gets installed (to `~/.claude/`, shared by all projects):
 
 | Component | Count | Location | Purpose |
 |-----------|-------|----------|---------|
-| Agents | 50 | ~/.claude/agents/ | Specialist AI agents (backend, security, reviewer, etc.) |
+| Agents | 51 | ~/.claude/agents/ | Specialist AI agents (backend, security, reviewer, etc.) |
 | Commands | 41 | ~/.claude/commands/ | Slash commands (/forge, /discover, /gate, etc.) |
 | Rules | 7 | ~/.claude/rules/ | Global rules (security, python, docker, etc.) |
-| Scripts | 22 | ~/.claude/scripts/ | Enforcement engine (state, gates, tracing) |
-| Templates | 18 | ~/.claude/templates/ | Project scaffolding (CLAUDE.md, SPEC.md, hooks, etc.) |
-| Shell fn | 1 | ~/.bashrc | `forge` terminal command |
+| Scripts | 25 | ~/.claude/scripts/ | Enforcement engine (state, gates, tracing, ownership) |
+| Templates | 17 | ~/.claude/templates/ | Project scaffolding (CLAUDE.md, SPEC.md, hooks, etc.) |
+| Shell fn | 1 | ~/.bashrc / ~/.zshrc | `forge` terminal command |
 
 ---
 
@@ -196,7 +198,9 @@ Check FORGE.md for queued items. Loop or done.
 | 7 | PostToolUse (Skill) | Logs activity + updates forge-state.json |
 | 8 | PostToolUse (Bash) | Logs command to activity log |
 
-Plus a git `commit-msg` hook that blocks commits without issue references (#N).
+Plus two git hooks:
+- `commit-msg` — blocks commits without issue references (#N) and enforces conventional commit format with scope
+- `pre-commit` — REQ impact analysis: blocks commits that remove REQ tags, flags suspect links
 
 ---
 
@@ -204,9 +208,11 @@ Plus a git `commit-msg` hook that blocks commits without issue references (#N).
 
 ```
 docs/forge-state.json          <- current step, phase, gates, violations
+docs/suspect-reqs.json         <- REQs flagged as suspect (cleared on triangle pass)
 docs/forge-timeline.md         <- every action logged (audit trail)
 docs/forge-trace/{NNN}-{step}/ <- full input/output per step (3 files each)
 docs/.builder-activity.log     <- one-line log of every tool use
+apps/{app}/OWNERS              <- per-directory code ownership (agent, REQs, reviewer)
 ```
 
 ### forge-state.json
@@ -281,11 +287,20 @@ forge-enforce.sh check-gate <phase>     # Gate passed?
 forge-enforce.sh check-trace <step>     # Trace complete? (3 files)
 forge-enforce.sh check-agent <file>     # Agent separation check
 forge-enforce.sh check-docker           # Docker healthy?
+forge-enforce.sh check-suspect          # Unverified suspect REQs?
+
+# Traceability
+forge-registry.py                       # Full registry (deps, phases, flows, changelog)
+forge-registry.py --impact <file>       # What breaks if I change this file?
+forge-registry.py --changelog           # Changelog from conventional commits
+forge-registry.py --changelog --breaking # Breaking changes only
+forge-ownership.sh check               # Show all code ownership
+forge-ownership.sh who <file>          # Who owns this file?
+forge-trace-update.sh show <file>      # Show in-file change history
 
 # Validation
 forge-lint.py                           # Lint all forge components
 forge-lint.py --update-registry         # Update checksums
-forge-registry.py                       # Generate dependency graph
 ```
 
 ---
@@ -295,21 +310,23 @@ forge-registry.py                       # Generate dependency graph
 ```
 forge/
   agents/
-    universal/          <- 33 stack-agnostic agents
+    universal/          <- 34 stack-agnostic agents
     stacks/             <- 17 stack-specific agents (django, genai, langchain, azure, gcp)
   commands/
     forge.md            <- main entry point (/forge)
     forge-phases/       <- 6 phase execution files
     *.md                <- 35 skill commands (/discover, /gate, /review, etc.)
   rules/                <- 7 global rules (security, python, docker, etc.)
-  scripts/              <- 22 enforcement scripts
-  templates/            <- 18 project templates (CLAUDE.md, SPEC.md, hooks, etc.)
+  scripts/              <- 25 enforcement + traceability scripts
+  templates/            <- 17 project templates (CLAUDE.md, SPEC.md, hooks, etc.)
   docs/
     automation-field-guide.md  <- 880+ lines: everything about building on Claude Code
     protocols/                 <- formal protocols (error handling, component changes)
     architecture.md            <- system map
+    dependency-graph.md        <- auto-generated Mermaid dependency diagram
     evolution-log.md           <- decision history
-  forge-core.json       <- component registry (138 files, checksums, protocols)
+  forge-core.json       <- component registry (checksums, protocols)
+  forge-registry.json   <- full traceability (deps, phases, flows, changelog, ownership)
   install.sh            <- one-command installer
 ```
 
@@ -360,6 +377,7 @@ This is why templates use `{{PLACEHOLDERS}}` inside HTML comments — invisible 
 | [Field Guide](docs/automation-field-guide.md) | 880+ lines: patterns, anti-patterns, Claude Code internals |
 | [Error Protocol](docs/protocols/error-handling.md) | Error types, retry policy, circuit breaker, escalation |
 | [Architecture](docs/architecture.md) | System map, dependency graph, component connections |
+| [Dependency Graph](docs/dependency-graph.md) | Auto-generated Mermaid diagram of all component relationships |
 | [Evolution Log](docs/evolution-log.md) | Every decision tracked with rationale |
 
 ---
