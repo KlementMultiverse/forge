@@ -357,7 +357,7 @@ Execute: spawn Agent with subagent_type="requirements-analyst"
     - Start from [REQ-001]
     - Every feature gets at least 2-3 requirements
     - Each requirement has ONE clear behavior (not compound)
-    - Use domain-prefixed IDs: REQ-AUTH-001, REQ-UI-001, REQ-COMPLIANCE-001, REQ-SCALE-001, REQ-INT-001, REQ-SUCCESS-001
+    - Use domain-prefixed IDs: REQ-AUTH-001, REQ-UI-001, REQ-COMPLIANCE-001, REQ-SCALE-001, REQ-INT-001, REQ-SUCCESS-001, REQ-A11Y-001, REQ-I18N-001, REQ-MOBILE-001
     - Include non-functional requirements (performance, security, compliance, accessibility)
     - Every inferred requirement carries a proof citation (URL or domain-inference-rules.md reference)
     - ANTI-SCOPE ENFORCEMENT: NEVER generate a [REQ-xxx] for any item in the EXCLUDED list

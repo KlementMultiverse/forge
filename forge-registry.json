@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-06T22:18:08.989678+00:00",
+  "generated": "2026-04-06T22:28:48.671013+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -6679,6 +6679,31 @@
   },
   "changelog": {
     "commands": [
+      {
+        "date": "2026-04-06",
+        "commit": "d20ec526",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "implement adaptive discovery \u2014 domain inference, proof trail, 14 dimensions #178",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/dependency-graph.md",
+          "docs/domain-inference-rules.md",
+          "docs/manifesto.md",
+          "forge-registry.json",
+          "templates/CLAUDE.template.md",
+          "templates/SPEC.template.md",
+          "templates/design-doc-completeness-checklist.md",
+          "tests/bash/unit/adaptive-discovery.bats"
+        ],
+        "issues": [
+          "#177",
+          "#178"
+        ]
+      },
       {
         "date": "2026-04-06",
         "commit": "cfd0075f",
