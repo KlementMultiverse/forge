@@ -109,6 +109,8 @@ STEP N8 — REVIEW (per-issue inline review — MANDATORY)
   Trace: docs/forge-trace/{N}8-review/
 
 STEP N9 — COMMIT + LEARN
+  Execute: Create/update OWNERS file for this app:
+    `bash scripts/forge-ownership.sh create apps/{app} @{domain-agent} {REQ-xxx-tags}`
   Execute: `git add apps/{app}/ && git commit -m "feat({app}): {description} [REQ-xxx]"` via Bash
   Execute: update FORGE.md — move item from Active to Done
   Execute: `skill: "checkpoint", args: "{agent} | issue #{N} complete"`
