@@ -117,6 +117,9 @@ if broken or orphans:
 else:
     print()
     print("PASS: Full triangle sync achieved")
+    # Clear suspect REQs on successful full check
+    import subprocess
+    subprocess.run(["bash", os.path.join(os.environ.get("SCRIPT_DIR", "."), "forge-enforce.sh"), "check-suspect", "--clear-all"], capture_output=True)
     exit(0)
 PYEOF
 }

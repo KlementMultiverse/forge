@@ -1,0 +1,16 @@
+#!/bin/bash
+# Forge pre-commit hook — REQ impact analysis
+# Blocks commits that remove REQ tags from code files.
+# Warns when REQ-linked code is modified.
+# Installed by /forge Phase A Step S8
+
+IMPACT_SCRIPT="$HOME/.claude/scripts/req-impact-check.py"
+
+# Skip if script not installed
+if [ ! -f "$IMPACT_SCRIPT" ]; then
+    exit 0
+fi
+
+# Run REQ impact check on staged files
+python3 "$IMPACT_SCRIPT" --staged --update-state
+exit $?

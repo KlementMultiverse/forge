@@ -1,11 +1,11 @@
 {
   "version": "2.0",
-  "generated": "2026-04-05T23:21:30.956084+00:00",
+  "generated": "2026-04-06T00:35:50.168248+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
     "commands": 41,
-    "scripts": 22,
+    "scripts": 25,
     "hooks": 8,
     "templates": 16,
     "rules": 7,
@@ -1937,6 +1937,11 @@
         "path": "scripts/forge-review-guard.sh",
         "depends_on": {}
       },
+      "forge-trace-update.sh": {
+        "type": "script",
+        "path": "scripts/forge-trace-update.sh",
+        "depends_on": {}
+      },
       "traceability.sh": {
         "type": "script",
         "path": "scripts/traceability.sh",
@@ -1983,6 +1988,11 @@
             "is_gate": false
           }
         ]
+      },
+      "forge-ownership.sh": {
+        "type": "script",
+        "path": "scripts/forge-ownership.sh",
+        "depends_on": {}
       },
       "forge-grow.sh": {
         "type": "script",
@@ -2054,6 +2064,11 @@
       "forge-registry.py": {
         "type": "script",
         "path": "scripts/forge-registry.py",
+        "depends_on": {}
+      },
+      "req-impact-check.py": {
+        "type": "script",
+        "path": "scripts/req-impact-check.py",
         "depends_on": {}
       }
     },
@@ -6350,6 +6365,38 @@
   },
   "changelog": {
     "scripts": [
+      {
+        "date": "2026-04-05",
+        "commit": "c735c90b",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "address all 11 CodeRabbit review comments #34 #35 #36",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "2. Agent matcher now catches @quality-engineer (added 'engineer' suffix)",
+          "3. Namespaced skills (sc:estimate) kept as-is instead of truncating",
+          "4. Shared spans kept in file_flows reverse index (marked shared: true, not excluded)",
+          "5. Conventional commit regex handles breaking ! syntax (feat!: or feat(scope)!:)",
+          "6. Changelog uses git log --name-only for actual file tracking, finds issues anywhere in message",
+          "7. Action items returned per-dependent (dependent_actions map), not flat list",
+          "8. Removed stray f-string prefixes on constant strings (Ruff F541)",
+          "9. Added --breaking filter to changelog CLI",
+          "10. commit-msg hook handles breaking ! syntax, reads FIRST_LINE from file (not pipe)",
+          "11. commit-msg uses head -1 \"$1\" to prevent multiline bypass",
+          "Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "scripts/forge-registry.py",
+          "templates/commit-msg"
+        ],
+        "issues": [
+          "#34",
+          "#35",
+          "#36",
+          "#37"
+        ]
+      },
       {
         "date": "2026-04-05",
         "commit": "c65a8ae3",
