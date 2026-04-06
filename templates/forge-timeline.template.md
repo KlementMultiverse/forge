@@ -1,4 +1,4 @@
-# Forge Timeline -- {{PROJECT_NAME}}
+# Forge Timeline <!-- {{PROJECT_NAME}} -->
 
 This file tracks every step of the development process.
 Each entry links to the artifact produced.
