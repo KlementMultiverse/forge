@@ -62,6 +62,7 @@ install_global() {
     cp "$FORGE_DIR"/templates/*.toml "$CLAUDE_DIR/templates/" 2>/dev/null || true
     cp "$FORGE_DIR"/templates/*.py "$CLAUDE_DIR/templates/" 2>/dev/null || true
     cp "$FORGE_DIR"/templates/commit-msg "$CLAUDE_DIR/templates/" 2>/dev/null || true
+    cp "$FORGE_DIR"/templates/pre-commit "$CLAUDE_DIR/templates/" 2>/dev/null || true
     cp "$FORGE_DIR"/templates/rules/*.md "$CLAUDE_DIR/templates/rules/" 2>/dev/null || true
 
     # Generate registry + run lint in parallel (both independent)

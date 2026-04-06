@@ -16,9 +16,9 @@ echo ""
 # 1. Run traceability check
 echo "── 1. TRACEABILITY ──"
 if [ -f "$SPEC_FILE" ]; then
-    SPEC_REQS=$(grep -oP '\[REQ-\d+\]' "$SPEC_FILE" 2>/dev/null | sort -u | wc -l)
-    TEST_REQS=$(grep -roPh '\[REQ-\d+\]' "$PROJECT_ROOT/tests/" "$PROJECT_ROOT/apps/*/tests.py" 2>/dev/null | sort -u | wc -l || echo "0")
-    CODE_REQS=$(grep -roPh '\[REQ-\d+\]' "$PROJECT_ROOT/apps/" --include="*.py" --exclude="*test*" 2>/dev/null | sort -u | wc -l || echo "0")
+    SPEC_REQS=$(grep -oP '(?:\[REQ-\d+\]|REQ-[A-Z]+-\d+)' "$SPEC_FILE" 2>/dev/null | sort -u | wc -l)
+    TEST_REQS=$(grep -roPh '(?:\[REQ-\d+\]|REQ-[A-Z]+-\d+)' "$PROJECT_ROOT/tests/" "$PROJECT_ROOT/apps/*/tests.py" 2>/dev/null | sort -u | wc -l || echo "0")
+    CODE_REQS=$(grep -roPh '(?:\[REQ-\d+\]|REQ-[A-Z]+-\d+)' "$PROJECT_ROOT/apps/" --include="*.py" --exclude="*test*" 2>/dev/null | sort -u | wc -l || echo "0")
     echo "  Spec requirements: $SPEC_REQS"
     echo "  Tested:            $TEST_REQS"
     echo "  Implemented:       $CODE_REQS"

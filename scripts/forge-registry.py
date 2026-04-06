@@ -200,14 +200,15 @@ def scan_templates(forge_dir):
             "path": str(f.relative_to(forge_dir)),
             "depends_on": {},
         }
-    # commit-msg hook template
-    commit_msg = forge_dir / "templates" / "commit-msg"
-    if commit_msg.exists():
-        templates["commit-msg"] = {
-            "type": "template",
-            "path": "templates/commit-msg",
-            "depends_on": {},
-        }
+    # Git hook templates (no extension)
+    for hook_name in ("commit-msg", "pre-commit"):
+        hook_file = forge_dir / "templates" / hook_name
+        if hook_file.exists():
+            templates[hook_name] = {
+                "type": "template",
+                "path": f"templates/{hook_name}",
+                "depends_on": {},
+            }
     return templates
 
 
@@ -881,61 +882,72 @@ REQUIRES_REINSTALL_SCOPES = {"scripts", "agents", "commands", "templates", "rule
 
 def generate_changelog(forge_dir, since=None, component=None, breaking_only=False):
     """Generate structured changelog from git log with conventional commits."""
-    # Use --name-only to get changed files per commit
-    cmd = ["git", "-C", str(forge_dir), "log", "--format=COMMIT:%H|%aI|%s|%b", "--name-only"]
+    # Get commit metadata (hash, date, subject, body) separately from file list
+    # to avoid mixing commit message body text into file paths
+    fmt_cmd = ["git", "-C", str(forge_dir), "log", "--format=%H|%aI|%s|%b", "-z"]
     if since:
-        cmd.append(f"{since}..HEAD")
+        fmt_cmd.append(f"{since}..HEAD")
 
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        result = subprocess.run(fmt_cmd, capture_output=True, text=True, timeout=30)
         if result.returncode != 0:
             return {}
     except (subprocess.TimeoutExpired, FileNotFoundError):
         return {}
 
     changelog = defaultdict(list)
-    current_commit = None
-    current_files = []
 
-    def _flush():
-        nonlocal current_commit, current_files
-        if not current_commit:
-            return
-        commit_hash, date, subject, body = current_commit
+    # Parse commits from NUL-separated output
+    for record in result.stdout.split("\0"):
+        record = record.strip()
+        if not record:
+            continue
+
+        parts = record.split("|", 3)
+        if len(parts) < 3:
+            continue
+
+        commit_hash, date, subject = parts[0], parts[1], parts[2]
+        body = parts[3] if len(parts) == 4 else ""
         full_msg = f"{subject}\n{body}" if body else subject
 
         m = CONVENTIONAL_COMMIT_RE.match(subject)
         if not m:
-            current_commit = None
-            current_files = []
-            return
+            continue
 
         scope = m.group("scope") or "general"
-        # Reject unknown scopes — map to "general" to avoid stray buckets
         if scope not in ALLOWED_SCOPES:
             scope = "general"
         comp = SCOPE_TO_COMPONENT.get(scope, scope)
 
         if component and comp != component:
-            current_commit = None
-            current_files = []
-            return
+            continue
 
         is_breaking = bool(m.group("breaking")) or "BREAKING" in full_msg
 
         if breaking_only and not is_breaking:
-            current_commit = None
-            current_files = []
-            return
+            continue
 
         # Find issue references anywhere in commit message
         issues = re.findall(r"#(\d+)", full_msg)
 
-        # Determine requires_reinstall from actual files if available
+        # Get file list using git diff-tree (plumbing, clean — no message body)
+        files = []
+        try:
+            files_result = subprocess.run(
+                ["git", "-C", str(forge_dir), "diff-tree", "--no-commit-id", "--name-only", "-r", commit_hash],
+                capture_output=True, text=True, timeout=10
+            )
+            if files_result.returncode == 0:
+                files = [f for f in files_result.stdout.strip().splitlines() if f]
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            pass
+
+        # Determine requires_reinstall from actual files
         reinstall = False
-        if current_files:
+        if files:
             reinstall = any(
-                f.startswith(p) for f in current_files
+                f.startswith(p) for f in files
                 for p in ("scripts/", "agents/", "commands/", "templates/", "rules/")
             )
         else:
@@ -950,27 +962,13 @@ def generate_changelog(forge_dir, since=None, component=None, breaking_only=Fals
             "breaking": is_breaking,
             "requires_reinstall": reinstall,
         }
-        if current_files:
-            entry["files"] = current_files
+        if files:
+            entry["files"] = files
         if issues:
             entry["issues"] = [f"#{i}" for i in issues]
 
         changelog[comp].append(entry)
-        current_commit = None
-        current_files = []
 
-    for line in result.stdout.split("\n"):
-        if line.startswith("COMMIT:"):
-            _flush()
-            parts = line[7:].split("|", 3)
-            if len(parts) >= 3:
-                body = parts[3] if len(parts) == 4 else ""
-                current_commit = (parts[0], parts[1], parts[2], body)
-                current_files = []
-        elif line.strip() and current_commit:
-            current_files.append(line.strip())
-
-    _flush()
     return dict(changelog)
 
 

@@ -394,9 +394,10 @@ cp ~/.claude/scripts/traceability.sh scripts/ 2>/dev/null || true
 cp ~/.claude/scripts/sync-report.sh scripts/ 2>/dev/null || true
 chmod +x scripts/*.sh 2>/dev/null || true
 
-# 9. Install git commit-msg hook (enforces issue-first workflow)
+# 9. Install git hooks (enforces issue-first workflow + REQ impact analysis)
 cp ~/.claude/templates/commit-msg .git/hooks/commit-msg 2>/dev/null || true
-chmod +x .git/hooks/commit-msg 2>/dev/null || true
+cp ~/.claude/templates/pre-commit .git/hooks/pre-commit 2>/dev/null || true
+chmod +x .git/hooks/commit-msg .git/hooks/pre-commit 2>/dev/null || true
 ```
 
 Verify: .claude/settings.json exists and is valid JSON

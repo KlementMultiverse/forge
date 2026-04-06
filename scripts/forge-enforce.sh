@@ -765,6 +765,83 @@ with open('$STATE_FILE', 'w') as f:
 "
 }
 
+# ─── Suspect REQ Management (#43) ───
+
+SUSPECT_FILE="${PROJECT_ROOT:-$PWD}/docs/suspect-reqs.json"
+
+cmd_check_suspect() {
+    if [ ! -f "$SUSPECT_FILE" ]; then
+        echo "[SUSPECT] No suspect-reqs.json found — no suspects tracked"
+        return 0
+    fi
+
+    local action="${1:-}"
+
+    if [ "$action" = "--clear" ] && [ -n "${2:-}" ]; then
+        # Clear a specific REQ
+        local req="$2"
+        python3 -c "
+import json, datetime
+with open('$SUSPECT_FILE') as f:
+    state = json.load(f)
+suspects = state.get('suspect_reqs', {})
+if '$req' in suspects:
+    # Move to history
+    entry = suspects.pop('$req')
+    entry['cleared_at'] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    entry['cleared_by'] = 'manual'
+    entry['verification_method'] = 'manual_clear'
+    state.setdefault('suspect_history', []).append({'req': '$req', **entry})
+    with open('$SUSPECT_FILE', 'w') as f:
+        json.dump(state, f, indent=2)
+    print(f'[SUSPECT] Cleared $req')
+else:
+    print(f'[SUSPECT] $req not in suspect list')
+"
+        return 0
+    fi
+
+    if [ "$action" = "--clear-all" ]; then
+        python3 -c "
+import json, datetime
+with open('$SUSPECT_FILE') as f:
+    state = json.load(f)
+suspects = state.get('suspect_reqs', {})
+now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+for req, entry in suspects.items():
+    entry['cleared_at'] = now
+    entry['cleared_by'] = 'triangle_check'
+    entry['verification_method'] = 'traceability_check'
+    state.setdefault('suspect_history', []).append({'req': req, **entry})
+cleared = len(suspects)
+state['suspect_reqs'] = {}
+with open('$SUSPECT_FILE', 'w') as f:
+    json.dump(state, f, indent=2)
+print(f'[SUSPECT] Cleared {cleared} suspect REQ(s)')
+"
+        return 0
+    fi
+
+    # Default: show suspect REQs
+    python3 -c "
+import json
+with open('$SUSPECT_FILE') as f:
+    state = json.load(f)
+suspects = state.get('suspect_reqs', {})
+unverified = {k: v for k, v in suspects.items() if not v.get('verified')}
+if not unverified:
+    print('[SUSPECT] No unverified suspect REQs')
+    exit(0)
+else:
+    print(f'[SUSPECT] {len(unverified)} unverified suspect REQ(s):')
+    for req, info in sorted(unverified.items()):
+        print(f'  {req}: {info.get(\"reason\", \"unknown\")}')
+        print(f'    Modified by: {info.get(\"modified_by\", \"unknown\")}')
+        print(f'    File: {info.get(\"file\", \"unknown\")}')
+    exit(1)
+" 2>/dev/null
+}
+
 # Dispatch
 case "${1:-help}" in
     check-gate)         shift; cmd_check_gate "$@" ;;
@@ -773,6 +850,7 @@ case "${1:-help}" in
     check-docker)       cmd_check_docker ;;
     check-state)        cmd_check_state ;;
     check-continuation) cmd_check_continuation ;;
+    check-suspect)      shift; cmd_check_suspect "$@" ;;
     update-step)        shift; cmd_update_step "$@" ;;
     update-gate)        shift; cmd_update_gate "$@" ;;
     classify-error)     shift; cmd_classify_error "$@" ;;
@@ -794,6 +872,9 @@ case "${1:-help}" in
         echo "  check-docker              Verify Docker containers healthy"
         echo "  update-step <step> <stat> Update step status (DONE/SKIPPED/IN_PROGRESS)"
         echo "  update-gate <phase>       Mark phase gate as passed"
+        echo "  check-suspect             Show unverified suspect REQs"
+        echo "  check-suspect --clear <R> Clear specific suspect REQ"
+        echo "  check-suspect --clear-all Clear all suspect REQs (after triangle pass)"
         echo "  classify-error <context>  Classify error type from context string"
         echo "  retry-track <step> <p|f>  Track pass/fail with retry counting + backoff"
         echo "  full-audit                Run all checks, report violations"

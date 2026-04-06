@@ -13,6 +13,7 @@ set -euo pipefail
 
 # Source shared phase mapping
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export SCRIPT_DIR
 source "$SCRIPT_DIR/forge-phase-map.sh"
 
 D="${PROJECT_ROOT:-$PWD}"
@@ -117,6 +118,9 @@ if broken or orphans:
 else:
     print()
     print("PASS: Full triangle sync achieved")
+    # Clear suspect REQs on successful full check
+    import subprocess
+    subprocess.run(["bash", os.path.join(os.environ.get("SCRIPT_DIR", "."), "forge-enforce.sh"), "check-suspect", "--clear-all"], capture_output=True)
     exit(0)
 PYEOF
 }
