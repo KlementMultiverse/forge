@@ -77,20 +77,25 @@ cmd_add() {
         # If at max, remove oldest (first trace line after marker)
         if [ "$trace_count" -ge "$MAX_TRACE_LINES" ]; then
             # Remove the first trace entry (oldest) after the marker
-            python3 -c "
-lines = open('$file').readlines()
+            # Uses sys.argv to avoid shell interpolation issues with special chars
+            python3 - "$file" "$TRACE_MARKER" "$cc" << 'PYEOF'
+import sys
+filepath, marker, comment_char = sys.argv[1], sys.argv[2], sys.argv[3]
+with open(filepath) as f:
+    lines = f.readlines()
 marker_idx = None
 first_trace_idx = None
 for i, line in enumerate(lines):
-    if '$TRACE_MARKER' in line:
+    if marker in line:
         marker_idx = i
-    elif marker_idx is not None and first_trace_idx is None and line.strip().startswith('$cc'):
+    elif marker_idx is not None and first_trace_idx is None and line.strip().startswith(comment_char):
         first_trace_idx = i
         break
 if first_trace_idx is not None:
     del lines[first_trace_idx]
-    open('$file', 'w').writelines(lines)
-"
+    with open(filepath, 'w') as f:
+        f.writelines(lines)
+PYEOF
         fi
 
         # Append new trace line at end of file
