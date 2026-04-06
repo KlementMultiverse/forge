@@ -72,8 +72,14 @@ MISSING_TESTS=0
 MISSING_CODE=0
 echo "--- Coverage Check ---"
 for req in $SPEC_REQS; do
-    HAS_TEST=$(echo "$TEST_REQS" | grep -c "$req" || echo "0")
-    HAS_CODE=$(echo "$CODE_REQS" | grep -c "$req" || echo "0")
+    HAS_TEST=$(echo "$TEST_REQS" | grep -cF "$req" 2>/dev/null || true)
+    HAS_TEST="${HAS_TEST:-0}"
+    HAS_TEST="${HAS_TEST//[^0-9]/}"
+    [ -z "$HAS_TEST" ] && HAS_TEST=0
+    HAS_CODE=$(echo "$CODE_REQS" | grep -cF "$req" 2>/dev/null || true)
+    HAS_CODE="${HAS_CODE:-0}"
+    HAS_CODE="${HAS_CODE//[^0-9]/}"
+    [ -z "$HAS_CODE" ] && HAS_CODE=0
 
     if [ "$HAS_TEST" = "0" ]; then
         echo "  MISSING TEST: $req"
@@ -90,7 +96,10 @@ echo ""
 echo "--- Orphan Check ---"
 ORPHANS=0
 for req in $TEST_REQS $CODE_REQS; do
-    IN_SPEC=$(echo "$SPEC_REQS" | grep -c "$req" || echo "0")
+    IN_SPEC=$(echo "$SPEC_REQS" | grep -cF "$req" 2>/dev/null || true)
+    IN_SPEC="${IN_SPEC:-0}"
+    IN_SPEC="${IN_SPEC//[^0-9]/}"
+    [ -z "$IN_SPEC" ] && IN_SPEC=0
     if [ "$IN_SPEC" = "0" ] && [ -n "$req" ]; then
         echo "  ORPHAN: $req (in tests/code but not in spec)"
         ORPHANS=$((ORPHANS + 1))
