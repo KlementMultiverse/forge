@@ -87,6 +87,7 @@ graph TD
         commands_plan_review[plan-review]
         commands_freeze[freeze]
         commands_audit_patterns[audit-patterns]
+        commands_autoresearch[autoresearch]
         commands_benchmark[benchmark]
         commands_investigate[investigate]
         commands_design_doc[design-doc]
@@ -106,20 +107,26 @@ graph TD
         scripts_forge_stack_sh[forge-stack.sh]
         scripts_forge_observer_approve_sh[forge-observer-approve.sh]
         scripts_forge_fsm_sh[forge-fsm.sh]
+        scripts_forge_change_validator_sh[forge-change-validator.sh]
         scripts_forge_deps_sh[forge-deps.sh]
+        scripts_forge_readme_sync_sh[forge-readme-sync.sh]
         scripts_forge_state_sync_sh[forge-state-sync.sh]
         scripts_forge_shell_sh[forge-shell.sh]
         scripts_forge_observer_check_sh[forge-observer-check.sh]
         scripts_forge_triangle_sh[forge-triangle.sh]
         scripts_forge_phase_map_sh[forge-phase-map.sh]
         scripts_forge_review_guard_sh[forge-review-guard.sh]
+        scripts_forge_ownership_sh[forge-ownership.sh]
         scripts_forge_grow_sh[forge-grow.sh]
         scripts_forge_enforce_sh[forge-enforce.sh]
+        scripts_forge_test_guard_sh[forge-test-guard.sh]
         scripts_forge_auto_state_sh[forge-auto-state.sh]
     end
     subgraph Hooks
         hooks_Stop[Stop]
         hooks_UserPromptSubmit[UserPromptSubmit]
+        hooks_PreToolUse_Edit[PreToolUse:Edit]
+        hooks_PostToolUse_Write|Edit[PostToolUse:Write|Edit]
         hooks_PostToolUse_Agent[PostToolUse:Agent]
         hooks_PostToolUse_Skill[PostToolUse:Skill]
     end
@@ -366,7 +373,9 @@ graph TD
     commands_careful --> commands_freeze
     commands_careful --> commands_guard
     commands_gate --> commands_gate
+    commands_gate --> commands_review
     commands_gate --> scripts_forge_enforce_sh
+    commands_gate --> scripts_forge_review_guard_sh
     commands_gate --> scripts_forge_triangle_sh
     commands_gate --> scripts_forge_verify_sh
     commands_forge --> commands_challenge
@@ -429,6 +438,8 @@ graph TD
     commands_audit_patterns --> agents_quality_engineer
     commands_audit_patterns --> agents_self_review
     commands_audit_patterns --> commands_audit_patterns
+    commands_autoresearch --> commands_autoresearch
+    commands_autoresearch --> commands_retro
     commands_benchmark --> commands_benchmark
     commands_benchmark --> commands_critic
     commands_investigate --> agents_root_cause_analyst
@@ -519,6 +530,7 @@ graph TD
     commands_phase_phase_3_implement --> commands_learn
     commands_phase_phase_3_implement --> commands_review
     commands_phase_phase_3_implement --> scripts_forge_enforce_sh
+    commands_phase_phase_3_implement --> scripts_forge_ownership_sh
     commands_phase_phase_4_5_validate --> agents_deploy_guide
     commands_phase_phase_4_5_validate --> agents_deploy_guide_agent
     commands_phase_phase_4_5_validate --> agents_playbook_curator
@@ -546,7 +558,13 @@ graph TD
     scripts_forge_fsm_sh --> scripts_forge_deps_sh
     scripts_forge_fsm_sh --> scripts_forge_enforce_sh
     scripts_forge_fsm_sh --> scripts_forge_phase_map_sh
+    scripts_forge_change_validator_sh --> scripts_forge_enforce_sh
+    scripts_forge_change_validator_sh --> scripts_forge_ownership_sh
+    scripts_forge_change_validator_sh --> scripts_forge_readme_sync_sh
+    scripts_forge_change_validator_sh --> scripts_forge_test_guard_sh
+    scripts_forge_change_validator_sh --> scripts_forge_triangle_sh
     scripts_forge_deps_sh --> scripts_forge_deps_sh
+    scripts_forge_readme_sync_sh --> scripts_forge_readme_sync_sh
     scripts_forge_state_sync_sh --> scripts_forge_enforce_sh
     scripts_forge_shell_sh --> scripts_forge_observer_approve_sh
     scripts_forge_shell_sh --> scripts_forge_observer_check_sh
@@ -561,6 +579,8 @@ graph TD
     scripts_forge_auto_state_sh --> scripts_forge_phase_map_sh
     hooks_Stop --> scripts_forge_phase_gate_sh
     hooks_UserPromptSubmit --> scripts_forge_state_sync_sh
+    hooks_PreToolUse_Edit --> scripts_forge_change_validator_sh
+    hooks_PostToolUse_Write|Edit --> scripts_forge_change_validator_sh
     hooks_PostToolUse_Agent --> scripts_forge_auto_state_sh
     hooks_PostToolUse_Skill --> scripts_forge_auto_state_sh
 ```
