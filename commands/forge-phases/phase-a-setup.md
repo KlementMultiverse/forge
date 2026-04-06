@@ -65,8 +65,11 @@ Q4: "Tech preferences? Or should I recommend?"
     Proven stacks get priority because their rules/agents/scaffold have been refined.
   → If user specifies a stack: use that (user choice overrides recommendation)
   → PM notes: language, framework, database, cache, frontend, special features
-  → STACK REGISTRY: Check ~/.claude/stacks/ for available stacks (ls ~/.claude/stacks/)
-    If stack matches a registry folder (e.g., "django", "fastapi"):
+  → For full-stack projects: ask backend AND frontend stacks separately
+    Example: "Backend: Django + Django Ninja, Frontend: React + Tailwind"
+    Both stacks get registered — run registry lookup for EACH stack independently
+  → STACK REGISTRY: For EACH stack, check ~/.claude/stacks/ (ls ~/.claude/stacks/)
+    If stack matches a registry folder (e.g., "django", "fastapi", "react"):
     - Read ~/.claude/stacks/{stack}/rules.md → will be copied to project .claude/rules/
     - Read ~/.claude/stacks/{stack}/agents.md → will be used for agent-routing.md
     - Read ~/.claude/stacks/{stack}/learnings.md → include in agent prompts as context
@@ -314,6 +317,7 @@ Execute: spawn Agent with subagent_type="devops-architect"
     - config/wsgi.py
     - manage.py
     - apps/__init__.py
+    - conftest.py (test configuration)
     - .env.example
     - .gitignore
 
@@ -333,6 +337,7 @@ Execute: spawn Agent with subagent_type="devops-architect"
     - docker-compose.yml (with volume mount + next dev for dev)
     - .dockerignore
     - next.config.js
+    - tsconfig.json (TypeScript config)
     - .env.example
     - .gitignore
 
@@ -459,6 +464,10 @@ Created:
 Next: exit Claude Code, then run `forge` again in this folder.
 Session 2 will load CLAUDE.md and start building.
 ```
+
+**FAILURE RECOVERY:** If Phase A fails mid-way:
+- Run `bash ~/.claude/scripts/forge-infra-check.sh --reset` to clear state and restart fresh
+- Or fix the issue and run `/forge` again — S1 will detect partial setup and resume
 
 ---
 

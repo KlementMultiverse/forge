@@ -509,8 +509,11 @@ def scan_phase_mapping(forge_dir, registry, phase_map):
             for s in p["steps"]:
                 all_step_files[str(p["phase"])][str(s)].append(f)
 
-    for phase, steps in sorted(all_step_files.items()):
-        for step, files in sorted(steps.items()):
+    def natural_sort_key(s):
+        return [int(c) if c.isdigit() else c for c in re.split(r'(\d+)', s)]
+
+    for phase, steps in sorted(all_step_files.items(), key=lambda x: natural_sort_key(x[0])):
+        for step, files in sorted(steps.items(), key=lambda x: natural_sort_key(x[0])):
             is_gate = int(step) in phase_map["gate_steps"] if step.isdigit() else False
             phase_index.append({
                 "phase": int(phase) if phase.isdigit() else phase,
@@ -929,7 +932,7 @@ def generate_changelog(forge_dir, since=None, component=None, breaking_only=Fals
             continue
 
         # Find issue references anywhere in commit message
-        issues = re.findall(r"#(\d+)", full_msg)
+        issues = sorted(set(re.findall(r"#(\d+)", full_msg)))
 
         # Get file list using git diff-tree (plumbing, clean — no message body)
         files = []

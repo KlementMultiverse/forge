@@ -144,3 +144,38 @@ teardown() {
     run grep -iE "fix.*re-review|retry.*review|max.*iteration|agent.*fix|who.*fix" "$PHASE_A"
     assert_success
 }
+
+# ─── From closed PR #167 — missing tests ───
+
+# #144: Scaffold files — check individually
+@test "Phase A S7 mentions conftest" {
+    run grep -i "conftest" "$PHASE_A"
+    assert_success
+}
+
+@test "Phase A S7 mentions .env.example" {
+    run grep -i ".env.example" "$PHASE_A"
+    assert_success
+}
+
+# #153: Multi-stack support
+@test "Phase A Q4 supports backend + frontend stacks" {
+    run grep -iE "backend.*frontend|full.stack|EACH stack" "$PHASE_A"
+    assert_success
+}
+
+# #154: Recovery path
+@test "Phase A has failure recovery with full path" {
+    run grep "forge-infra-check.sh --reset" "$PHASE_A"
+    assert_success
+}
+
+@test "Phase A S7 mentions tsconfig" {
+    run grep -i "tsconfig" "$PHASE_A"
+    assert_success
+}
+
+@test "Phase A S7 mentions apps __init__" {
+    run grep -iE "apps.*__init__|__init__.*apps" "$PHASE_A"
+    assert_success
+}
