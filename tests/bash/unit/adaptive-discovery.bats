@@ -297,3 +297,4 @@ teardown() {
     run grep "Safety Layers" "$FORGE_DIR/docs/manifesto.md"
     assert_success
 }
+
