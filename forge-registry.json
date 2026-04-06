@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-06T20:58:52.219626+00:00",
+  "generated": "2026-04-06T21:19:49.091016+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -6687,6 +6687,46 @@
     }
   },
   "changelog": {
+    "rules": [
+      {
+        "date": "2026-04-06",
+        "commit": "c5c612a4",
+        "change_type": "feature",
+        "scope": "rules",
+        "summary": "extract PM behaviors into auto-loaded rules file \u2014 who vs what separation",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "agents/universal/pm-orchestrator.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/architecture.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "rules/pm-behaviors.md",
+          "tests/bash/unit/pm-behaviors-rules.bats",
+          "tests/bash/unit/rules-validation.bats"
+        ],
+        "issues": [
+          "#173"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "aa520697",
+        "change_type": "test",
+        "scope": "rules",
+        "summary": "add 7 auto-load validation tests for 7 rules",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/rules-validation.bats"
+        ],
+        "issues": [
+          "#85"
+        ]
+      }
+    ],
     "commands": [
       {
         "date": "2026-04-06",
@@ -7779,23 +7819,6 @@
         ],
         "issues": [
           "#92"
-        ]
-      }
-    ],
-    "rules": [
-      {
-        "date": "2026-04-06",
-        "commit": "aa520697",
-        "change_type": "test",
-        "scope": "rules",
-        "summary": "add 7 auto-load validation tests for 7 rules",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/unit/rules-validation.bats"
-        ],
-        "issues": [
-          "#85"
         ]
       }
     ],
