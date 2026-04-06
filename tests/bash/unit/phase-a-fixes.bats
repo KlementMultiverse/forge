@@ -169,3 +169,13 @@ teardown() {
     run grep "forge-infra-check.sh --reset" "$PHASE_A"
     assert_success
 }
+
+@test "Phase A S7 mentions tsconfig" {
+    run grep -i "tsconfig" "$PHASE_A"
+    assert_success
+}
+
+@test "Phase A S7 mentions apps __init__" {
+    run grep -iE "apps.*__init__|__init__.*apps" "$PHASE_A"
+    assert_success
+}
