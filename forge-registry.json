@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-06T12:21:46.987372+00:00",
+  "generated": "2026-04-06T12:31:19.691395+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -2256,8 +2256,8 @@
         "matcher": "Write|Edit",
         "depends_on": {
           "scripts": [
-            "forge-change-validator.sh",
-            "forge-auto-sync.sh"
+            "forge-auto-sync.sh",
+            "forge-change-validator.sh"
           ]
         }
       },
@@ -4686,12 +4686,12 @@
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-change-validator.sh",
+      "to": "scripts/forge-auto-sync.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-auto-sync.sh",
+      "to": "scripts/forge-change-validator.sh",
       "type": "scripts"
     },
     {
@@ -6655,6 +6655,110 @@
     }
   },
   "changelog": {
+    "commands": [
+      {
+        "date": "2026-04-06",
+        "commit": "0a69d0ef",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "Phase A Batch 1 \u2014 S2 question fixes #135 #138 #146",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "tests/bash/unit/phase-a-fixes.bats"
+        ],
+        "issues": [
+          "#135",
+          "#138",
+          "#146",
+          "#147",
+          "#135",
+          "#147",
+          "#138",
+          "#146"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "2c6f13c7",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "Phase A S1 \u2014 add git init guard if .git missing",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "forge-registry.json",
+          "tests/bash/unit/phase-a-fixes.bats"
+        ],
+        "issues": [
+          "#129",
+          "#130",
+          "#134",
+          "#155"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "9fc956a4",
+        "change_type": "test",
+        "scope": "commands",
+        "summary": "add 6 validation tests for 45 commands",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/all-commands-validation.bats"
+        ],
+        "issues": [
+          "#83"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "90a0c99f",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "add 9 sc:* commands from SuperClaude \u2014 unblocks Phase 2, 4, 5",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/sc-analyze.md",
+          "commands/sc-cleanup.md",
+          "commands/sc-document.md",
+          "commands/sc-estimate.md",
+          "commands/sc-improve.md",
+          "commands/sc-reflect.md",
+          "commands/sc-save.md",
+          "commands/sc-test.md",
+          "commands/sc-workflow.md",
+          "tests/bash/unit/sc-commands.bats"
+        ],
+        "issues": [
+          "#61"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "ac88ee95",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "create /autoresearch command \u2014 unblocks Phase 5 step 54",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/autoresearch.md",
+          "tests/bash/unit/autoresearch-command.bats"
+        ],
+        "issues": [
+          "#60"
+        ]
+      }
+    ],
     "docs": [
       {
         "date": "2026-04-06",
@@ -6746,84 +6850,6 @@
         ],
         "issues": [
           "#48"
-        ]
-      }
-    ],
-    "commands": [
-      {
-        "date": "2026-04-06",
-        "commit": "2c6f13c7",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "Phase A S1 \u2014 add git init guard if .git missing",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "commands/forge-phases/phase-a-setup.md",
-          "forge-registry.json",
-          "tests/bash/unit/phase-a-fixes.bats"
-        ],
-        "issues": [
-          "#129",
-          "#130",
-          "#134",
-          "#155"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "9fc956a4",
-        "change_type": "test",
-        "scope": "commands",
-        "summary": "add 6 validation tests for 45 commands",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/unit/all-commands-validation.bats"
-        ],
-        "issues": [
-          "#83"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "90a0c99f",
-        "change_type": "feature",
-        "scope": "commands",
-        "summary": "add 9 sc:* commands from SuperClaude \u2014 unblocks Phase 2, 4, 5",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/sc-analyze.md",
-          "commands/sc-cleanup.md",
-          "commands/sc-document.md",
-          "commands/sc-estimate.md",
-          "commands/sc-improve.md",
-          "commands/sc-reflect.md",
-          "commands/sc-save.md",
-          "commands/sc-test.md",
-          "commands/sc-workflow.md",
-          "tests/bash/unit/sc-commands.bats"
-        ],
-        "issues": [
-          "#61"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "ac88ee95",
-        "change_type": "feature",
-        "scope": "commands",
-        "summary": "create /autoresearch command \u2014 unblocks Phase 5 step 54",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/autoresearch.md",
-          "tests/bash/unit/autoresearch-command.bats"
-        ],
-        "issues": [
-          "#60"
         ]
       }
     ],

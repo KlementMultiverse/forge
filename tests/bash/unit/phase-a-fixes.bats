@@ -50,3 +50,37 @@ teardown() {
     run grep -iE "no competitor|nothing found|skip competitor|no result" "$PHASE_A"
     assert_success
 }
+
+# ─── Batch 2: S3-S5 Generation Fixes ───
+
+# #131: System-reminder allows PM to write FORGE.md
+@test "Phase A system-reminder does NOT forbid FORGE.md" {
+    # Should say "NEVER writes CLAUDE.md or SPEC.md" not "FORGE.md"
+    run grep "NEVER writes CLAUDE.md, SPEC.md, or FORGE.md" "$PHASE_A"
+    assert_failure  # This old text should NOT exist
+}
+
+# #133: Stack learnings injected into agent prompts
+@test "Phase A S3 prompt includes stack learnings" {
+    run grep -iE "STACK_LEARNINGS|stack.*learnings|learnings.*apply|past.*build.*lessons" "$PHASE_A"
+    assert_success
+}
+
+# #139: Stack rules flexible not Django-only
+@test "Phase A S3 has rules for multiple stacks not just Django" {
+    run grep -iE "For FastAPI|For Next|For Go|For any|stack-specific|based on stack" "$PHASE_A"
+    assert_success
+}
+
+# #140: CLAUDE.md has minimum line count
+@test "Phase A S3 verifies CLAUDE.md has minimum content" {
+    run grep -iE "at least.*lines|minimum.*lines|min.*line|too short" "$PHASE_A"
+    assert_success
+}
+
+# #143: S5 uses real date not literal
+@test "Phase A S5 uses date command not literal {today}" {
+    # Should NOT have literal {today's date}
+    run grep "{today's date}" "$PHASE_A"
+    assert_failure  # This literal should NOT exist
+}

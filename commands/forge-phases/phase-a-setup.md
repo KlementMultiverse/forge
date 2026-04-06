@@ -4,7 +4,7 @@
 
 <system-reminder>
 SESSION 1 RULES:
-- PM orchestrates but NEVER writes CLAUDE.md, SPEC.md, or FORGE.md directly
+- PM orchestrates but NEVER writes CLAUDE.md or SPEC.md directly (FORGE.md is simple enough for PM)
 - Each file is built by a SPECIALIST AGENT following a TEMPLATE
 - Every agent output is VERIFIED before proceeding
 - Session 1 ends with "Setup complete. Run forge again to build."
@@ -177,7 +177,7 @@ Execute: spawn Agent with subagent_type="system-architect"
     - Tables for structured data
     - Anti-scope list from user's "NEVER include" answer
 
-Verify: `wc -l CLAUDE.md` → under 100 lines
+Verify: `wc -l CLAUDE.md` → at least 20 lines, under 100 lines (too short = missing rules)
 Verify: `grep -c "MUST\|NEVER" CLAUDE.md` → at least 5 binary rules
 Verify: has ## Tech Stack, ## Architecture Rules, ## What NOT to Build, ## Testing sections
 Trace: save to docs/forge-trace/S3-claude-md/
@@ -231,7 +231,7 @@ PM writes FORGE.md from template:
 - type: NEW_PROJECT
   description: {project description from discovery}
   status: QUEUED
-  created: {today's date}
+  created: $(date +%Y-%m-%d)
 
 ## Done
 <!-- Completed items -->
