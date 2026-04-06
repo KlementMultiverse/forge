@@ -58,8 +58,8 @@ get_comment_end() {
 supports_comments() {
     local file="$1"
     case "$file" in
-        *.json) return 1 ;;  # JSON has no comment syntax
-        *)      return 0 ;;
+        *.json|*.yaml|*.yml) return 1 ;;  # No inline comments or sidecar preferred
+        *)                   return 0 ;;
     esac
 }
 
@@ -135,12 +135,15 @@ archive.setdefault("version", "1.0.0")
 archive.setdefault("entries", {})
 
 entries = archive["entries"].setdefault(source_file, [])
+existing_lines = {e["line"] for e in entries}
 for line in overflow.strip().split("\n"):
-    if line.strip():
+    stripped = line.strip()
+    if stripped and stripped not in existing_lines:
         entries.append({
-            "line": line.strip(),
+            "line": stripped,
             "archived_at": datetime.now(timezone.utc).isoformat(),
         })
+        existing_lines.add(stripped)
 
 with open(archive_path, 'w') as f:
     json.dump(archive, f, indent=2)
@@ -228,18 +231,62 @@ PYEOF
 }
 
 # Edge case #7: Multi-REQ changes — one line per REQ
+# Archives once before adding, not per REQ (prevents duplicate archiving)
 cmd_add_multi() {
     local file="${1:?Usage: forge-trace-update.sh add-multi <file> <req1,req2> <agent> <pr> [desc]}"
     local reqs="${2:?Missing REQ tags (comma-separated)}"
-    local agent="${3:-}"
+    local agent
+    agent=$(get_author "${3:-}")
     local pr="${4:?Missing PR number}"
     local desc="${5:-}"
+    local today
+    today=$(date +%Y-%m-%d)
+
+    if [ ! -f "$file" ]; then
+        echo "File not found: $file"
+        return 1
+    fi
+
+    if ! supports_comments "$file"; then
+        # Sidecar mode — append all REQs to sidecar
+        local sidecar="${file}.forge-trace"
+        if [ ! -f "$sidecar" ]; then
+            echo "# ─── ${TRACE_MARKER} ─── (sidecar for $(basename "$file"))" > "$sidecar"
+        fi
+        IFS=',' read -ra req_array <<< "$reqs"
+        for req in "${req_array[@]}"; do
+            req=$(echo "$req" | xargs)
+            echo "# [${req}] modified by ${agent} | PR ${pr} | ${today}${desc:+ | $desc}" >> "$sidecar"
+        done
+        echo "Added ${#req_array[@]} trace entries to sidecar: $sidecar"
+        return 0
+    fi
+
+    local cc ce
+    cc=$(get_comment_char "$file")
+    ce=$(get_comment_end "$file")
+
+    # Ensure trace block exists
+    if ! grep -q "$TRACE_MARKER" "$file" 2>/dev/null; then
+        echo "" >> "$file"
+        echo "${cc} ─── ${TRACE_MARKER} ───${ce}" >> "$file"
+    fi
+
+    # Archive once before adding multiple entries
+    archive_overflow "$file"
 
     IFS=',' read -ra req_array <<< "$reqs"
     for req in "${req_array[@]}"; do
-        req=$(echo "$req" | xargs)  # trim whitespace
-        cmd_add "$file" "$req" "$agent" "$pr" "$desc"
+        req=$(echo "$req" | xargs)
+        local trace_line="${cc} [${req}] modified by ${agent} | PR ${pr} | ${today}"
+        if [ -n "$desc" ]; then
+            trace_line="${trace_line} | ${desc}"
+        fi
+        trace_line="${trace_line}${ce}"
+        echo "$trace_line" >> "$file"
     done
+
+    echo "Added ${#req_array[@]} trace entries to $file"
 }
 
 cmd_init() {
@@ -294,39 +341,45 @@ cmd_split() {
         return 1
     fi
 
-    local cc
-    cc=$(get_comment_char "$src")
-    local ce
-    ce=$(get_comment_end "$src")
+    # Get existing trace lines (raw text, will be re-commented per destination)
+    local trace_lines
+    trace_lines=$(awk "/$TRACE_MARKER/{found=1; next} found{print}" "$src" 2>/dev/null || echo "")
 
-    # Get existing trace from source
-    local trace_block
-    trace_block=$(awk "/$TRACE_MARKER/{found=1} found{print}" "$src" 2>/dev/null || echo "")
-
-    if [ -z "$trace_block" ]; then
+    if [ -z "$trace_lines" ]; then
         echo "No trace block in $src — nothing to copy"
         return 0
     fi
 
-    # Add trace to dst1 if it exists
+    # Add trace to dst1 if it exists — use DST comment syntax
     if [ -f "$dst1" ] && ! grep -q "$TRACE_MARKER" "$dst1" 2>/dev/null; then
+        local cc1 ce1
+        cc1=$(get_comment_char "$dst1")
+        ce1=$(get_comment_end "$dst1")
         echo "" >> "$dst1"
-        echo "$trace_block" >> "$dst1"
-        echo "${cc} split from $(basename "$src") | ${today}${ce}" >> "$dst1"
+        echo "${cc1} ─── ${TRACE_MARKER} ───${ce1}" >> "$dst1"
+        echo "$trace_lines" >> "$dst1"
+        echo "${cc1} split from $(basename "$src") | ${today}${ce1}" >> "$dst1"
         echo "Copied trace to $dst1"
     fi
 
-    # Add trace to dst2 if it exists
+    # Add trace to dst2 if it exists — use DST comment syntax
     if [ -f "$dst2" ] && ! grep -q "$TRACE_MARKER" "$dst2" 2>/dev/null; then
+        local cc2 ce2
+        cc2=$(get_comment_char "$dst2")
+        ce2=$(get_comment_end "$dst2")
         echo "" >> "$dst2"
-        echo "$trace_block" >> "$dst2"
-        echo "${cc} split from $(basename "$src") | ${today}${ce}" >> "$dst2"
+        echo "${cc2} ─── ${TRACE_MARKER} ───${ce2}" >> "$dst2"
+        echo "$trace_lines" >> "$dst2"
+        echo "${cc2} split from $(basename "$src") | ${today}${ce2}" >> "$dst2"
         echo "Copied trace to $dst2"
     fi
 
-    # Add split note to source (if still exists)
+    # Add split note to source — use SOURCE comment syntax
     if [ -f "$src" ]; then
-        echo "${cc} split to $(basename "$dst1"), $(basename "$dst2") | ${today}${ce}" >> "$src"
+        local cc_src ce_src
+        cc_src=$(get_comment_char "$src")
+        ce_src=$(get_comment_end "$src")
+        echo "${cc_src} split to $(basename "$dst1"), $(basename "$dst2") | ${today}${ce_src}" >> "$src"
         echo "Added split note to $src"
     fi
 }
