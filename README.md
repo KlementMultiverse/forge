@@ -329,14 +329,14 @@ forge/
   commands/
     forge.md            <- main entry point (/forge)
     forge-phases/       <- 6 phase execution files (+ cases.md for special flows)
-    *.md                <- 39 skill commands (/discover, /gate, /review, sc:*, etc.)
-  rules/                <- 7 global rules (security, python, docker, etc.)
-  scripts/              <- 26 enforcement + traceability + testing scripts
-  templates/            <- 21 project templates (CLAUDE.md, SPEC.md, hooks, etc.)
+    *.md                <- skill commands (/discover, /gate, /review, sc:*, etc.)
+  rules/                <- global rules (security, python, docker, etc.)
+  scripts/              <- enforcement + traceability + testing scripts
+  templates/            <- project templates (CLAUDE.md, SPEC.md, hooks, etc.)
   tests/
-    bash/unit/          <- BATS unit tests (one per script, 219 tests)
-    bash/integration/   <- BATS integration tests (hooks, flows, 17 tests)
-    python/unit/        <- pytest tests (17 tests)
+    bash/unit/          <- BATS unit tests (one per script)
+    bash/integration/   <- BATS integration tests (hooks, flows)
+    python/unit/        <- pytest tests
     test_helper/        <- shared fixtures + BATS helpers
     Makefile            <- test-fast, test-slow, test-all
   docs/

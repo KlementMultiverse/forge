@@ -41,7 +41,7 @@ check_count() {
     local name="$1"
     local actual="$2"
     local readme_val
-    readme_val=$(grep -oP "\\| $name \\| \\K\\d+" "$README" 2>/dev/null | head -1)
+    readme_val=$(grep "| $name |" "$README" 2>/dev/null | head -1 | sed 's/.*| '"$name"' | \([0-9]*\).*/\1/')
     if [ -z "$readme_val" ]; then
         echo "  ⚠ $name: not found in README"
         DRIFT=$((DRIFT + 1))
@@ -69,12 +69,12 @@ fi
 
 if [ "${1:-}" = "--fix" ]; then
     echo "Fixing README counts..."
-    sed -i "s/| Agents | [0-9]*/| Agents | $AGENTS/" "$README"
-    sed -i "s/| Commands | [0-9]*/| Commands | $COMMANDS/" "$README"
-    sed -i "s/| Rules | [0-9]*/| Rules | $RULES/" "$README"
-    sed -i "s/| Scripts | [0-9]*/| Scripts | $SCRIPTS/" "$README"
-    sed -i "s/| Templates | [0-9]*/| Templates | $TEMPLATES/" "$README"
-    sed -i "s/| Tests | [0-9]*/| Tests | $TOTAL_TESTS/" "$README"
+    sed -i'' "s/| Agents | [0-9]*/| Agents | $AGENTS/" "$README"
+    sed -i'' "s/| Commands | [0-9]*/| Commands | $COMMANDS/" "$README"
+    sed -i'' "s/| Rules | [0-9]*/| Rules | $RULES/" "$README"
+    sed -i'' "s/| Scripts | [0-9]*/| Scripts | $SCRIPTS/" "$README"
+    sed -i'' "s/| Templates | [0-9]*/| Templates | $TEMPLATES/" "$README"
+    sed -i'' "s/| Tests | [0-9]*/| Tests | $TOTAL_TESTS/" "$README"
     echo "Done. Verify with: forge-readme-sync.sh"
 else
     echo "DRIFT: $DRIFT counts out of sync"
