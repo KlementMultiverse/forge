@@ -30,11 +30,12 @@ What gets installed (to `~/.claude/`, shared by all projects):
 
 | Component | Count | Location | Purpose |
 |-----------|-------|----------|---------|
-| Agents | 51 | ~/.claude/agents/ | Specialist AI agents (backend, security, reviewer, etc.) |
-| Commands | 41 | ~/.claude/commands/ | Slash commands (/forge, /discover, /gate, etc.) |
+| Agents | 53 | ~/.claude/agents/ | Specialist AI agents (backend, security, reviewer, etc.) |
+| Commands | 45 | ~/.claude/commands/ | Slash commands (/forge, /discover, /gate, sc:*, etc.) |
 | Rules | 7 | ~/.claude/rules/ | Global rules (security, python, docker, etc.) |
-| Scripts | 25 | ~/.claude/scripts/ | Enforcement engine (state, gates, tracing, ownership) |
-| Templates | 17 | ~/.claude/templates/ | Project scaffolding (CLAUDE.md, SPEC.md, hooks, etc.) |
+| Scripts | 27 | ~/.claude/scripts/ | Enforcement, traceability, ownership, testing |
+| Templates | 22 | ~/.claude/templates/ | Project scaffolding (CLAUDE.md, SPEC.md, hooks, etc.) |
+| Tests | 239 | tests/ | BATS + pytest test suite (96% script coverage) |
 | Shell fn | 1 | ~/.bashrc / ~/.zshrc | `forge` terminal command |
 
 ---
@@ -44,20 +45,30 @@ What gets installed (to `~/.claude/`, shared by all projects):
 ### The Main Loop
 
 ```
+Session starts
+    |
+    v
+SessionStart hook (once per session)
+  - Checks gh CLI installed + authenticated
+  - Checks GitHub/GitLab remote configured
+  - Checks CLAUDE.md < 40K chars
+    |
+    v
 You type /forge
     |
     v
-Hook fires (UserPromptSubmit)
-  - Checks GitHub remote configured
-  - Checks CLAUDE.md < 40K chars
-  - Detects project type (GREENFIELD / BROWNFIELD / EXISTING)
+UserPromptSubmit hook (gated on /forge)
+  - Detects project type (GREENFIELD / BROWNFIELD / EXISTING / RESUME)
+  - Syncs forge-state.json
     |
     v
 forge.md routes to correct phase file
-  - No CLAUDE.md        -> phase-a-setup.md (new project)
-  - Steps 1-19          -> phase-0-2-plan.md (plan)
-  - Steps 20-39         -> phase-3-implement.md (build)
-  - Steps 40-56         -> phase-4-5-validate.md (verify)
+  - forge-state.json exists  -> RESUME from current step
+  - No CLAUDE.md             -> phase-a-setup.md (new project)
+  - Steps 1-19               -> phase-0-2-plan.md (plan)
+  - Steps 20-39              -> phase-3-implement.md (build)
+  - Steps 40-56              -> phase-4-5-validate.md (verify)
+  - Special cases (2-8)      -> cases.md
     |
     v
 Phase file executes steps sequentially
@@ -68,7 +79,9 @@ Phase file executes steps sequentially
     v
 At phase boundary -> /gate
   - Observer approval required
-  - CodeRabbit approval required
+  - CodeRabbit approval required (MANDATORY)
+  - Suspect REQs must be cleared
+  - Review guard must pass
   - Circuit breaker prevents endless polling
     |
     v
@@ -185,22 +198,23 @@ Check FORGE.md for queued items. Loop or done.
 
 ## Hooks (Mechanical Enforcement)
 
-8 hooks fire automatically. Hooks are 100% reliable (not prompt-based).
+9 hook groups across 5 events. Hooks are 100% reliable (not prompt-based).
 
 | Hook | Event | What It Does |
 |------|-------|-------------|
-| 1 | Stop | Gate check + auto-continue between steps |
-| 2 | UserPromptSubmit | GitHub remote check + 40K char warning + project detection + state sync |
-| 3 | PreToolUse (Bash) | Blocks: rm -rf, git push --force, reset --hard, clean -f |
-| 4 | PreToolUse (Edit) | Warns when removing >10 lines |
-| 5 | PostToolUse (Write/Edit) | Runs ruff lint + warns if file >300 lines |
-| 6 | PostToolUse (Agent) | Logs activity + updates forge-state.json |
-| 7 | PostToolUse (Skill) | Logs activity + updates forge-state.json |
-| 8 | PostToolUse (Bash) | Logs command to activity log |
+| 1 | SessionStart | gh CLI check + auth check + remote check + CLAUDE.md char warning (once per session) |
+| 2 | Stop | Gate check + auto-continue between steps |
+| 3 | UserPromptSubmit | State sync + project detection (gated on /forge only) |
+| 4 | PreToolUse (Bash) | Blocks: rm -rf, git push --force, reset --hard, clean -f |
+| 5 | PreToolUse (Edit) | Warns when removing >10 lines + shows IMPACT for REQ-linked files |
+| 6 | PostToolUse (Write/Edit) | Runs ruff lint + warns if file >300 lines + FORGE TRACE reminder |
+| 7 | PostToolUse (Agent) | Logs activity + updates forge-state.json |
+| 8 | PostToolUse (Skill) | Logs activity + updates forge-state.json |
+| 9 | PostToolUse (Bash) | Logs command to activity log |
 
 Plus two git hooks:
 - `commit-msg` — blocks commits without issue references (#N) and enforces conventional commit format with scope
-- `pre-commit` — REQ impact analysis: blocks commits that remove REQ tags, flags suspect links
+- `pre-commit` — REQ impact analysis + forge-test-guard (detects untested script changes)
 
 ---
 
@@ -310,23 +324,29 @@ forge-lint.py --update-registry         # Update checksums
 ```
 forge/
   agents/
-    universal/          <- 34 stack-agnostic agents
+    universal/          <- 33 stack-agnostic agents
     stacks/             <- 17 stack-specific agents (django, genai, langchain, azure, gcp)
   commands/
     forge.md            <- main entry point (/forge)
-    forge-phases/       <- 6 phase execution files
-    *.md                <- 35 skill commands (/discover, /gate, /review, etc.)
+    forge-phases/       <- 6 phase execution files (+ cases.md for special flows)
+    *.md                <- 39 skill commands (/discover, /gate, /review, sc:*, etc.)
   rules/                <- 7 global rules (security, python, docker, etc.)
-  scripts/              <- 25 enforcement + traceability scripts
-  templates/            <- 17 project templates (CLAUDE.md, SPEC.md, hooks, etc.)
+  scripts/              <- 26 enforcement + traceability + testing scripts
+  templates/            <- 21 project templates (CLAUDE.md, SPEC.md, hooks, etc.)
+  tests/
+    bash/unit/          <- BATS unit tests (one per script, 219 tests)
+    bash/integration/   <- BATS integration tests (hooks, flows, 17 tests)
+    python/unit/        <- pytest tests (17 tests)
+    test_helper/        <- shared fixtures + BATS helpers
+    Makefile            <- test-fast, test-slow, test-all
   docs/
     automation-field-guide.md  <- 880+ lines: everything about building on Claude Code
-    protocols/                 <- formal protocols (error handling, component changes)
+    protocols/                 <- formal protocols (error handling, component creation)
     architecture.md            <- system map
     dependency-graph.md        <- auto-generated Mermaid dependency diagram
     evolution-log.md           <- decision history
   forge-core.json       <- component registry (checksums, protocols)
-  forge-registry.json   <- full traceability (deps, phases, flows, changelog, ownership)
+  forge-registry.json   <- full traceability (deps, phases, 9 flows, changelog, ownership)
   install.sh            <- one-command installer
 ```
 
@@ -379,6 +399,7 @@ This is why templates use `{{PLACEHOLDERS}}` inside HTML comments — invisible 
 | [Architecture](docs/architecture.md) | System map, dependency graph, component connections |
 | [Dependency Graph](docs/dependency-graph.md) | Auto-generated Mermaid diagram of all component relationships |
 | [Evolution Log](docs/evolution-log.md) | Every decision tracked with rationale |
+| [Component Protocols](docs/protocols/component-creation.md) | Step-by-step for creating scripts, commands, agents, hooks, tests |
 
 ---
 
