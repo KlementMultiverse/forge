@@ -35,10 +35,14 @@ GATE VERIFICATION CHECKLIST (run in order, stop on first failure):
 3. TRIANGLE SYNC: `bash scripts/forge-triangle.sh check` → sync rate >= 90%
    If < 90%: for each broken REQ → create issue → fix → re-check
    GATE BLOCKS until triangle passes. This is NON-NEGOTIABLE.
-4. Artifact verification: `bash scripts/forge-verify.sh verify-all` → no FAKE DONEs
-5. Docker healthy: `bash scripts/docker-state.sh --check` (if Docker project)
-6. No hardcoded secrets: `grep -r "sk-\|AKIA\|ghp_" apps/ --include="*.py"` → empty
-7. Files under 300 lines: `find apps/ -name "*.py" | xargs wc -l | awk '$1 > 300'` → empty
+4. SUSPECT REQs: `bash scripts/forge-enforce.sh check-suspect` → must pass (no unverified suspects)
+   If suspects exist → run triangle check to clear them → re-check
+5. REVIEW GUARD: `bash scripts/forge-review-guard.sh check-for-gate` → must pass
+   If not reviewed → run /review first → mark-reviewed → re-check
+6. Artifact verification: `bash scripts/forge-verify.sh verify-all` → no FAKE DONEs
+7. Docker healthy: `bash scripts/docker-state.sh --check` (if Docker project)
+8. No hardcoded secrets: `grep -r "sk-\|AKIA\|ghp_" apps/ --include="*.py"` → empty
+9. Files under 300 lines: `find apps/ -name "*.py" | xargs wc -l | awk '$1 > 300'` → empty
 
 If ALL pass → gate PASSES. Update state:
 ```bash

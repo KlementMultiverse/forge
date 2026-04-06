@@ -1,16 +1,25 @@
 #!/bin/bash
-# Forge pre-commit hook — REQ impact analysis
-# Blocks commits that remove REQ tags from code files.
-# Warns when REQ-linked code is modified.
+# Forge pre-commit hook — REQ impact analysis + test guard
+# 1. Blocks commits that remove REQ tags from code files
+# 2. Warns when REQ-linked code is modified
+# 3. Warns when scripts changed without test updates
 # Installed by /forge Phase A Step S8
 
+# REQ impact check
 IMPACT_SCRIPT="$HOME/.claude/scripts/req-impact-check.py"
-
-# Skip if script not installed
-if [ ! -f "$IMPACT_SCRIPT" ]; then
-    exit 0
+if [ -f "$IMPACT_SCRIPT" ]; then
+    python3 "$IMPACT_SCRIPT" --staged --update-state
+    RC=$?
+    if [ $RC -ne 0 ]; then
+        exit $RC
+    fi
 fi
 
-# Run REQ impact check on staged files
-python3 "$IMPACT_SCRIPT" --staged --update-state
-exit $?
+# Test guard — warn if scripts changed without test updates
+TEST_GUARD="$HOME/.claude/scripts/forge-test-guard.sh"
+if [ -f "$TEST_GUARD" ]; then
+    bash "$TEST_GUARD" --changed 2>/dev/null
+    # Advisory only — doesn't block commit
+fi
+
+exit 0
