@@ -431,7 +431,7 @@ Execute: spawn Agent with subagent_type="self-review"
     3. FORGE.md — has QUEUED entry?
     4. .claude/rules/ — SDLC flow complete? Agent routing filled?
     5. Scaffold — settings.py valid? Dependencies listed? Dockerfile works?
-    6. .claude/settings.json — valid JSON? Has all 8 hooks (Stop, UserPromptSubmit, PreToolUse x2, PostToolUse x4)?
+    6. .claude/settings.json — valid JSON? Has all 9 hook groups (SessionStart, Stop, UserPromptSubmit, PreToolUse x2, PostToolUse x4)?
     7. .forge/playbook/ — strategies.md, mistakes.md, archived.md exist?
     8. docs/forge-timeline.md — exists with project name?
 
