@@ -1,5 +1,16 @@
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'D=\"$PWD\"; REMOTE=$(git -C \"$D\" remote -v 2>/dev/null | head -1); if [ -d \"$D/.git\" ] && [ -z \"$REMOTE\" ]; then echo \"[FORGE] ⚠ No GitHub remote configured.\"; echo \"[FORGE] Run in another terminal:\"; echo \"[FORGE]   gh repo create <org>/<name> --private --source=. --push\"; fi; if [ -f \"$D/CLAUDE.md\" ]; then TOTAL=0; for cf in \"$D/CLAUDE.md\" \"$D/.claude/rules/\"*.md; do [ -f \"$cf\" ] && TOTAL=$((TOTAL + $(wc -c < \"$cf\"))); done; if [ \"$TOTAL\" -gt 40000 ]; then echo \"[FORGE] ⚠ CLAUDE.md + rules = $TOTAL chars (limit: 40,000). Instructions may be truncated.\"; elif [ \"$TOTAL\" -gt 35000 ]; then echo \"[FORGE] Context usage: $TOTAL/40,000 chars (approaching limit).\"; fi; fi; true'"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "matcher": "",
@@ -17,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'D=\"$PWD\"; REMOTE=$(git -C \"$D\" remote -v 2>/dev/null | head -1); if [ -d \"$D/.git\" ] && [ -z \"$REMOTE\" ]; then echo \"[FORGE] ⚠ No GitHub remote configured.\"; echo \"[FORGE] Run in another terminal:\"; echo \"[FORGE]   gh repo create <org>/<name> --private --source=. --push\"; echo \"[FORGE] Then retry /forge.\"; fi; if [ -f \"$D/CLAUDE.md\" ]; then TOTAL=0; for cf in \"$D/CLAUDE.md\" \"$D/.claude/rules/\"*.md; do [ -f \"$cf\" ] && TOTAL=$((TOTAL + $(wc -c < \"$cf\"))); done; if [ \"$TOTAL\" -gt 40000 ]; then echo \"[FORGE] ⚠ CLAUDE.md + rules = $TOTAL chars (limit: 40,000). Instructions may be truncated.\"; echo \"[FORGE] Reduce CLAUDE.md or move content to agent prompts.\"; elif [ \"$TOTAL\" -gt 35000 ]; then echo \"[FORGE] Context usage: $TOTAL/40,000 chars (approaching limit).\"; fi; fi; bash ~/.claude/scripts/forge-state-sync.sh 2>/dev/null; C=$(test -f \"$D/CLAUDE.md\" && echo y || echo n); F=$(find \"$D\" -maxdepth 2 \\( -name \"*.py\" -o -name \"*.ts\" \\) ! -path \"*node_modules*\" ! -path \"*.venv*\" ! -path \"*.git*\" 2>/dev/null | head -1); P=$(grep -l \"{{\" \"$D/CLAUDE.md\" 2>/dev/null); if [ \"$C\" = \"n\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE1_GREENFIELD\"; elif [ \"$C\" = \"n\" ] && [ -n \"$F\" ]; then echo \"[FORGE] CASE7_BROWNFIELD\"; elif [ -n \"$P\" ]; then echo \"[FORGE] CASE1_GREENFIELD (placeholder)\"; elif [ \"$C\" = \"y\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE2_SPEC_ONLY\"; elif [ \"$C\" = \"y\" ] && [ -n \"$F\" ]; then echo \"[FORGE] EXISTING_PROJECT\"; fi; if [ -f \"$D/SPEC.md\" ]; then RC=$(grep -oP \"REQ-[A-Z]+-[0-9]+\" \"$D/SPEC.md\" 2>/dev/null | sort -u | wc -l); echo \"[FORGE-SYNC] $RC REQs tracked.\"; fi'"
+            "command": "bash -c 'D=\"$PWD\"; bash ~/.claude/scripts/forge-state-sync.sh 2>/dev/null; PROMPT=$(cat 2>/dev/null || echo \"\"); IS_FORGE=$(echo \"$PROMPT\" | grep -cE \"/forge|/build-project\" || true); if [ \"$IS_FORGE\" -gt 0 ] || [ -n \"${FORGE_DETECT:-}\" ]; then if [ -f \"$D/docs/forge-state.json\" ]; then STEP=$(python3 -c \"import json; d=json.load(open(\\\"$D/docs/forge-state.json\\\")); print(d.get(\\\"current_step\\\",0))\" 2>/dev/null || echo 0); if [ \"$STEP\" -gt 0 ] && [ \"$STEP\" -lt 57 ]; then echo \"[FORGE] CASE_RESUME (step $STEP)\"; fi; fi; C=$(test -f \"$D/CLAUDE.md\" && echo y || echo n); F=$(find \"$D\" -maxdepth 2 \\( -name \"*.py\" -o -name \"*.ts\" \\) ! -path \"*node_modules*\" ! -path \"*.venv*\" ! -path \"*.git*\" 2>/dev/null | head -1); P=$(grep -l \"{{\" \"$D/CLAUDE.md\" 2>/dev/null); if [ \"$C\" = \"n\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE1_GREENFIELD\"; elif [ \"$C\" = \"n\" ] && [ -n \"$F\" ]; then echo \"[FORGE] CASE7_BROWNFIELD\"; elif [ -n \"$P\" ]; then echo \"[FORGE] CASE1_GREENFIELD (placeholder)\"; elif [ \"$C\" = \"y\" ] && [ -z \"$F\" ]; then echo \"[FORGE] CASE2_SPEC_ONLY\"; elif [ \"$C\" = \"y\" ] && [ -n \"$F\" ]; then echo \"[FORGE] EXISTING_PROJECT\"; fi; if [ -f \"$D/SPEC.md\" ]; then RC=$(grep -oP \"REQ-[A-Z]+-[0-9]+\" \"$D/SPEC.md\" 2>/dev/null | sort -u | wc -l); echo \"[FORGE-SYNC] $RC REQs tracked.\"; fi; fi; true'"
           }
         ]
       }
