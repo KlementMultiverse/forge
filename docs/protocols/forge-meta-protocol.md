@@ -10,7 +10,7 @@ This protocol governs ALL changes to forge — whether triggered by a human, an 
 
 When ANY new component is created (agent, command, script, template, rule, hook):
 
-```
+```text
 BEFORE CREATING:
   1. GitHub issue exists for this change
   2. --impact checked on related files
@@ -45,7 +45,7 @@ The flow pauses, the protocol runs, then the flow resumes.
 
 When ANY existing file is modified:
 
-```
+```text
 BEFORE EDITING:
   1. Run: forge-registry.py --impact <file>
      → What other files are affected?
@@ -92,7 +92,7 @@ REVIEW:
 
 When forge's own structure changes (scripts/, commands/, hooks.json, templates/, rules/):
 
-```
+```text
 PLANNING:
   1. Create GitHub issue with full proposal
   2. Tag @coderabbitai on issue for architecture review
@@ -143,7 +143,7 @@ These hooks enforce the protocol automatically:
 
 ## 5. What Stops the Old Requirements from Breaking?
 
-```
+```text
 Layer 1: PreToolUse Edit
   → "This file serves REQ-AUTH-001, REQ-AUTH-002"
   → Agent sees the warning, knows what to protect
@@ -176,7 +176,7 @@ Layer 6: forge-test-guard
 
 When the protocol is blocking legitimate work:
 
-```
+```text
 1. Document WHY the override is needed in the issue
 2. Use forge-phase-gate.sh clear for gate override
 3. Use git commit --no-verify for hook override (LAST RESORT)

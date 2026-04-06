@@ -162,7 +162,7 @@ cmd_full_check() {
     # 2. Test coverage
     echo ""
     echo "--- 2. Test Coverage ---"
-    bash "$FORGE_DIR/scripts/forge-test-guard.sh" 2>/dev/null | tail -5
+    bash "$FORGE_DIR/scripts/forge-test-guard.sh" 2>/dev/null; RC=$?; bash "$FORGE_DIR/scripts/forge-test-guard.sh" 2>/dev/null | tail -5; if [ $RC -ne 0 ]; then errors=$((errors + 1)); fi
 
     # 3. Suspect REQs
     echo ""

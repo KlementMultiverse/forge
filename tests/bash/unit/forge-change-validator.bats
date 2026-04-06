@@ -32,12 +32,12 @@ teardown() {
 }
 
 @test "change-validator post-edit detects missing test" {
+    mkdir -p "$TEST_PROJECT/scripts" "$TEST_PROJECT/tests"
     echo "# new script" > "$TEST_PROJECT/scripts/new-untested.sh"
-    export FORGE_DIR="$TEST_PROJECT"
-    run bash "$FORGE_DIR/scripts/forge-change-validator.sh" post-edit "scripts/new-untested.sh"
-    # Reset FORGE_DIR
-    export FORGE_DIR="$(cd "${BATS_TEST_DIRNAME}/../../.." && pwd)"
-    [[ "$status" -le 1 ]]
+    cp "$FORGE_DIR/scripts/forge-change-validator.sh" "$TEST_PROJECT/scripts/"
+    chmod +x "$TEST_PROJECT/scripts/forge-change-validator.sh"
+    run env FORGE_DIR="$TEST_PROJECT" bash "$TEST_PROJECT/scripts/forge-change-validator.sh" post-edit "scripts/new-untested.sh"
+    assert_output --partial "No test found"
 }
 
 @test "change-validator full-check runs all checks" {
