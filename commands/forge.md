@@ -1,4 +1,8 @@
-# /forge -- One Command to Build Everything
+---
+description: "Main SDLC orchestrator. Detects project state automatically and routes to the right flow: new project setup, feature addition, bug fix, improvement, or resume."
+argument-hint: "[description of what to build | empty to auto-detect]"
+---
+# /forge — One Command to Build Everything
 
 ## Input
 $ARGUMENTS -- optional. Can be:
