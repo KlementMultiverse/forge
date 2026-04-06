@@ -363,9 +363,9 @@ This is why templates use `{{PLACEHOLDERS}}` inside HTML comments — invisible 
 ## Requirements
 
 - [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code)
-- Git + GitHub (`gh` CLI for issues and PRs)
+- Git + GitHub or GitLab (`gh` CLI for issues and PRs)
 - Python 3.10+ (for enforcement scripts)
-- Optional: CodeRabbit (for automated PR review)
+- Required: [CodeRabbit](https://coderabbit.ai) — used for PR review, architecture decisions, design review, issue review, edge case identification. Gates block without CR approval.
 - Optional: context7 MCP server (for library docs)
 
 ---
