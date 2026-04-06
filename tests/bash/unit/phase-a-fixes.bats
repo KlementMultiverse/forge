@@ -118,3 +118,23 @@ teardown() {
     run grep "all 8 hooks\|Has all 8" "$PHASE_A"
     assert_failure
 }
+
+# ─── Batch 4: S9 + State Fixes ───
+
+# #132: Phase A state persistence
+@test "Phase A has state persistence for context limit recovery" {
+    run grep -iE "phase-a.*json|phase.a.*progress|phase.a.*state|S[0-9].*DONE|resume.*Phase A" "$PHASE_A"
+    assert_success
+}
+
+# #156: S1 partial setup detection
+@test "Phase A S1 checks for partial setup" {
+    run grep -iE "partial|incomplete|missing.*scaffold|SPEC.*but.*no|CLAUDE.*but.*no.*forge" "$PHASE_A"
+    assert_success
+}
+
+# #159: S9 fix path defined
+@test "Phase A S9 has defined fix path with agent and max retries" {
+    run grep -iE "fix.*re-review|retry.*review|max.*iteration|agent.*fix|who.*fix" "$PHASE_A"
+    assert_success
+}
