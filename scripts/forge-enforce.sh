@@ -815,6 +815,7 @@ for req, entry in suspects.items():
     state.setdefault('suspect_history', []).append({'req': req, **entry})
 cleared = len(suspects)
 state['suspect_reqs'] = {}
+state.pop('bulk_refactor', None)
 with open('$SUSPECT_FILE', 'w') as f:
     json.dump(state, f, indent=2)
 print(f'[SUSPECT] Cleared {cleared} suspect REQ(s)')
@@ -822,13 +823,21 @@ print(f'[SUSPECT] Cleared {cleared} suspect REQ(s)')
         return 0
     fi
 
-    # Default: show suspect REQs
+    # Default: show suspect REQs + bulk refactor check (#53)
     python3 -c "
 import json
 with open('$SUSPECT_FILE') as f:
     state = json.load(f)
 suspects = state.get('suspect_reqs', {})
 unverified = {k: v for k, v in suspects.items() if not v.get('verified')}
+bulk = state.get('bulk_refactor', {})
+
+if bulk.get('requires_full_triangle'):
+    print(f'[SUSPECT] BULK REFACTOR — {bulk.get(\"suspect_count\", 0)} REQs suspect')
+    print(f'[SUSPECT] Full triangle check required before any gate proceeds')
+    print(f'[SUSPECT] Run: forge-triangle.sh check')
+    exit(1)
+
 if not unverified:
     print('[SUSPECT] No unverified suspect REQs')
     exit(0)
