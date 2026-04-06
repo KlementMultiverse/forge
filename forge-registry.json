@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-06T11:26:33.652800+00:00",
+  "generated": "2026-04-06T12:21:46.987372+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -2256,8 +2256,8 @@
         "matcher": "Write|Edit",
         "depends_on": {
           "scripts": [
-            "forge-auto-sync.sh",
-            "forge-change-validator.sh"
+            "forge-change-validator.sh",
+            "forge-auto-sync.sh"
           ]
         }
       },
@@ -4686,12 +4686,12 @@
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-auto-sync.sh",
+      "to": "scripts/forge-change-validator.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-change-validator.sh",
+      "to": "scripts/forge-auto-sync.sh",
       "type": "scripts"
     },
     {
@@ -6655,6 +6655,178 @@
     }
   },
   "changelog": {
+    "docs": [
+      {
+        "date": "2026-04-06",
+        "commit": "600cbd94",
+        "change_type": "chore",
+        "scope": "docs",
+        "summary": "add .coderabbit.yml \u2014 enable request_changes_workflow for explicit approvals",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          ".coderabbit.yml"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "7a8311ea",
+        "change_type": "bugfix",
+        "scope": "docs",
+        "summary": "address 2 CodeRabbit comments \u2014 remove hardcoded counts in structure, fix GNU-specific flags",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "scripts/forge-readme-sync.sh"
+        ],
+        "issues": [
+          "#98"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "4732dc29",
+        "change_type": "documentation",
+        "scope": "docs",
+        "summary": "sync README with current state + create auto-sync script",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "scripts/forge-readme-sync.sh",
+          "tests/bash/unit/forge-readme-sync.bats"
+        ],
+        "issues": [
+          "#98"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "6ac8fd3f",
+        "change_type": "documentation",
+        "scope": "docs",
+        "summary": "make CodeRabbit required \u2014 used for review, architecture, design, gates",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "README.md",
+          "tests/bash/integration/coderabbit-required.bats"
+        ],
+        "issues": [
+          "#96"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "cecf7cae",
+        "change_type": "documentation",
+        "scope": "docs",
+        "summary": "create component creation protocols \u2014 scripts, commands, agents, hooks, tests",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "docs/protocols/component-creation.md",
+          "tests/bash/unit/protocols-validation.bats"
+        ],
+        "issues": [
+          "#79"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "b3f26827",
+        "change_type": "documentation",
+        "scope": "docs",
+        "summary": "simplify install section + update counts and new features",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "README.md"
+        ],
+        "issues": [
+          "#48"
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "date": "2026-04-06",
+        "commit": "2c6f13c7",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "Phase A S1 \u2014 add git init guard if .git missing",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "forge-registry.json",
+          "tests/bash/unit/phase-a-fixes.bats"
+        ],
+        "issues": [
+          "#129",
+          "#130",
+          "#134",
+          "#155"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "9fc956a4",
+        "change_type": "test",
+        "scope": "commands",
+        "summary": "add 6 validation tests for 45 commands",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/all-commands-validation.bats"
+        ],
+        "issues": [
+          "#83"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "90a0c99f",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "add 9 sc:* commands from SuperClaude \u2014 unblocks Phase 2, 4, 5",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/sc-analyze.md",
+          "commands/sc-cleanup.md",
+          "commands/sc-document.md",
+          "commands/sc-estimate.md",
+          "commands/sc-improve.md",
+          "commands/sc-reflect.md",
+          "commands/sc-save.md",
+          "commands/sc-test.md",
+          "commands/sc-workflow.md",
+          "tests/bash/unit/sc-commands.bats"
+        ],
+        "issues": [
+          "#61"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "ac88ee95",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "create /autoresearch command \u2014 unblocks Phase 5 step 54",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/autoresearch.md",
+          "tests/bash/unit/autoresearch-command.bats"
+        ],
+        "issues": [
+          "#60"
+        ]
+      }
+    ],
     "scripts": [
       {
         "date": "2026-04-06",
@@ -7363,88 +7535,6 @@
         ]
       }
     ],
-    "docs": [
-      {
-        "date": "2026-04-06",
-        "commit": "7a8311ea",
-        "change_type": "bugfix",
-        "scope": "docs",
-        "summary": "address 2 CodeRabbit comments \u2014 remove hardcoded counts in structure, fix GNU-specific flags",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "scripts/forge-readme-sync.sh"
-        ],
-        "issues": [
-          "#98"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "4732dc29",
-        "change_type": "documentation",
-        "scope": "docs",
-        "summary": "sync README with current state + create auto-sync script",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "scripts/forge-readme-sync.sh",
-          "tests/bash/unit/forge-readme-sync.bats"
-        ],
-        "issues": [
-          "#98"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "6ac8fd3f",
-        "change_type": "documentation",
-        "scope": "docs",
-        "summary": "make CodeRabbit required \u2014 used for review, architecture, design, gates",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "README.md",
-          "tests/bash/integration/coderabbit-required.bats"
-        ],
-        "issues": [
-          "#96"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "cecf7cae",
-        "change_type": "documentation",
-        "scope": "docs",
-        "summary": "create component creation protocols \u2014 scripts, commands, agents, hooks, tests",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "docs/protocols/component-creation.md",
-          "tests/bash/unit/protocols-validation.bats"
-        ],
-        "issues": [
-          "#79"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "b3f26827",
-        "change_type": "documentation",
-        "scope": "docs",
-        "summary": "simplify install section + update counts and new features",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "README.md"
-        ],
-        "issues": [
-          "#48"
-        ]
-      }
-    ],
     "rules": [
       {
         "date": "2026-04-06",
@@ -7477,63 +7567,6 @@
         ],
         "issues": [
           "#84"
-        ]
-      }
-    ],
-    "commands": [
-      {
-        "date": "2026-04-06",
-        "commit": "9fc956a4",
-        "change_type": "test",
-        "scope": "commands",
-        "summary": "add 6 validation tests for 45 commands",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/unit/all-commands-validation.bats"
-        ],
-        "issues": [
-          "#83"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "90a0c99f",
-        "change_type": "feature",
-        "scope": "commands",
-        "summary": "add 9 sc:* commands from SuperClaude \u2014 unblocks Phase 2, 4, 5",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/sc-analyze.md",
-          "commands/sc-cleanup.md",
-          "commands/sc-document.md",
-          "commands/sc-estimate.md",
-          "commands/sc-improve.md",
-          "commands/sc-reflect.md",
-          "commands/sc-save.md",
-          "commands/sc-test.md",
-          "commands/sc-workflow.md",
-          "tests/bash/unit/sc-commands.bats"
-        ],
-        "issues": [
-          "#61"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "ac88ee95",
-        "change_type": "feature",
-        "scope": "commands",
-        "summary": "create /autoresearch command \u2014 unblocks Phase 5 step 54",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/autoresearch.md",
-          "tests/bash/unit/autoresearch-command.bats"
-        ],
-        "issues": [
-          "#60"
         ]
       }
     ],

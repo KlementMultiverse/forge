@@ -54,7 +54,8 @@ Q2: "Who uses it?"
 
 Q3: "What's the main problem it solves?"
   → PM web searches existing solutions in this space
-  → PM presents: "I found [competitors]. Your gap is [X]. Sound right?"
+  → If competitors found: PM presents: "I found [competitors]. Your gap is [X]. Sound right?"
+  → If no competitors found (niche/private domain): skip competitor framing, proceed to Q4
 
 Q4: "Tech preferences? Or should I recommend?"
   → If recommend: PM checks proven stacks FIRST:
@@ -103,6 +104,11 @@ Q7: "Confirm everything:"
   EXCLUDED: [list]
   ```
   "Correct? (yes / change)"
+
+On "change" → ask "Which answer do you want to change? (1-6)"
+  → re-ask that specific question
+  → update the summary
+  → re-confirm Q7
 
 On confirm → proceed to STEP S3
 
