@@ -84,3 +84,37 @@ teardown() {
     run grep "{today's date}" "$PHASE_A"
     assert_failure  # This literal should NOT exist
 }
+
+# ─── Batch 3: S6-S8 Infrastructure Fixes ───
+
+# #136: S6 uses real variable not literal {stack}
+@test "Phase A S6 stack check uses variable not literal {stack}" {
+    # Should use $STACK or actual variable, not literal {stack}
+    run grep -c 'STACK_DIR=.*\$' "$PHASE_A"
+    [[ "$output" -gt 0 ]]
+}
+
+# #137: S8 hook path correct
+@test "Phase A S8 copies hooks from correct path" {
+    run grep "templates/hooks.json\|settings.json" "$PHASE_A"
+    assert_success
+}
+
+# #145: S8 has JSON validation command
+@test "Phase A S8 validates JSON after copy" {
+    run grep -iE "jq.*settings|python.*json.*settings|valid.*JSON|json\.tool" "$PHASE_A"
+    assert_success
+}
+
+# #157: S6 sdlc-flow has fill instructions
+@test "Phase A S6 has sdlc-flow fill instructions" {
+    run grep -iE "sdlc.*flow.*fill|sdlc.*template|project.*specific.*stages" "$PHASE_A"
+    assert_success
+}
+
+# #158: S9 checks for 9 hooks not 8
+@test "Phase A S9 checks for correct hook count" {
+    # Should NOT say "8 hooks" — we have 9
+    run grep "all 8 hooks\|Has all 8" "$PHASE_A"
+    assert_failure
+}
