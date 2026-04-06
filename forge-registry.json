@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-06T08:43:23.010609+00:00",
+  "generated": "2026-04-06T09:22:31.999401+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -6637,6 +6637,39 @@
   },
   "changelog": {
     "scripts": [
+      {
+        "date": "2026-04-06",
+        "commit": "48995b3c",
+        "change_type": "test",
+        "scope": "scripts",
+        "summary": "add 5 tests for forge-runner.py \u2014 100% script coverage",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/python/unit/test_forge_runner.py"
+        ],
+        "issues": [
+          "#106"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "2d38374d",
+        "change_type": "test",
+        "scope": "scripts",
+        "summary": "add 18 flow chain integration tests \u2014 write/edit/commit/gate chains",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "README.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "tests/bash/integration/flow-chains.bats"
+        ],
+        "issues": [
+          "#86"
+        ]
+      },
       {
         "date": "2026-04-06",
         "commit": "9c5d0cbe",
