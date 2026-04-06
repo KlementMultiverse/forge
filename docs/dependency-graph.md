@@ -515,6 +515,7 @@ graph TD
     commands_phase_phase_a_setup --> commands_requirements
     commands_phase_phase_a_setup --> commands_retro
     commands_phase_phase_a_setup --> scripts_forge_enforce_sh
+    commands_phase_phase_a_setup --> scripts_forge_infra_check_sh
     commands_phase_phase_a_setup --> scripts_forge_stack_sh
     commands_phase_phase_3_implement --> agents_backend_architect
     commands_phase_phase_3_implement --> agents_context_loader_agent

@@ -13,7 +13,7 @@ teardown() {
 @test "rule count is 7" {
     local count
     count=$(ls "$FORGE_DIR"/rules/*.md 2>/dev/null | wc -l)
-    [ "$count" -eq 7 ]
+    [ "$count" -eq 8 ]
 }
 
 @test "all rules are valid markdown" {
