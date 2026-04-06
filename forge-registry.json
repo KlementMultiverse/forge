@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-06T21:19:49.091016+00:00",
+  "generated": "2026-04-06T22:28:48.671013+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -9,7 +9,7 @@
     "hooks": 9,
     "templates": 17,
     "rules": 8,
-    "edges": 458,
+    "edges": 457,
     "phase_mapped_components": 50,
     "flows": 9
   },
@@ -372,7 +372,6 @@
           {
             "phase": "A",
             "steps": [
-              "S2",
               "S3",
               "S5-BROWNFIELD",
               "S6"
@@ -1796,8 +1795,7 @@
             "discover",
             "forge",
             "gate",
-            "requirements",
-            "retro"
+            "requirements"
           ],
           "scripts": [
             "forge-enforce.sh",
@@ -2267,8 +2265,8 @@
         "matcher": "Write|Edit",
         "depends_on": {
           "scripts": [
-            "forge-change-validator.sh",
-            "forge-auto-sync.sh"
+            "forge-auto-sync.sh",
+            "forge-change-validator.sh"
           ]
         }
       },
@@ -4342,11 +4340,6 @@
     },
     {
       "from": "commands/phase:phase-a-setup",
-      "to": "commands/retro",
-      "type": "commands"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
       "to": "scripts/forge-enforce.sh",
       "type": "scripts"
     },
@@ -4707,12 +4700,12 @@
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-change-validator.sh",
+      "to": "scripts/forge-auto-sync.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-auto-sync.sh",
+      "to": "scripts/forge-change-validator.sh",
       "type": "scripts"
     },
     {
@@ -5063,7 +5056,6 @@
         "step": "S2",
         "is_gate": false,
         "files": [
-          "agents/universal/system-architect.md",
           "scripts/forge-stack.sh"
         ]
       },
@@ -5275,7 +5267,6 @@
           "autoresearch",
           "learn",
           "phase:cases",
-          "phase:phase-a-setup",
           "phase:phase-4-5-validate"
         ]
       },
@@ -6687,47 +6678,50 @@
     }
   },
   "changelog": {
-    "rules": [
+    "commands": [
       {
         "date": "2026-04-06",
-        "commit": "c5c612a4",
+        "commit": "d20ec526",
         "change_type": "feature",
-        "scope": "rules",
-        "summary": "extract PM behaviors into auto-loaded rules file \u2014 who vs what separation",
+        "scope": "commands",
+        "summary": "implement adaptive discovery \u2014 domain inference, proof trail, 14 dimensions #178",
         "breaking": false,
         "requires_reinstall": true,
         "files": [
           "README.md",
-          "agents/universal/pm-orchestrator.md",
           "commands/forge-phases/phase-a-setup.md",
-          "docs/architecture.md",
           "docs/dependency-graph.md",
+          "docs/domain-inference-rules.md",
+          "docs/manifesto.md",
           "forge-registry.json",
-          "rules/pm-behaviors.md",
-          "tests/bash/unit/pm-behaviors-rules.bats",
-          "tests/bash/unit/rules-validation.bats"
+          "templates/CLAUDE.template.md",
+          "templates/SPEC.template.md",
+          "templates/design-doc-completeness-checklist.md",
+          "tests/bash/unit/adaptive-discovery.bats"
         ],
         "issues": [
-          "#173"
+          "#177",
+          "#178"
         ]
       },
       {
         "date": "2026-04-06",
-        "commit": "aa520697",
-        "change_type": "test",
-        "scope": "rules",
-        "summary": "add 7 auto-load validation tests for 7 rules",
+        "commit": "cfd0075f",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "add YAML frontmatter to forge.md per Claude Code standard",
         "breaking": false,
-        "requires_reinstall": false,
+        "requires_reinstall": true,
         "files": [
-          "tests/bash/unit/rules-validation.bats"
+          "README.md",
+          "commands/forge.md",
+          "forge-registry.json",
+          "tests/bash/unit/forge-md-frontmatter.bats"
         ],
         "issues": [
-          "#85"
+          "#175"
         ]
-      }
-    ],
-    "commands": [
+      },
       {
         "date": "2026-04-06",
         "commit": "6f9c1ff7",
@@ -7001,6 +6995,46 @@
         ],
         "issues": [
           "#60"
+        ]
+      }
+    ],
+    "rules": [
+      {
+        "date": "2026-04-06",
+        "commit": "c5c612a4",
+        "change_type": "feature",
+        "scope": "rules",
+        "summary": "extract PM behaviors into auto-loaded rules file \u2014 who vs what separation",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "agents/universal/pm-orchestrator.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/architecture.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "rules/pm-behaviors.md",
+          "tests/bash/unit/pm-behaviors-rules.bats",
+          "tests/bash/unit/rules-validation.bats"
+        ],
+        "issues": [
+          "#173"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "aa520697",
+        "change_type": "test",
+        "scope": "rules",
+        "summary": "add 7 auto-load validation tests for 7 rules",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/rules-validation.bats"
+        ],
+        "issues": [
+          "#85"
         ]
       }
     ],

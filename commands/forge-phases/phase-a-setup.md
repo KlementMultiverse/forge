@@ -41,80 +41,221 @@ Based on partial setup check:
 - Incomplete setup (CLAUDE.md but missing .forge/) → resume from missing step
 - Everything exists → "Setup already complete. Run /forge again to build."
 
-**STEP S2: DISCOVERY CONVERSATION** (PM only — gathers information)
+**STEP S2: ADAPTIVE DISCOVERY** (PM only — gathers information with research + proof)
 
-PM asks questions ONE AT A TIME. Between each answer, PM researches:
+<system-reminder>
+S2 ARTIFACT: docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md
+This file captures EVERY research result, inference, and user decision as proof.
+S3 is GATED on this file existing and being complete (all dimensions resolved).
+PM must NOT exit S2 until discovery notes have all 14 fields filled.
+</system-reminder>
 
-Q1: "What are you building?"
-  → PM web searches the domain
-  → PM notes: project name, core purpose
+PM asks questions ONE AT A TIME. Between each answer, PM:
+1. Web searches for domain context
+2. Consults docs/domain-inference-rules.md for inferences
+3. WRITES findings to docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md
+4. Builds NEXT question from previous answers (adaptive)
+5. Presents OPTIONS (required/recommended/optional) + free text
+
+**Discovery Notes Schema** (created at start of S2):
+```markdown
+# Discovery Notes — {project_name}
+# Auto-generated during Phase A Step S2
+# Every inference has a proof citation (URL or domain-inference-rules.md row)
+
+## Q1: What are you building?
+User input:
+Domain detected:
+Research:
+  - Searched: "" → [URL]
+  - Domain rules match: [row from domain-inference-rules.md]
+Inferred:
+  DOMAIN_CATEGORY:
+  COMPLIANCE: [] (confidence: %)
+  HIGH_RISK: true/false
+
+## Q2: Who uses it?
+Options presented: [from research]
+User selected:
+User added:
+Research:
+  - Searched: "" → [URL]
+Inferred:
+  SCALE_TIER: low/medium/high
+  DEPLOYMENT_HINTS: []
+  A11Y_REQUIRED: true/false
+  I18N_REQUIRED: true/false
+
+## Q3: What problem does it solve?
+User input:
+Research:
+  - Searched: "" → [URL]
+  - Competitors found: []
+Inferred:
+  COMPETITOR_INTEGRATIONS: []
+  MOBILE_REQUIRED: true/false
+
+## Q3.5: What does success look like in 6 months?
+User input:
+Research:
+  - Searched: "" → [URL]
+  - Industry benchmarks:
+Inferred:
+  SUCCESS_CRITERIA: []
+  SCALE_UPDATE: (if success implies different scale)
+
+## Q4: Tech stack
+User choice:
+Stack registry: found/created
+Backend:
+Frontend:
+
+## Q5: Features (inferred + manual)
+Part A — Inferred (confirmed/rejected):
+  [] — confirmed/rejected (proof: )
+Part B — Additional selected:
+  []
+Deep-dive triggered: yes/no
+Deep-dive answers:
+
+## Q6: Anti-scope
+EXCLUDED: []
+
+## Q7: Summary confirmed
+All 14 fields verified: yes
+User changes: none / [list]
+
+## FINAL DIMENSIONS
+PROJECT:
+USERS: []
+PROBLEM:
+SUCCESS:
+STACK:
+FEATURES: []
+COMPLIANCE: []
+SCALE:
+DEPLOYMENT:
+INTEGRATIONS: []
+A11Y:
+I18N:
+MOBILE:
+EXCLUDED: []
+```
+
+---
+
+Q1: "What are you building? Describe it in one sentence."
+  → PM identifies domain from answer
+  → PM reads docs/domain-inference-rules.md → finds matching domain row
+  → PM web searches "[domain] software requirements" and "[domain] compliance"
+  → PM WRITES to discovery notes: domain, compliance inferences, HIGH_RISK flag
+  → PM notes: project name, core purpose, domain category
+  → ALL research sources captured with URLs as proof
 
 Q2: "Who uses it?"
-  → PM web searches user personas for this domain
-  → PM notes: user types, access patterns
+  → PM web searches "[domain] user personas [project type]"
+  → PM presents OPTIONS based on research (not a blank text box):
+    ☑ [role1] (required — from domain research)
+    ☑ [role2] (required — from domain research)
+    ☐ [role3] (recommended — common in this domain)
+    ☐ [role4] (optional)
+    📝 Other: ___________
+  → User selects + types any additional
+  → PM infers: scale tier, deployment, a11y, i18n from user types
+  → PM WRITES to discovery notes with proof citations
 
-Q3: "What's the main problem it solves?"
-  → PM web searches existing solutions in this space
+Q3: "What's the main problem it solves? How do they handle it today?"
+  → PM web searches "[domain] existing solutions [problem]"
   → If competitors found: PM presents: "I found [competitors]. Your gap is [X]. Sound right?"
-  → If no competitors found (niche/private domain): skip competitor framing, proceed to Q4
+  → If no competitors found: skip competitor framing
+  → PM identifies common integrations from competitor analysis
+  → PM WRITES to discovery notes
+
+Q3.5: "What does success look like in 6 months?"
+  → PM web searches "[domain] software KPIs" and "[domain] success metrics"
+  → PM presents OPTIONS from industry benchmarks:
+    ☐ [metric1] (e.g., "1000 patients using self-booking")
+    ☐ [metric2] (e.g., "50% reduction in phone calls")
+    ☐ [metric3] (e.g., "3 clinics onboarded")
+    📝 Custom: ___________
+  → User selects/types success criteria
+  → PM validates against scale tier — updates if needed
+  → PM WRITES to discovery notes: SUCCESS_CRITERIA[], SCALE_UPDATE
 
 Q4: "Tech preferences? Or should I recommend?"
   → If recommend: PM checks proven stacks FIRST:
-    Run: `bash ~/.claude/scripts/forge-stack.sh list`
-    Stacks with learnings > 0 are PROVEN (battle-tested from past builds).
-    Stacks with learnings = 0 are AVAILABLE (registered but untested).
-    PM presents: "Based on your project needs and our proven stacks:
-      RECOMMENDED: {stack} — {N} learnings from {N} past builds
-      Also available: {other stacks}
-      Or I can research a new stack for this project."
-    Proven stacks get priority because their rules/agents/scaffold have been refined.
-  → If user specifies a stack: use that (user choice overrides recommendation)
-  → PM notes: language, framework, database, cache, frontend, special features
-  → For full-stack projects: ask backend AND frontend stacks separately
-    Example: "Backend: Django + Django Ninja, Frontend: React + Tailwind"
-    Both stacks get registered — run registry lookup for EACH stack independently
-  → STACK REGISTRY: For EACH stack, check ~/.claude/stacks/ (ls ~/.claude/stacks/)
-    If stack matches a registry folder (e.g., "django", "fastapi", "react"):
-    - Read ~/.claude/stacks/{stack}/rules.md → will be copied to project .claude/rules/
-    - Read ~/.claude/stacks/{stack}/agents.md → will be used for agent-routing.md
-    - Read ~/.claude/stacks/{stack}/learnings.md → include in agent prompts as context
-    - Read ~/.claude/stacks/{stack}/scaffold.md → use for Step S7 scaffold
-    If no match → AUTO-CREATE the stack registry:
-      Run: `bash ~/.claude/scripts/forge-stack.sh create {stack} --auto`
-      This creates ~/.claude/stacks/{stack}/ with template files.
-      @system-architect will refine them during S3/S6 using context7 docs.
-      After this build's /retro (Step 49), the templates get real learnings.
-      Second build on this stack will be fully informed.
+    Run: `bash ~/.claude/scripts/forge-stack.sh list 2>/dev/null || echo "(No stack registry)"`
+    Stacks with learnings > 0 are PROVEN.
+    PM presents recommendation with reasoning.
+  → If user specifies: use that (user choice overrides)
+  → For full-stack: ask backend AND frontend separately
+    Both stacks registered — lookup for EACH independently
+  → STACK REGISTRY: For EACH stack, check ~/.claude/stacks/
+    If match: read rules.md, agents.md, learnings.md, scaffold.md
+    If no match: auto-create with `forge-stack.sh create {stack} --auto`
+  → PM WRITES to discovery notes: stack choice, registry status
 
-Q5: "Any of these apply?" (multi-select)
-  - Multi-tenant
-  - AI/LLM features
-  - File uploads
-  - Real-time features
-  - Background jobs
-  - Authentication
+Q5: Features — SMART TWO-PART (adaptive based on Q1-Q4 answers)
+
+  Part A — "Based on your domain, I'm inferring these. Confirm or adjust:"
+    (Generated from domain-inference-rules.md + Q1-Q4 research)
+    ☑ [compliance1] (required — [proof: domain-inference-rules.md healthcare row])
+    ☑ [integration1] (recommended — [proof: competitor analysis URL])
+    ☐ [feature1] (optional — [proof: web search URL])
+    Each item shows: required/recommended/optional + proof source
+    User confirms, rejects, or adjusts each
+
+  Part B — "Any additional features?"
+    ☐ Multi-tenant
+    ☐ AI/LLM features
+    ☐ File uploads
+    ☐ Real-time features
+    ☐ Background jobs
+    ☐ Authentication
+    📝 Other: ___________
+
+  → PM merges confirmed inferences + additional selections
+  → PM WRITES to discovery notes
+
+  DEEP-DIVE TRIGGER (after Q5, only if needed):
+  If ANY of these are true:
+    - HIGH_RISK domain confirmed
+    - HIPAA/GDPR/PCI-DSS/SOC2 confirmed in Part A
+    - Multi-tenant selected in Part B
+    - AI/LLM features selected in Part B
+    - >3 user types identified in Q2
+  → PM asks 2-3 domain-specific follow-up questions (from domain-inference-rules.md triggers)
+  → Max 1 deep-dive triggered per session
+  → User can skip: "Answer or skip?"
+  → PM WRITES answers to discovery notes
 
 Q6: "What should it NEVER include?"
-  → PM notes: anti-scope list
+  → PM notes anti-scope list
+  → PM WRITES to discovery notes: EXCLUDED[]
 
-Q7: "Confirm everything:"
+Q7: "Confirm everything — all 14 dimensions:"
   ```
-  PROJECT: [name]
-  USERS: [who]
-  PROBLEM: [what]
-  STACK: [tech]
-  FEATURES: [list]
-  SPECIAL: [multi-tenant, AI, etc.]
-  EXCLUDED: [list]
+  PROJECT:      [name]
+  USERS:        [roles with access levels]
+  PROBLEM:      [what it solves]
+  SUCCESS:      [measurable criteria]
+  STACK:        [backend + frontend]
+  FEATURES:     [confirmed list]
+  COMPLIANCE:   [HIPAA, GDPR, etc. or "none"]
+  SCALE:        [low/medium/high + numbers]
+  DEPLOYMENT:   [cloud/on-prem/hybrid]
+  INTEGRATIONS: [third-party services]
+  A11Y:         [WCAG level or "standard"]
+  I18N:         [languages or "English only"]
+  MOBILE:       [web/PWA/native]
+  EXCLUDED:     [anti-scope]
   ```
   "Correct? (yes / change)"
 
-On "change" → ask "Which answer do you want to change? (1-6)"
-  → re-ask that specific question
-  → update the summary
-  → re-confirm Q7
+On "change" → "Which dimension? (1-14)" → re-ask + re-research → update
+On confirm → PM WRITES final dimensions to discovery notes → proceed to STEP S3
 
-On confirm → proceed to STEP S3
+S2 COMPLETION GATE: docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md must exist with all 14 FINAL DIMENSIONS filled before S3 can start.
 
 **STEP S3: GENERATE CLAUDE.md** → @system-architect agent
 
@@ -122,12 +263,18 @@ Execute: spawn Agent with subagent_type="system-architect"
   prompt: |
     Generate CLAUDE.md for a new project. Follow these rules STRICTLY:
 
-    PROJECT INFO (from discovery):
+    PROJECT INFO (from discovery notes — docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md):
     - Name: {name}
     - Description: {description}
     - Stack: {stack}
     - Features: {features}
     - Excluded: {excluded}
+    - Compliance: {compliance} (from domain inference — generate MUST/NEVER rules)
+    - Deployment: {deployment} (cloud/on-prem/hybrid constraints)
+    - Scale: {scale} (architecture implications)
+    - Integrations: {integrations} (third-party services to plan for)
+    - A11Y: {a11y} (accessibility rules if required)
+    - Success criteria: {success} (what "done" looks like)
 
     TEMPLATE (MUST follow this structure — under 100 lines):
     ```
@@ -192,29 +339,41 @@ Execute: spawn Agent with subagent_type="requirements-analyst"
   prompt: |
     Generate SPEC.md for the project. Follow templates/SPEC.template.md STRICTLY.
 
-    PROJECT INFO:
+    PROJECT INFO (from discovery notes):
     - Name: {name}
     - Stack: {stack}
     - Features: {features}
     - Users: {users}
+    - Excluded: {excluded} (NEVER generate requirements for excluded items)
+    - Success criteria: {success} (generate [REQ-SUCCESS-xxx] for each)
+    - Compliance: {compliance} (generate [REQ-COMPLIANCE-xxx] for each)
+    - Scale: {scale} (generate [REQ-SCALE-xxx] with NUMBERS not "fast")
+    - Integrations: {integrations} (generate [REQ-INT-xxx] for each)
+    - A11Y: {a11y} (generate [REQ-A11Y-xxx] if required)
+    - I18N: {i18n} (generate [REQ-I18N-xxx] if required)
+    - Mobile: {mobile} (generate [REQ-MOBILE-xxx] if required)
 
     REQUIREMENTS:
     - Start from [REQ-001]
     - Every feature gets at least 2-3 requirements
     - Each requirement has ONE clear behavior (not compound)
-    - Use domain-prefixed IDs where possible (REQ-AUTH-001, REQ-UI-001)
-    - Include non-functional requirements (performance, security, observability)
+    - Use domain-prefixed IDs: REQ-AUTH-001, REQ-UI-001, REQ-COMPLIANCE-001, REQ-SCALE-001, REQ-INT-001, REQ-SUCCESS-001, REQ-A11Y-001, REQ-I18N-001, REQ-MOBILE-001
+    - Include non-functional requirements (performance, security, compliance, accessibility)
+    - Every inferred requirement carries a proof citation (URL or domain-inference-rules.md reference)
+    - ANTI-SCOPE ENFORCEMENT: NEVER generate a [REQ-xxx] for any item in the EXCLUDED list
 
     SPEC MUST INCLUDE:
-    - ## Overview (2-3 paragraphs)
+    - ## Overview (2-3 paragraphs + scale target + deployment model)
     - ## Tech Stack (table matching CLAUDE.md)
     - ## Architecture (project structure tree)
     - ## Models (with field types, relationships, constraints)
       - Each model tagged with [REQ-xxx]
       - Field types are EXACT (CharField(max_length=200), not just "string")
     - ## API Endpoints (table: method, path, auth, description, [REQ-xxx])
+    - ## Compliance & Security (if compliance confirmed — regulations, encryption, audit)
+    - ## Third-Party Integrations (if integrations confirmed — service, purpose, [REQ-INT-xxx])
     - ## Frontend Pages (if applicable)
-    - ## Requirements Traceability (table: [REQ-xxx] | description | status)
+    - ## Requirements Traceability (table: [REQ-xxx] | description | proof | status)
 
     Minimum 20 [REQ-xxx] tags.
 
@@ -432,7 +591,7 @@ Trace: save to docs/forge-trace/S8-infrastructure/
 Execute: spawn Agent with subagent_type="self-review"
   prompt: |
     Review all generated files for this new project:
-    1. CLAUDE.md — under 100 lines? Real rules? MUST/NEVER format? Code snippets?
+    1. CLAUDE.md — at least 20 lines, under 100? Real rules? MUST/NEVER format? Code snippets?
     2. SPEC.md — at least 20 [REQ-xxx]? Models have field types? API endpoints listed?
     3. FORGE.md — has QUEUED entry?
     4. .claude/rules/ — SDLC flow complete? Agent routing filled?
@@ -440,6 +599,13 @@ Execute: spawn Agent with subagent_type="self-review"
     6. .claude/settings.json — valid JSON? Has all 9 hook groups (SessionStart, Stop, UserPromptSubmit, PreToolUse x2, PostToolUse x4)?
     7. .forge/playbook/ — strategies.md, mistakes.md, archived.md exist?
     8. docs/forge-timeline.md — exists with project name?
+    9. Discovery Notes — docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md exists?
+       All 14 FINAL DIMENSIONS filled? Every inference has proof citation?
+    10. SPEC Traceability — does SPEC.md Requirements Traceability table have 4 columns (REQ | description | proof | status)?
+        Are there [REQ-COMPLIANCE-xxx] if compliance was confirmed? [REQ-SUCCESS-xxx]?
+    11. CLAUDE.md Security — if HIPAA confirmed, does "PHI" appear in rules?
+        If GDPR, does "consent" or "erasure" appear? If PCI, does "tokenisation" appear?
+    12. Anti-scope — are any items from EXCLUDED list accidentally present as [REQ-xxx]?
 
     Rate each 1-5. Report any issues.
 
