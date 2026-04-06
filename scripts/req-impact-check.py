@@ -15,6 +15,7 @@ Exit codes:
   1 = BLOCKED (REQ tags removed)
 
 Implements #42: Pre-commit REQ impact hook
+Implements #52: REQ dependency chains — suspect cascading
 """
 
 import json
@@ -28,11 +29,70 @@ from datetime import datetime, timezone
 REQ_PATTERN = re.compile(r'(?:\[REQ-\d+\]|REQ-[A-Z]+-\d+)')
 
 SUSPECT_FILE = "docs/suspect-reqs.json"
+SPEC_FILE = "SPEC.md"
+
+# REQ dependency pattern: [REQ-AUTH-001] ... depends_on: REQ-CORE-001
+DEP_PATTERN = re.compile(r'depends_on:\s*((?:REQ-[A-Z]+-\d+[\s,]*)+)', re.IGNORECASE)
 
 
 def extract_reqs(text):
     """Extract all REQ tags from text."""
     return set(REQ_PATTERN.findall(text))
+
+
+def build_req_dependency_graph():
+    """Parse SPEC.md for REQ dependency chains.
+
+    Looks for patterns like:
+        [REQ-AUTH-001] User login — depends_on: REQ-CORE-001
+        [REQ-AUTH-001] ... depends_on: REQ-CORE-001, REQ-CORE-002
+
+    Returns dict: { parent_req: [child_reqs_that_depend_on_it] }
+    """
+    if not os.path.exists(SPEC_FILE):
+        return {}
+
+    with open(SPEC_FILE) as f:
+        content = f.read()
+
+    # Build forward map: req → what it depends on
+    depends_on = {}
+    for line in content.split("\n"):
+        reqs_in_line = REQ_PATTERN.findall(line)
+        dep_match = DEP_PATTERN.search(line)
+        if reqs_in_line and dep_match:
+            child_req = reqs_in_line[0]
+            parents = REQ_PATTERN.findall(dep_match.group(1))
+            depends_on[child_req] = parents
+
+    # Build reverse map: parent → children that depend on it
+    depended_by = {}
+    for child, parents in depends_on.items():
+        for parent in parents:
+            depended_by.setdefault(parent, []).append(child)
+
+    return depended_by
+
+
+def cascade_suspects(suspect_reqs, dep_graph):
+    """When a REQ becomes suspect, cascade to all REQs that depend on it."""
+    cascaded = {}
+    for req, info in suspect_reqs.items():
+        dependents = dep_graph.get(req, [])
+        for dep in dependents:
+            if dep not in suspect_reqs and dep not in cascaded:
+                cascaded[dep] = {
+                    "reason": f"depends on suspect {req} ({info.get('reason', 'unknown')})",
+                    "modified_by": info.get("modified_by", "cascade"),
+                    "modified_at": datetime.now(timezone.utc).isoformat(),
+                    "file": info.get("file", ""),
+                    "verified": False,
+                    "verified_at": None,
+                    "cleared_by": None,
+                    "verification_method": None,
+                    "cascaded_from": req,
+                }
+    return cascaded
 
 
 def get_staged_files():
@@ -173,6 +233,16 @@ def check_staged(update_state=False):
         for w in warnings:
             print(f"  {w}")
         print()
+
+    # Cascade suspects to dependent REQs (#52)
+    if suspect_reqs:
+        dep_graph = build_req_dependency_graph()
+        cascaded = cascade_suspects(suspect_reqs, dep_graph)
+        if cascaded:
+            print(f"  CASCADE: {len(cascaded)} dependent REQ(s) also flagged suspect:")
+            for req, info in cascaded.items():
+                print(f"    {req} (depends on {info['cascaded_from']})")
+            suspect_reqs.update(cascaded)
 
     # Update suspect state if requested
     if update_state and suspect_reqs:
