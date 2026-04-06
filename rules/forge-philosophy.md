@@ -20,7 +20,7 @@ DETERMINISTIC (fixed, reliable):
 NON-DETERMINISTIC (grows with each build):
   - New agents created when @agent-factory detects a gap
   - New agent groups emerge when new domains appear
-  - forge-manifest.json edited to add/remove/change steps
+  - forge-phase-map.sh edited to add/remove/change steps
   - Playbook grows from /retro lessons
   - Prompts improve from /autoresearch
   - New tech suggested by @system-architect
@@ -38,7 +38,7 @@ PROPOSE → @agent-factory or @system-architect proposes fix
   ↓
 REVIEW → /review or /challenge validates the proposal
   ↓
-MERGE → fix enters forge-manifest.json or forge.md or new agent
+MERGE → fix enters forge-phase-map.sh or forge.md or new agent
   ↓
 NEXT BUILD → gap is closed, new gaps may appear
   ↓
@@ -48,7 +48,7 @@ REPEAT → forge gets better every build
 ## Rules for Growth
 
 1. **Everything in the flow**: no changes outside the gate/review cycle
-2. **Manifest is the source of truth**: add steps, change agents, skip steps — all in forge-manifest.json
+2. **Manifest is the source of truth**: add steps, change agents, skip steps — all in forge-phase-map.sh
 3. **Agents can propose, never decide**: proposals go through /review + consensus
 4. **Universal first**: every new capability must work on any project, not just the current one
 5. **Template-based**: new agents follow agent template, new steps follow manifest schema

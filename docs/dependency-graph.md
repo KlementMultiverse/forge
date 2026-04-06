@@ -122,6 +122,7 @@ graph TD
         scripts_forge_enforce_sh[forge-enforce.sh]
         scripts_forge_test_guard_sh[forge-test-guard.sh]
         scripts_forge_auto_state_sh[forge-auto-state.sh]
+        scripts_forge_infra_check_sh[forge-infra-check.sh]
     end
     subgraph Hooks
         hooks_Stop[Stop]
@@ -580,6 +581,7 @@ graph TD
     scripts_forge_enforce_sh --> scripts_forge_phase_map_sh
     scripts_forge_auto_state_sh --> scripts_forge_enforce_sh
     scripts_forge_auto_state_sh --> scripts_forge_phase_map_sh
+    scripts_forge_infra_check_sh --> scripts_forge_infra_check_sh
     hooks_Stop --> scripts_forge_phase_gate_sh
     hooks_UserPromptSubmit --> scripts_forge_state_sync_sh
     hooks_PreToolUse_Edit --> scripts_forge_change_validator_sh
