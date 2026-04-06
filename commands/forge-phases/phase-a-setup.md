@@ -69,6 +69,9 @@ Q4: "Tech preferences? Or should I recommend?"
     Proven stacks get priority because their rules/agents/scaffold have been refined.
   → If user specifies a stack: use that (user choice overrides recommendation)
   → PM notes: language, framework, database, cache, frontend, special features
+  → For full-stack projects: ask backend AND frontend stacks separately
+    Example: "Backend: Django + Django Ninja, Frontend: React + Tailwind"
+    Both stacks get registered and their rules/agents apply
   → STACK REGISTRY: Check ~/.claude/stacks/ for available stacks (ls ~/.claude/stacks/)
     If stack matches a registry folder (e.g., "django", "fastapi"):
     - Read ~/.claude/stacks/{stack}/rules.md → will be copied to project .claude/rules/
@@ -463,6 +466,10 @@ Created:
 Next: exit Claude Code, then run `forge` again in this folder.
 Session 2 will load CLAUDE.md and start building.
 ```
+
+**FAILURE RECOVERY:** If Phase A fails mid-way:
+- Run `forge-infra-check.sh --reset` to clear state and restart fresh
+- Or fix the issue and run `/forge` again — S1 will detect partial setup and resume
 
 ---
 

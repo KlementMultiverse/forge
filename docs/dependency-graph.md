@@ -515,6 +515,7 @@ graph TD
     commands_phase_phase_a_setup --> commands_requirements
     commands_phase_phase_a_setup --> commands_retro
     commands_phase_phase_a_setup --> scripts_forge_enforce_sh
+    commands_phase_phase_a_setup --> scripts_forge_infra_check_sh
     commands_phase_phase_a_setup --> scripts_forge_stack_sh
     commands_phase_phase_3_implement --> agents_backend_architect
     commands_phase_phase_3_implement --> agents_context_loader_agent
@@ -585,8 +586,8 @@ graph TD
     hooks_Stop --> scripts_forge_phase_gate_sh
     hooks_UserPromptSubmit --> scripts_forge_state_sync_sh
     hooks_PreToolUse_Edit --> scripts_forge_change_validator_sh
-    hooks_PostToolUse_Write|Edit --> scripts_forge_change_validator_sh
     hooks_PostToolUse_Write|Edit --> scripts_forge_auto_sync_sh
+    hooks_PostToolUse_Write|Edit --> scripts_forge_change_validator_sh
     hooks_PostToolUse_Agent --> scripts_forge_auto_state_sh
     hooks_PostToolUse_Skill --> scripts_forge_auto_state_sh
 ```

@@ -118,3 +118,35 @@ teardown() {
     run grep "all 8 hooks\|Has all 8" "$PHASE_A"
     assert_failure
 }
+
+# ─── Batch 6: Missing Features ───
+
+# #141: SPEC cross-checked against CLAUDE.md
+@test "Phase A S4 cross-checks SPEC against CLAUDE.md" {
+    run grep -iE "cross.check|match.*CLAUDE|consistent.*stack|SPEC.*match.*tech" "$PHASE_A"
+    assert_success
+}
+
+# #142: Security section in SPEC
+@test "Phase A S4 includes security requirements" {
+    run grep -iE "security|non.functional|Security" "$PHASE_A"
+    assert_success
+}
+
+# #144: Scaffold files complete
+@test "Phase A S7 mentions key scaffold files" {
+    run grep -iE "conftest|tsconfig|apps.*__init__|.env.example" "$PHASE_A"
+    assert_success
+}
+
+# #153: Multi-stack support
+@test "Phase A Q4 supports backend + frontend stacks" {
+    run grep -iE "backend.*frontend|full.stack|two.*stack|multiple.*stack" "$PHASE_A"
+    assert_success
+}
+
+# #154: Cleanup/rollback on failure
+@test "Phase A has failure recovery path" {
+    run grep -iE "fail.*recover|rollback|cleanup|restart.*Phase A|fresh.*start|forge-infra-check.*reset" "$PHASE_A"
+    assert_success
+}
