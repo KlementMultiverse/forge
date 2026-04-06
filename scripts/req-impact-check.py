@@ -244,10 +244,27 @@ def check_staged(update_state=False):
                 print(f"    {req} (depends on {info['cascaded_from']})")
             suspect_reqs.update(cascaded)
 
+    # Bulk refactor threshold (#53) — escalate when too many REQs become suspect
+    BULK_THRESHOLD = 20
+    if len(suspect_reqs) > BULK_THRESHOLD:
+        print("=" * 60)
+        print("BULK REFACTOR DETECTED")
+        print("=" * 60)
+        print(f"  {len(suspect_reqs)} REQs suspect (threshold: {BULK_THRESHOLD})")
+        print(f"  ACTION: Run forge-triangle.sh check before ANY gate proceeds")
+        print(f"  This commit will proceed, but gates will block until triangle passes.")
+
     # Update suspect state if requested
     if update_state and suspect_reqs:
         state = load_suspect_state()
         state["suspect_reqs"].update(suspect_reqs)
+        # Track bulk refactor flag
+        if len(suspect_reqs) > BULK_THRESHOLD:
+            state["bulk_refactor"] = {
+                "detected_at": datetime.now(timezone.utc).isoformat(),
+                "suspect_count": len(suspect_reqs),
+                "requires_full_triangle": True,
+            }
         save_suspect_state(state)
         print(f"  Updated {SUSPECT_FILE} with {len(suspect_reqs)} suspect REQ(s)")
 
