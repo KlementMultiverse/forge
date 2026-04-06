@@ -6,12 +6,22 @@ Every item is REQUIRED. If any item fails, the design doc is INCOMPLETE — fix 
 ## Section 1: Current Context
 - [ ] Existing system described (or "greenfield" stated explicitly)
 - [ ] Gap being addressed is specific (not generic "improve things")
-- [ ] Scope includes: user types, scale target, deployment model
+- [ ] Scope includes: user types, scale target, deployment model, compliance tier
+- [ ] docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md exists with DOMAIN_CATEGORY + proof citations
 
 ## Section 2: Requirements
 - [ ] Every functional requirement has [REQ-xxx] tag
 - [ ] Non-functional requirements include: performance targets (with numbers), scalability, observability, security, reliability
 - [ ] Performance targets are MEASURABLE (e.g., "< 200ms" not "fast")
+- [ ] [REQ-SUCCESS-xxx] exists — measurable success criteria with timeframe (at least 1)
+- [ ] [REQ-SCALE-xxx] exists — performance targets with NUMBERS, not "fast" (at least 1)
+- [ ] If compliance confirmed: [REQ-COMPLIANCE-xxx] or [REQ-SECURITY-xxx] exists (at least 1)
+- [ ] Every [REQ-COMPLIANCE-xxx] has a proof: citation on the next line
+- [ ] If integrations confirmed: [REQ-INT-xxx] entries exist (one per integration)
+- [ ] If a11y confirmed: [REQ-A11Y-xxx] entries exist
+- [ ] If i18n confirmed: [REQ-I18N-xxx] entries exist
+- [ ] Anti-scope items from EXCLUDED list are ABSENT from all [REQ-xxx] descriptions
+- [ ] Requirements Traceability table has 4 columns: REQ | Description | Proof | Status
 
 ## Section 3: Design Decisions
 - [ ] Minimum 8 decisions for a full project
@@ -70,8 +80,14 @@ Every item is REQUIRED. If any item fails, the design doc is INCOMPLETE — fix 
 - [ ] All external services listed with version requirements
 - [ ] Security section covers: auth, authz, CSRF, input validation, secrets, headers
 - [ ] Tenant isolation section covers: DB, storage, cache, auth (if multi-tenant)
+- [ ] If HIPAA confirmed: "PHI" appears in CLAUDE.md Architecture Rules or Compliance Rules
+- [ ] If GDPR confirmed: "consent" or "erasure" appears in CLAUDE.md Compliance Rules
+- [ ] If PCI confirmed: "tokenisation" appears in CLAUDE.md Compliance Rules
+- [ ] If a11y required: "WCAG" appears in CLAUDE.md Compliance Rules
 
 ## Final Check
 - [ ] A developer can implement ANY step without asking questions
 - [ ] No two developers would implement the same step differently
 - [ ] Every [REQ-xxx] from Section 2 appears in at least one test scenario in Section 6
+- [ ] Discovery Notes proof chain: every inferred [REQ-COMPLIANCE-xxx] traceable to a web search URL or domain-inference-rules.md row
+- [ ] No [REQ-xxx] was generated for an item in the EXCLUDED anti-scope list

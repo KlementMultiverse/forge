@@ -71,14 +71,31 @@ TEMPLATE (agents: Read this file, replace all {{PLACEHOLDERS}}, remove comment b
 - **Components:** {{COMPONENTS}}
 - **API calls:** {{ENDPOINTS_USED}}
 
-## Security
+## Compliance & Security
 
+- **Compliance:** {{COMPLIANCE_REQUIREMENTS}}
 - **Authentication:** {{AUTH_METHOD}}
 - **Authorization:** {{AUTHZ_METHOD}}
 - **Data isolation:** {{ISOLATION_METHOD}}
 - **Audit logging:** {{AUDIT_RULES}}
 - **Input validation:** {{VALIDATION_RULES}}
 - **Secrets:** All from env vars, never hardcoded
+- **Accessibility:** {{A11Y_REQUIREMENTS}}
+- **Internationalisation:** {{I18N_REQUIREMENTS}}
+- **Mobile:** {{MOBILE_REQUIREMENTS}}
+
+## Third-Party Integrations
+
+| Integration | Purpose | [REQ-INT-xxx] |
+|---|---|---|
+| {{INTEGRATION}} | {{PURPOSE}} | {{REQ_REF}} |
+<!-- If no integrations: remove this section -->
+
+## Scale & Deployment
+
+- **Scale tier:** {{SCALE_REQUIREMENTS}}
+- **Deployment target:** {{DEPLOYMENT_TARGET}}
+- **Success criteria:** {{SUCCESS_CRITERIA}}
 
 ## Business Rules
 
