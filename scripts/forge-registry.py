@@ -200,14 +200,15 @@ def scan_templates(forge_dir):
             "path": str(f.relative_to(forge_dir)),
             "depends_on": {},
         }
-    # commit-msg hook template
-    commit_msg = forge_dir / "templates" / "commit-msg"
-    if commit_msg.exists():
-        templates["commit-msg"] = {
-            "type": "template",
-            "path": "templates/commit-msg",
-            "depends_on": {},
-        }
+    # Git hook templates (no extension)
+    for hook_name in ("commit-msg", "pre-commit"):
+        hook_file = forge_dir / "templates" / hook_name
+        if hook_file.exists():
+            templates[hook_name] = {
+                "type": "template",
+                "path": f"templates/{hook_name}",
+                "depends_on": {},
+            }
     return templates
 
 

@@ -111,8 +111,12 @@ def check_staged(update_state=False):
     suspect_reqs = {}
 
     for filepath in staged:
-        # Skip test files, migrations, configs
-        if any(skip in filepath.lower() for skip in ["test", "migration", "conftest", ".venv"]):
+        # Skip test files, migrations, configs — use path segment checks to avoid false matches
+        path_parts = filepath.replace("\\", "/").split("/")
+        if any(part in ("tests", "test", "migrations", "conftest.py", ".venv", "__pycache__")
+               for part in path_parts):
+            continue
+        if filepath.endswith("conftest.py"):
             continue
 
         # Get old (HEAD) and new (staged) content
@@ -131,29 +135,24 @@ def check_staged(update_state=False):
             )
 
         # REQs that still exist but code was modified — suspect
-        if old_reqs and new_reqs:
-            # Only flag REQs in the changed hunks, not entire file
-            added_lines, removed_lines = get_changed_hunks(filepath)
-            changed_text = "\n".join(added_lines + removed_lines)
-            changed_reqs = extract_reqs(changed_text)
-
-            # REQs that appear in changed hunks = suspect
-            for req in changed_reqs:
-                if req in new_reqs:  # Still present, but code around it changed
-                    warnings.append(
-                        f"IMPACT: {filepath} modified (serves {req})\n"
-                        f"        Verify triangle: forge-triangle.sh check-req {req}"
-                    )
-                    suspect_reqs[req] = {
-                        "reason": f"code modified in {filepath}",
-                        "modified_by": _get_current_agent(),
-                        "modified_at": datetime.now(timezone.utc).isoformat(),
-                        "file": filepath,
-                        "verified": False,
-                        "verified_at": None,
-                        "cleared_by": None,
-                        "verification_method": None,
-                    }
+        # Flag ALL REQs in the file as suspect when the file is modified,
+        # because code changes can break REQ behavior even if the tag line is untouched
+        if new_reqs and (old_content != new_content):
+            for req in new_reqs:
+                warnings.append(
+                    f"IMPACT: {filepath} modified (serves {req})\n"
+                    f"        Verify triangle: forge-triangle.sh check-req {req}"
+                )
+                suspect_reqs[req] = {
+                    "reason": f"code modified in {filepath}",
+                    "modified_by": _get_current_agent(),
+                    "modified_at": datetime.now(timezone.utc).isoformat(),
+                    "file": filepath,
+                    "verified": False,
+                    "verified_at": None,
+                    "cleared_by": None,
+                    "verification_method": None,
+                }
 
     # Report
     if violations:
@@ -236,7 +235,7 @@ def main():
         print("Usage:")
         print("  req-impact-check.py --staged [--update-state]")
         print("  req-impact-check.py --check <file>")
-        sys.exit(0)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

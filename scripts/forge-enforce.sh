@@ -767,7 +767,7 @@ with open('$STATE_FILE', 'w') as f:
 
 # ─── Suspect REQ Management (#43) ───
 
-SUSPECT_FILE="$D/docs/suspect-reqs.json"
+SUSPECT_FILE="${PROJECT_ROOT:-$PWD}/docs/suspect-reqs.json"
 
 cmd_check_suspect() {
     if [ ! -f "$SUSPECT_FILE" ]; then
