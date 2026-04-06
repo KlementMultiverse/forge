@@ -98,6 +98,100 @@ teardown() {
     assert_success
 }
 
+# ─── S2 inference chain — explicit INPUTS/OUTPUTS per question ───
+
+@test "S2 has variable chain reference card" {
+    run grep -i "VARIABLE CHAIN\|Q1.*outputs.*INTENT_SEED\|Q1.*INTENT_SEED.*PROJECT_NAME" "$PHASE_A"
+    assert_success
+}
+
+@test "S2 has per-question protocol definition" {
+    run grep -c "INPUTS:" "$PHASE_A"
+    # Q1-Q7 = 7 questions, each with INPUTS
+    assert_success
+    [ "$output" -ge 7 ]
+}
+
+@test "S2 has per-question OUTPUTS" {
+    run grep -c "OUTPUTS:" "$PHASE_A"
+    assert_success
+    [ "$output" -ge 7 ]
+}
+
+@test "S2 Q2 declares inputs from Q1" {
+    run grep -i "INPUTS:.*INTENT_SEED\|INPUTS:.*DOMAIN" "$PHASE_A"
+    assert_success
+}
+
+@test "S2 Q3 declares inputs from Q1+Q2" {
+    run grep -i "INPUTS:.*USERS" "$PHASE_A"
+    assert_success
+}
+
+# ─── S2 accumulated context — user sees their words reflected ───
+
+@test "S2 has accumulated context sections" {
+    run grep -c "ACCUMULATED CONTEXT" "$PHASE_A"
+    assert_success
+    # Q2-Q7 = 6 questions have accumulated context (Q1 has none — first question)
+    [ "$output" -ge 6 ]
+}
+
+# ─── S2 hints for unsure users ───
+
+@test "S2 has hints for every question" {
+    run grep -c "HINTS:" "$PHASE_A"
+    assert_success
+    [ "$output" -ge 7 ]
+}
+
+@test "S2 hints reference domain context" {
+    run grep -i "Not sure.*domain\|Not sure.*for.*project" "$PHASE_A"
+    assert_success
+}
+
+# ─── S2 fallback for unclear answers ───
+
+@test "S2 has fallback for every question" {
+    run grep -c "FALLBACK:" "$PHASE_A"
+    assert_success
+    [ "$output" -ge 7 ]
+}
+
+@test "S2 fallback handles I don't know" {
+    run grep -i "don.t know\|I don.t know" "$PHASE_A"
+    assert_success
+}
+
+# ─── S2 dynamic search — uses accumulated variables ───
+
+@test "S2 has dynamic search sections" {
+    run grep -c "DYNAMIC SEARCH" "$PHASE_A"
+    assert_success
+    [ "$output" -ge 7 ]
+}
+
+@test "S2 dynamic search uses accumulated variables" {
+    # Q3 search should reference DOMAIN + INTENT_SEED + USERS (accumulated from Q1+Q2)
+    run grep -i "DOMAIN.*INTENT_SEED\|INTENT_SEED.*DOMAIN" "$PHASE_A"
+    assert_success
+}
+
+# ─── S2 option explanations — WHY + proof ───
+
+@test "S2 options have WHY explanations with proof" {
+    run grep -i "required.*proof:\|recommended.*proof:" "$PHASE_A"
+    assert_success
+}
+
+# ─── S2 transition statements ───
+
+@test "S2 has transition after each question" {
+    run grep -c "TRANSITION:" "$PHASE_A"
+    assert_success
+    [ "$output" -ge 7 ]
+}
+
 # ─── S3 has new variables ───
 
 @test "S3 prompt has compliance variable" {

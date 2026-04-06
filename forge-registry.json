@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-06T22:28:48.671013+00:00",
+  "generated": "2026-04-06T23:14:00.690102+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -2265,8 +2265,8 @@
         "matcher": "Write|Edit",
         "depends_on": {
           "scripts": [
-            "forge-auto-sync.sh",
-            "forge-change-validator.sh"
+            "forge-change-validator.sh",
+            "forge-auto-sync.sh"
           ]
         }
       },
@@ -4700,12 +4700,12 @@
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-auto-sync.sh",
+      "to": "scripts/forge-change-validator.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-change-validator.sh",
+      "to": "scripts/forge-auto-sync.sh",
       "type": "scripts"
     },
     {
@@ -6679,6 +6679,19 @@
   },
   "changelog": {
     "commands": [
+      {
+        "date": "2026-04-06",
+        "commit": "4103106e",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "address 3 CR comments \u2014 add missing REQ prefixes, regenerate registry",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "forge-registry.json"
+        ]
+      },
       {
         "date": "2026-04-06",
         "commit": "d20ec526",
