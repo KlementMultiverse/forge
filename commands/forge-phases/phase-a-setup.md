@@ -487,7 +487,11 @@ Execute: spawn Agent with subagent_type="system-architect"
   prompt: "Generate CLAUDE.md from existing codebase. Read pyproject.toml/package.json for stack. Read config for settings. Extract patterns as rules."
 Verify: CLAUDE.md has real stack, real rules
 
-Then → STEP S5 (FORGE.md) → S6 → S7 (skip scaffold, code exists) → S8 → S9 → S10
+If repo-index detects multiple frameworks (e.g., Django backend + React frontend):
+  → PM asks: "I found both [X] and [Y]. Which should I focus on?"
+  → User picks → agent-routing.md targets that framework
+
+Then → STEP S5 (FORGE.md) → S6 → S7 (brownfield: skip scaffold but check for missing Dockerfile/docker-compose — add only missing infra files) → S8 → S9 → S10
 
 #### Phase B -- Full SDLC (CHAINED EXECUTION — each step MUST complete before next)
 

@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-06T12:40:17.491733+00:00",
+  "generated": "2026-04-06T12:51:25.171411+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -6656,6 +6656,30 @@
   },
   "changelog": {
     "commands": [
+      {
+        "date": "2026-04-06",
+        "commit": "ecdde2e4",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "Phase A Batch 4 \u2014 state persistence + partial setup + S9 fix path #132 #156",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "tests/bash/unit/phase-a-fixes.bats"
+        ],
+        "issues": [
+          "#132",
+          "#156",
+          "#159",
+          "#156",
+          "#132",
+          "#159"
+        ]
+      },
       {
         "date": "2026-04-06",
         "commit": "bf71e57a",
