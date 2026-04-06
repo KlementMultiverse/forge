@@ -47,9 +47,11 @@ install_global() {
 
     # ─── Nuke-and-replace: remove stale files before copy — Fix #8, #9, #10 ───
     # This ensures deleted/renamed files don't persist from previous installs
+    # Guard: :? prevents accidental deletion if CLAUDE_DIR is somehow empty
+    : "${CLAUDE_DIR:?CLAUDE_DIR must be set}"
     for dir in agents commands rules scripts templates; do
         if [ -d "$CLAUDE_DIR/$dir" ]; then
-            rm -rf "$CLAUDE_DIR/$dir"
+            rm -rf "${CLAUDE_DIR:?}/$dir"
         fi
     done
 
@@ -127,7 +129,10 @@ install_global() {
 
     # ─── Install forge shell function — Fix #15, #17: check active source line + zsh ───
     echo "  Installing forge shell function..."
-    cp "$FORGE_DIR/scripts/forge-shell.sh" "$CLAUDE_DIR/forge-shell.sh"
+    if ! cp "$FORGE_DIR/scripts/forge-shell.sh" "$CLAUDE_DIR/forge-shell.sh"; then
+        echo -e "${RED}ERROR: Failed to copy forge-shell.sh — forge command will not work${NC}"
+        exit 1
+    fi
 
     local shell_installed=false
     for rc_file in "$HOME/.bashrc" "$HOME/.zshrc"; do
@@ -228,11 +233,12 @@ needs_update() {
     fi
 
     # Also check if any source file is newer than the newest installed file
+    # Use stat instead of find -printf for macOS/BSD compatibility
     local src_newest installed_newest
-    src_newest=$(find "$FORGE_DIR/agents" "$FORGE_DIR/commands" "$FORGE_DIR/scripts" -type f -printf '%T@\n' 2>/dev/null | sort -rn | head -1 || echo "0")
-    installed_newest=$(find "$CLAUDE_DIR/agents" "$CLAUDE_DIR/commands" "$CLAUDE_DIR/scripts" -type f -printf '%T@\n' 2>/dev/null | sort -rn | head -1 || echo "0")
+    src_newest=$(find "$FORGE_DIR/agents" "$FORGE_DIR/commands" "$FORGE_DIR/scripts" -type f -exec stat -c '%Y' {} \; 2>/dev/null | sort -rn | head -1 || find "$FORGE_DIR/agents" "$FORGE_DIR/commands" "$FORGE_DIR/scripts" -type f -exec stat -f '%m' {} \; 2>/dev/null | sort -rn | head -1 || echo "0")
+    installed_newest=$(find "$CLAUDE_DIR/agents" "$CLAUDE_DIR/commands" "$CLAUDE_DIR/scripts" -type f -exec stat -c '%Y' {} \; 2>/dev/null | sort -rn | head -1 || find "$CLAUDE_DIR/agents" "$CLAUDE_DIR/commands" "$CLAUDE_DIR/scripts" -type f -exec stat -f '%m' {} \; 2>/dev/null | sort -rn | head -1 || echo "0")
 
-    if [ "${src_newest%.*}" -gt "${installed_newest%.*}" ] 2>/dev/null; then
+    if [ "${src_newest}" -gt "${installed_newest}" ] 2>/dev/null; then
         echo -e "${YELLOW}Forge source files are newer than installed. Reinstalling...${NC}"
         return 0
     fi
