@@ -13,13 +13,13 @@ teardown() {
 
 # ─── hooks.json has required entries ───
 
-@test "hooks.json has PreToolUse Edit hook for --impact advisory" {
-    run grep -l "impact\|IMPACT" "$FORGE_DIR/templates/hooks.json"
+@test "hooks.json has PreToolUse Edit hook calling change-validator" {
+    run grep "forge-change-validator.*pre-edit\|change-validator" "$FORGE_DIR/templates/hooks.json"
     assert_success
 }
 
-@test "hooks.json has PostToolUse Write hook for forge-trace" {
-    run grep -l "forge-trace\|FORGE.TRACE\|trace-update" "$FORGE_DIR/templates/hooks.json"
+@test "hooks.json has PostToolUse Write hook calling change-validator" {
+    run grep "forge-change-validator.*post-edit\|change-validator" "$FORGE_DIR/templates/hooks.json"
     assert_success
 }
 
