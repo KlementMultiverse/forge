@@ -317,6 +317,7 @@ Execute: spawn Agent with subagent_type="devops-architect"
     - config/wsgi.py
     - manage.py
     - apps/__init__.py
+    - conftest.py (test configuration)
     - .env.example
     - .gitignore
 
