@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-06T09:22:31.999401+00:00",
+  "generated": "2026-04-06T09:43:29.958013+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -6636,6 +6636,93 @@
     }
   },
   "changelog": {
+    "hooks": [
+      {
+        "date": "2026-04-06",
+        "commit": "ddbd7d1d",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "grep portability \u2014 use ERE not GNU BRE for placeholder detection",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#113"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "3825dbcc",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "fix 10 CASE detection edge cases from CodeRabbit analysis",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge.md",
+          "forge-registry.json",
+          "templates/hooks.json",
+          "tests/bash/integration/case-detection-edge-cases.bats"
+        ],
+        "issues": [
+          "#111"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "d0aa943c",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "fix broken JSON in hooks.json \u2014 unescaped quotes around CLAUDE_TOOL_INPUT",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#103"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "e0c652fe",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "improve GitHub setup guidance \u2014 detect gh CLI, auth, provide links",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/hooks.json",
+          "tests/bash/integration/github-setup.bats"
+        ],
+        "issues": [
+          "#94"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "80d0b029",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "refactor UserPromptSubmit \u2014 gate on /forge, add SessionStart, add CASE_RESUME",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/forge-state-sync.sh",
+          "templates/hooks.json",
+          "tests/bash/integration/hook-routing.bats"
+        ],
+        "issues": [
+          "#92"
+        ]
+      }
+    ],
     "scripts": [
       {
         "date": "2026-04-06",
@@ -7177,59 +7264,6 @@
           "#35",
           "#36",
           "#37"
-        ]
-      }
-    ],
-    "hooks": [
-      {
-        "date": "2026-04-06",
-        "commit": "d0aa943c",
-        "change_type": "bugfix",
-        "scope": "hooks",
-        "summary": "fix broken JSON in hooks.json \u2014 unescaped quotes around CLAUDE_TOOL_INPUT",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "templates/hooks.json"
-        ],
-        "issues": [
-          "#103"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "e0c652fe",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "improve GitHub setup guidance \u2014 detect gh CLI, auth, provide links",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/hooks.json",
-          "tests/bash/integration/github-setup.bats"
-        ],
-        "issues": [
-          "#94"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "80d0b029",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "refactor UserPromptSubmit \u2014 gate on /forge, add SessionStart, add CASE_RESUME",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "scripts/forge-state-sync.sh",
-          "templates/hooks.json",
-          "tests/bash/integration/hook-routing.bats"
-        ],
-        "issues": [
-          "#92"
         ]
       }
     ],
