@@ -1,6 +1,6 @@
 #!/bin/bash
 # Forge State Sync — fixes stale forge-state.json by reading actual git history
-# Called by UserPromptSubmit hook to auto-fix state on every /forge
+# Called by UserPromptSubmit hook on every user prompt (exits early if no forge-state.json)
 #
 # @forge-meta
 # id: forge-state-sync
