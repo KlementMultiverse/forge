@@ -65,7 +65,8 @@ Step 11 (FLEX CHECKPOINT) is a DEFINITIVE STEP — always runs, has full authori
     IF FLEX_SIGNAL found:
       Parse: TYPE, TARGET, STEP, WHAT, WHY, PROPOSED, SEVERITY
       IF SEVERITY = INFO → log to trace, pass through
-      IF SEVERITY = ADVISORY → log to trace, flag for next /review
+      IF SEVERITY = ADVISORY → persist to docs/flex-signals.log AND forge-state.json
+        (survives session crashes — flagged for next /review)
       IF SEVERITY = BLOCKING → ENTER CORRECTION LOOP:
         ┌─ GATE 1: CR reviews proposal (post to PR/issue, get feedback)
         │   CR rejects → ESCALATE to user (BLOCKING signals cannot be skipped)
@@ -80,20 +81,30 @@ Step 11 (FLEX CHECKPOINT) is a DEFINITIVE STEP — always runs, has full authori
         │   New agent needed → @agent-factory
         │   Tests            → @quality-engineer
         │   Discovery notes  → PM + USER confirmation (highest impact)
-        ├─ GATE 3: Universal loop on the fix (attempt → measure → max 3)
+        ├─ GATE 3: Simplified loop on the fix (attempt → measure → max 3)
+        │   NOTE: This is a FLAT loop — NO recursive FLEX CHECKPOINT inside.
+        │   The fix agent runs steps 1-10 only (no nested step 11).
+        │   This prevents infinite recursion. If the fix itself needs a
+        │   correction, it becomes a NEW signal in the OUTER loop's re-scan.
         ├─ GATE 4: @reviewer rates fix (>= 4, SEPARATE from signaling agent)
         ├─ GATE 5: Impact check (machine-readable)
-        │   Run: forge-registry.py --impact {TARGET} --format json
-        │   Parse JSON output: {"affected_files": [...], "affected_phases": [...]}
+        │   Run: forge-registry.py --impact {TARGET} --json
+        │   Parse JSON: {file, dependents[], phases[], action_items[]}
         │   CLAUDE.md changed → re-validate downstream artifacts
         │   SPEC.md changed → re-check traceability
         │   Design doc changed → re-check implementation
-        │   If affected_files is empty → low impact, proceed
-        │   If affected_files > 5 → high impact, warn PM
+        │   If dependents is empty → low impact, proceed
+        │   If dependents > 5 → high impact, warn PM
         ├─ Re-scan: did fix produce NEW signals?
-        │   YES → loop again (max 5 iterations per signal)
-        │   NO  → EXIT correction loop
-        └─ Max limits: 5 per signal, 10 per step, 30 per phase
+        │   Signal identity = TYPE + TARGET (same type+target = same signal)
+        │   Different TYPE or TARGET = new signal (gets own 5-iteration budget)
+        │   Same TYPE + TARGET recurring = same signal (shares budget)
+        │   YES (new signal) → loop again
+        │   NO → EXIT correction loop
+        └─ Max limits (apply to OUTER loop only):
+           5 iterations per signal (same TYPE+TARGET)
+           10 total flex signals per step
+           30 total per phase
            Exceeded → ESCALATE to user with full context
     EXIT with all corrections applied.
 
