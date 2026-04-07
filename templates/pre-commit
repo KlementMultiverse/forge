@@ -27,6 +27,16 @@ if [ -f "$TEST_GUARD" ]; then
     bash "$TEST_GUARD" --changed 2>/dev/null
 fi
 
+# Auto-run unit tests — block commit if any test fails
+FORGE_ROOT="$(cd "$(dirname "$0")/../.." 2>/dev/null && pwd)"
+if [ -f "$FORGE_ROOT/tests/Makefile" ]; then
+    echo "[FORGE] Running unit tests..."
+    if ! make -C "$FORGE_ROOT/tests" test-fast 2>&1; then
+        echo "[FORGE] BLOCKED: Unit tests failed. Fix before committing."
+        exit 1
+    fi
+fi
+
 # Registry auto-regeneration — if any tracked file changed, regenerate
 REGISTRY_SCRIPT="$HOME/.claude/scripts/forge-registry.py"
 REGISTRY_FILE="forge-registry.json"

@@ -1,15 +1,15 @@
 {
   "version": "2.0",
-  "generated": "2026-04-07T09:54:33.998848+00:00",
+  "generated": "2026-04-07T10:57:58.904175+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
-    "commands": 55,
-    "scripts": 31,
+    "commands": 56,
+    "scripts": 33,
     "hooks": 9,
     "templates": 17,
     "rules": 9,
-    "edges": 463,
+    "edges": 472,
     "phase_mapped_components": 36,
     "flows": 9
   },
@@ -813,6 +813,17 @@
             "is_gate": false
           }
         ]
+      },
+      "cr": {
+        "type": "command",
+        "path": "commands/cr.md",
+        "depends_on": {
+          "commands": [
+            "checkpoint",
+            "cr",
+            "gate"
+          ]
+        }
       },
       "build-project": {
         "type": "command",
@@ -1803,6 +1814,15 @@
           ]
         }
       },
+      "forge-step-gate.sh": {
+        "type": "script",
+        "path": "scripts/forge-step-gate.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-step-gate.sh"
+          ]
+        }
+      },
       "forge-change-validator.sh": {
         "type": "script",
         "path": "scripts/forge-change-validator.sh",
@@ -1813,6 +1833,15 @@
             "forge-readme-sync.sh",
             "forge-test-guard.sh",
             "forge-triangle.sh"
+          ]
+        }
+      },
+      "forge-handoff-targets.sh": {
+        "type": "script",
+        "path": "scripts/forge-handoff-targets.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-handoff-targets.sh"
           ]
         }
       },
@@ -2092,7 +2121,8 @@
         "matcher": "",
         "depends_on": {
           "scripts": [
-            "forge-phase-gate.sh"
+            "forge-phase-gate.sh",
+            "forge-step-gate.sh"
           ]
         }
       },
@@ -2147,6 +2177,7 @@
         "depends_on": {
           "scripts": [
             "forge-auto-state.sh",
+            "forge-handoff-targets.sh",
             "forge-handoff-check.sh"
           ]
         }
@@ -2158,7 +2189,9 @@
         "matcher": "Skill",
         "depends_on": {
           "scripts": [
-            "forge-auto-state.sh"
+            "forge-auto-state.sh",
+            "forge-handoff-targets.sh",
+            "forge-handoff-check.sh"
           ]
         }
       },
@@ -3319,6 +3352,21 @@
       "type": "commands"
     },
     {
+      "from": "commands/cr",
+      "to": "commands/checkpoint",
+      "type": "commands"
+    },
+    {
+      "from": "commands/cr",
+      "to": "commands/cr",
+      "type": "commands"
+    },
+    {
+      "from": "commands/cr",
+      "to": "commands/gate",
+      "type": "commands"
+    },
+    {
       "from": "commands/build-project",
       "to": "agents/aws-setup-agent",
       "type": "agents"
@@ -4469,6 +4517,11 @@
       "type": "scripts"
     },
     {
+      "from": "scripts/forge-step-gate.sh",
+      "to": "scripts/forge-step-gate.sh",
+      "type": "scripts"
+    },
+    {
       "from": "scripts/forge-change-validator.sh",
       "to": "scripts/forge-enforce.sh",
       "type": "scripts"
@@ -4491,6 +4544,11 @@
     {
       "from": "scripts/forge-change-validator.sh",
       "to": "scripts/forge-triangle.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "scripts/forge-handoff-targets.sh",
+      "to": "scripts/forge-handoff-targets.sh",
       "type": "scripts"
     },
     {
@@ -4589,6 +4647,11 @@
       "type": "scripts"
     },
     {
+      "from": "hooks/Stop",
+      "to": "scripts/forge-step-gate.sh",
+      "type": "scripts"
+    },
+    {
       "from": "hooks/UserPromptSubmit",
       "to": "scripts/forge-state-sync.sh",
       "type": "scripts"
@@ -4615,12 +4678,27 @@
     },
     {
       "from": "hooks/PostToolUse:Agent",
+      "to": "scripts/forge-handoff-targets.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Agent",
       "to": "scripts/forge-handoff-check.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Skill",
       "to": "scripts/forge-auto-state.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Skill",
+      "to": "scripts/forge-handoff-targets.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Skill",
+      "to": "scripts/forge-handoff-check.sh",
       "type": "scripts"
     }
   ],
@@ -5145,7 +5223,8 @@
           "forge-handoff-check.sh"
         ],
         "hooks": [
-          "PostToolUse:Agent"
+          "PostToolUse:Agent",
+          "PostToolUse:Skill"
         ]
       },
       "commands/evolve": {
@@ -5454,6 +5533,7 @@
           "pm-orchestrator"
         ],
         "commands": [
+          "cr",
           "build-project",
           "checkpoint",
           "phase:cases",
@@ -5520,6 +5600,7 @@
           "sdlc-enforcer"
         ],
         "commands": [
+          "cr",
           "build-project",
           "retro",
           "checkpoint",
@@ -5673,6 +5754,11 @@
       "agents/ai-safety-agent": {
         "agents": [
           "eval-engineer"
+        ]
+      },
+      "commands/cr": {
+        "commands": [
+          "cr"
         ]
       },
       "commands/build-project": {
@@ -5841,6 +5927,14 @@
           "forge-auto-state.sh"
         ]
       },
+      "scripts/forge-step-gate.sh": {
+        "scripts": [
+          "forge-step-gate.sh"
+        ],
+        "hooks": [
+          "Stop"
+        ]
+      },
       "scripts/forge-readme-sync.sh": {
         "scripts": [
           "forge-change-validator.sh",
@@ -5851,6 +5945,15 @@
       "scripts/forge-test-guard.sh": {
         "scripts": [
           "forge-change-validator.sh"
+        ]
+      },
+      "scripts/forge-handoff-targets.sh": {
+        "scripts": [
+          "forge-handoff-targets.sh"
+        ],
+        "hooks": [
+          "PostToolUse:Agent",
+          "PostToolUse:Skill"
         ]
       },
       "scripts/forge-observer-approve.sh": {
@@ -6521,6 +6624,24 @@
   },
   "changelog": {
     "general": [
+      {
+        "date": "2026-04-07",
+        "commit": "228f2059",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "address all 6 CodeRabbit findings",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/gate.md",
+          "templates/hooks.json",
+          "tests/bash/unit/universal-loop-coverage.bats"
+        ],
+        "issues": [
+          "#1",
+          "#196"
+        ]
+      },
       {
         "date": "2026-04-07",
         "commit": "bd285942",
@@ -8070,7 +8191,182 @@
         "requires_reinstall": false
       }
     ],
+    "hooks": [
+      {
+        "date": "2026-04-07",
+        "commit": "57cdc077",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "/cr enforced at gate + bash push detection",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/gate.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "templates/hooks.json",
+          "tests/bash/unit/universal-loop-coverage.bats"
+        ],
+        "issues": [
+          "#196"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "830021cd",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "universal execution loop covers ALL steps \u2014 agent AND command #196",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "rules/universal-agent-loop.md",
+          "templates/hooks.json",
+          "templates/pre-commit",
+          "tests/bash/unit/universal-loop-coverage.bats"
+        ],
+        "issues": [
+          "#196",
+          "#197"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "f895927b",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "auto-regenerate registry on pre-commit when tracked files change",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/pre-commit"
+        ],
+        "issues": [
+          "#189"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "3ea708e6",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "visible handoff evaluation after every agent + S9 gate",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#189"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "ddbd7d1d",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "grep portability \u2014 use ERE not GNU BRE for placeholder detection",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#113"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "3825dbcc",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "fix 10 CASE detection edge cases from CodeRabbit analysis",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge.md",
+          "forge-registry.json",
+          "templates/hooks.json",
+          "tests/bash/integration/case-detection-edge-cases.bats"
+        ],
+        "issues": [
+          "#111"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "d0aa943c",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "fix broken JSON in hooks.json \u2014 unescaped quotes around CLAUDE_TOOL_INPUT",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#103"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "e0c652fe",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "improve GitHub setup guidance \u2014 detect gh CLI, auth, provide links",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/hooks.json",
+          "tests/bash/integration/github-setup.bats"
+        ],
+        "issues": [
+          "#94"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "80d0b029",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "refactor UserPromptSubmit \u2014 gate on /forge, add SessionStart, add CASE_RESUME",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/forge-state-sync.sh",
+          "templates/hooks.json",
+          "tests/bash/integration/hook-routing.bats"
+        ],
+        "issues": [
+          "#92"
+        ]
+      }
+    ],
     "commands": [
+      {
+        "date": "2026-04-07",
+        "commit": "84eda7fe",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "/cr \u2014 unified CodeRabbit integration command",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/cr.md",
+          "tests/bash/unit/cr-command.bats"
+        ],
+        "issues": [
+          "#196"
+        ]
+      },
       {
         "date": "2026-04-07",
         "commit": "a53398fe",
@@ -8643,6 +8939,38 @@
         ]
       }
     ],
+    "templates": [
+      {
+        "date": "2026-04-07",
+        "commit": "6f1a9bf3",
+        "change_type": "bugfix",
+        "scope": "templates",
+        "summary": "nested HTML comments broke Pipe 1 safety in CLAUDE.template.md",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "templates/CLAUDE.template.md"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "ed35ae06",
+        "change_type": "test",
+        "scope": "templates",
+        "summary": "add 10 Pipe 1/2 validation tests for templates + fix safety violation",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/forge-timeline.template.md",
+          "tests/bash/unit/templates-validation.bats"
+        ],
+        "issues": [
+          "#84"
+        ]
+      }
+    ],
     "agents": [
       {
         "date": "2026-04-07",
@@ -8821,123 +9149,6 @@
         ],
         "issues": [
           "#48"
-        ]
-      }
-    ],
-    "hooks": [
-      {
-        "date": "2026-04-07",
-        "commit": "f895927b",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "auto-regenerate registry on pre-commit when tracked files change",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/pre-commit"
-        ],
-        "issues": [
-          "#189"
-        ]
-      },
-      {
-        "date": "2026-04-07",
-        "commit": "3ea708e6",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "visible handoff evaluation after every agent + S9 gate",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/hooks.json"
-        ],
-        "issues": [
-          "#189"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "ddbd7d1d",
-        "change_type": "bugfix",
-        "scope": "hooks",
-        "summary": "grep portability \u2014 use ERE not GNU BRE for placeholder detection",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/hooks.json"
-        ],
-        "issues": [
-          "#113"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "3825dbcc",
-        "change_type": "bugfix",
-        "scope": "hooks",
-        "summary": "fix 10 CASE detection edge cases from CodeRabbit analysis",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "commands/forge.md",
-          "forge-registry.json",
-          "templates/hooks.json",
-          "tests/bash/integration/case-detection-edge-cases.bats"
-        ],
-        "issues": [
-          "#111"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "d0aa943c",
-        "change_type": "bugfix",
-        "scope": "hooks",
-        "summary": "fix broken JSON in hooks.json \u2014 unescaped quotes around CLAUDE_TOOL_INPUT",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "templates/hooks.json"
-        ],
-        "issues": [
-          "#103"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "e0c652fe",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "improve GitHub setup guidance \u2014 detect gh CLI, auth, provide links",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/hooks.json",
-          "tests/bash/integration/github-setup.bats"
-        ],
-        "issues": [
-          "#94"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "80d0b029",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "refactor UserPromptSubmit \u2014 gate on /forge, add SessionStart, add CASE_RESUME",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "scripts/forge-state-sync.sh",
-          "templates/hooks.json",
-          "tests/bash/integration/hook-routing.bats"
-        ],
-        "issues": [
-          "#92"
         ]
       }
     ],
@@ -9646,24 +9857,6 @@
         ],
         "issues": [
           "#85"
-        ]
-      }
-    ],
-    "templates": [
-      {
-        "date": "2026-04-06",
-        "commit": "ed35ae06",
-        "change_type": "test",
-        "scope": "templates",
-        "summary": "add 10 Pipe 1/2 validation tests for templates + fix safety violation",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/forge-timeline.template.md",
-          "tests/bash/unit/templates-validation.bats"
-        ],
-        "issues": [
-          "#84"
         ]
       }
     ]

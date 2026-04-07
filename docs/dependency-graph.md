@@ -60,6 +60,7 @@ graph TD
     subgraph Commands
         commands_requirements[requirements]
         commands_feasibility[feasibility]
+        commands_cr[cr]
         commands_build_project[build-project]
         commands_retro[retro]
         commands_specify[specify]
@@ -111,7 +112,9 @@ graph TD
         scripts_forge_stack_sh[forge-stack.sh]
         scripts_forge_observer_approve_sh[forge-observer-approve.sh]
         scripts_forge_fsm_sh[forge-fsm.sh]
+        scripts_forge_step_gate_sh[forge-step-gate.sh]
         scripts_forge_change_validator_sh[forge-change-validator.sh]
+        scripts_forge_handoff_targets_sh[forge-handoff-targets.sh]
         scripts_forge_deps_sh[forge-deps.sh]
         scripts_forge_readme_sync_sh[forge-readme-sync.sh]
         scripts_forge_state_sync_sh[forge-state-sync.sh]
@@ -339,6 +342,9 @@ graph TD
     commands_feasibility --> agents_system_architect
     commands_feasibility --> commands_feasibility
     commands_feasibility --> commands_requirements
+    commands_cr --> commands_checkpoint
+    commands_cr --> commands_cr
+    commands_cr --> commands_gate
     commands_build_project --> agents_aws_setup_agent
     commands_build_project --> agents_backend_architect
     commands_build_project --> agents_context_loader_agent
@@ -569,11 +575,13 @@ graph TD
     scripts_forge_fsm_sh --> scripts_forge_deps_sh
     scripts_forge_fsm_sh --> scripts_forge_enforce_sh
     scripts_forge_fsm_sh --> scripts_forge_phase_map_sh
+    scripts_forge_step_gate_sh --> scripts_forge_step_gate_sh
     scripts_forge_change_validator_sh --> scripts_forge_enforce_sh
     scripts_forge_change_validator_sh --> scripts_forge_ownership_sh
     scripts_forge_change_validator_sh --> scripts_forge_readme_sync_sh
     scripts_forge_change_validator_sh --> scripts_forge_test_guard_sh
     scripts_forge_change_validator_sh --> scripts_forge_triangle_sh
+    scripts_forge_handoff_targets_sh --> scripts_forge_handoff_targets_sh
     scripts_forge_deps_sh --> scripts_forge_deps_sh
     scripts_forge_readme_sync_sh --> scripts_forge_readme_sync_sh
     scripts_forge_state_sync_sh --> scripts_forge_enforce_sh
@@ -593,11 +601,15 @@ graph TD
     scripts_forge_auto_state_sh --> scripts_forge_phase_map_sh
     scripts_forge_infra_check_sh --> scripts_forge_infra_check_sh
     hooks_Stop --> scripts_forge_phase_gate_sh
+    hooks_Stop --> scripts_forge_step_gate_sh
     hooks_UserPromptSubmit --> scripts_forge_state_sync_sh
     hooks_PreToolUse_Edit --> scripts_forge_change_validator_sh
     hooks_PostToolUse_Write|Edit --> scripts_forge_auto_sync_sh
     hooks_PostToolUse_Write|Edit --> scripts_forge_change_validator_sh
     hooks_PostToolUse_Agent --> scripts_forge_auto_state_sh
+    hooks_PostToolUse_Agent --> scripts_forge_handoff_targets_sh
     hooks_PostToolUse_Agent --> scripts_forge_handoff_check_sh
     hooks_PostToolUse_Skill --> scripts_forge_auto_state_sh
+    hooks_PostToolUse_Skill --> scripts_forge_handoff_targets_sh
+    hooks_PostToolUse_Skill --> scripts_forge_handoff_check_sh
 ```

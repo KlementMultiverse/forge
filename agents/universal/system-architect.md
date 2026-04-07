@@ -155,7 +155,7 @@ From Claude Code's `coordinatorMode.ts`, the coordinator pattern strictly separa
 - **Format**: PM extracts ACTUAL values from discovery notes, passes them in prompt — NOT placeholders
 
 #### Output Contract
-- **S3 (CLAUDE.md)**: Under 100 lines. Required core sections: Tech Stack, Architecture Rules, What NOT to Build, Testing. Optional sections (only if confirmed): Compliance Rules, Integration Rules. Follow CLAUDE.template.md structure. Every rule is MUST/NEVER with code snippets for critical patterns.
+- **S3 (CLAUDE.md)**: Under 100 lines. MUST match templates/CLAUDE.template.md structure exactly (read it via Read tool before generating). Required core sections: Tech Stack (table format: Layer | Technology | Notes), Architecture Rules (MUST/NEVER with code snippets), What NOT to Build (bullet per EXCLUDED item), Testing (runner command + lint command). Optional sections (only if confirmed in discovery notes): Compliance Rules, Integration Rules.
 - **S6 (agent-routing.md)**: Agent matrix table with domain → files → agent → context7, per-app breakdown with REQ mapping, routing rules
 - **Design doc**: 10 sections complete, every decision has trade-off + alternative considered
 
@@ -171,12 +171,15 @@ From Claude Code's `coordinatorMode.ts`, the coordinator pattern strictly separa
 #### Handoff Metric (S3)
 - **FROM discovery notes → CLAUDE.md**: Every COMPLIANCE[] → MUST/NEVER rule, every STACK → tech table row, every EXCLUDED → bullet in anti-scope
 - **MUST NOT appear**: Rules for EXCLUDED items, compliance for rejected items
-- **Verify**:
-  - Structural: `grep -cE "MUST|NEVER" CLAUDE.md` >= 5 and `wc -l CLAUDE.md` between 20-100
-  - Compliance: for each COMPLIANCE[] item, grep for it in CLAUDE.md (must appear in a rule)
-  - Stack: for each STACK item, grep for it in Tech Stack table
-  - Anti-scope: for each EXCLUDED[] item, grep in "What NOT to Build" section (must be listed)
-  - Exclusion: for each EXCLUDED[] item, grep in Architecture Rules (must NOT appear as a feature rule)
+- **Verify (section-aware — not just keyword presence)**:
+  - Structural: `wc -l CLAUDE.md` between 20-100, has all required section headings (`## Tech Stack`, `## Architecture Rules`, `## What NOT to Build`, `## Testing`)
+  - Compliance (section-scoped): for each COMPLIANCE[] item, verify it appears AFTER `## Compliance Rules` or `## Architecture Rules` heading — NOT in `## What NOT to Build`
+  - Stack: for each STACK item, verify it appears in a table row (pipe-delimited) under `## Tech Stack`
+  - Anti-scope: for each EXCLUDED[] item, verify it appears as a bullet under `## What NOT to Build`
+  - Exclusion (cross-section): for each EXCLUDED[] item, verify it does NOT appear as a feature/rule under `## Architecture Rules`
+  - Rule quality: `grep -cE "MUST|NEVER" CLAUDE.md` >= 5 (meaningful rules, not filler)
+- **Tier 1** (automated): `forge-handoff-check.sh` runs keyword presence checks
+- **Tier 2** (PM review): PM reads output and verifies section placement manually
 
 ### Handoff Protocol
 Always return results in this format:
