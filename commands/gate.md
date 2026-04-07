@@ -44,16 +44,16 @@ GATE VERIFICATION CHECKLIST (run in order, stop on first failure):
 8. No hardcoded secrets: `grep -r "sk-\|AKIA\|ghp_" apps/ --include="*.py"` → empty
 9. Files under 300 lines: `find apps/ -name "*.py" | xargs wc -l | awk '$1 > 300'` → empty
 
-If ALL pass → gate PASSES. Update state:
-```bash
-bash scripts/forge-enforce.sh update-gate {phase_number}
-bash scripts/forge-enforce.sh update-step {gate_step_number} DONE
-```
-
 10. CodeRabbit approval: run `/cr approve` → must return APPROVED
     If CHANGES_REQUESTED → fix findings → `/cr resolve` → `/cr review` → re-check
     If PENDING → wait 60s → re-check (max 3 polls)
     GATE BLOCKS without CR approval. This is NON-NEGOTIABLE.
+
+If ALL 10 checks pass → gate PASSES. Update state:
+```bash
+bash scripts/forge-enforce.sh update-gate {phase_number}
+bash scripts/forge-enforce.sh update-step {gate_step_number} DONE
+```
 
 NEVER skip verification. NEVER assume passing without running checks.
 </system-reminder>
@@ -130,9 +130,8 @@ AUTONOMOUS FIX LOOP (max 5 iterations):
          IF REVIEW_STATE is not empty: BREAK
 
        IF no review after 10 polls:
-         Log: "CodeRabbit unavailable — using local verification checklist"
-         Run local checklist (tests + lint + traceability + security)
-         IF all pass → GATE PASSED (without CodeRabbit)
+         Log: "GATE BLOCKED — CodeRabbit review unavailable"
+         STOP — retry later or escalate to user
          BREAK
 
     3. CHECK review state:
@@ -222,7 +221,7 @@ The CodeRabbit fix loop is **NOT a phase restart**. It:
 ## Handoff: gate → [next phase]
 ### Task Completed: Gate $ARGUMENTS passed
 ### Verification: tests + lint + traceability + security + Docker
-### CodeRabbit: APPROVED (iteration {N}/5) | Unavailable (local checklist passed)
+### CodeRabbit: APPROVED (iteration {N}/5)
 ### PR: #{number}
 ### Context for Next Agent: Gate passed. Proceed to next phase.
 ### Blockers: None — gate cleared

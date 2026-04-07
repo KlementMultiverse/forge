@@ -86,7 +86,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'D=\"$PWD\"; mkdir -p \"$D/docs\"; CMD=\"${CLAUDE_TOOL_INPUT_COMMAND:-}\"; SHORT=$(echo \"$CMD\" | head -c 80); echo \"$(date -u +%H:%M:%S) BASH $SHORT\" >> \"$D/docs/.builder-activity.log\"; if echo \"$CMD\" | grep -q \"git push\"; then PR_NUM=$(gh pr view --json number -q \".number\" 2>/dev/null); if [ -n \"$PR_NUM\" ]; then echo \"[FORGE] Push detected — CR review will run automatically on PR #$PR_NUM.\"; echo \"[FORGE] Run /cr status to check CR review state.\"; fi; fi; true'"
+            "command": "bash -c 'D=\"$PWD\"; mkdir -p \"$D/docs\"; CMD=\"${CLAUDE_TOOL_INPUT_COMMAND:-}\"; SHORT=$(echo \"$CMD\" | head -c 80); echo \"$(date -u +%H:%M:%S) BASH $SHORT\" >> \"$D/docs/.builder-activity.log\"; if echo \"$CMD\" | grep -q \"git push\"; then PR_NUM=$(gh pr view --json number -q \".number\" 2>/dev/null); if [ -n \"$PR_NUM\" ]; then echo \"[FORGE] Push detected on PR #$PR_NUM.\"; echo \"[FORGE] Run /cr review to request CodeRabbit feedback.\"; fi; fi; true'"
           }
         ]
       }

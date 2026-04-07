@@ -25,29 +25,28 @@ teardown() {
 }
 
 @test "Universal loop covers agent OR command" {
-    run grep -i "agent OR.*command\|command.*OR.*agent\|agent spawn OR.*command\|spawn agent OR run command" "$LOOP"
+    run grep -Ei "agent OR.*command|command.*OR.*agent|agent spawn OR.*command|spawn agent OR run command" "$LOOP"
     assert_success
 }
 
 @test "Universal loop does NOT say 'agent only'" {
     # Should not limit to agents only
-    run grep -i "agent spawn MUST follow\|Every agent spawn MUST" "$LOOP"
+    run grep -Ei "agent spawn MUST follow|Every agent spawn MUST" "$LOOP"
     assert_failure
 }
 
 # ─── HOOKS COVERAGE ───
 
 @test "Skill PostToolUse hook has handoff check" {
-    # Extract the Skill hook command and check for handoff
     run grep -A5 '"matcher": "Skill"' "$HOOKS"
     assert_success
-    echo "$output" | grep -q "forge-handoff-check"
+    assert_output --partial "forge-handoff-check"
 }
 
 @test "Agent PostToolUse hook has handoff check" {
     run grep -A5 '"matcher": "Agent"' "$HOOKS"
     assert_success
-    echo "$output" | grep -q "forge-handoff-check"
+    assert_output --partial "forge-handoff-check"
 }
 
 @test "Both Agent and Skill hooks run handoff check" {
@@ -60,24 +59,24 @@ teardown() {
 # ─── PRE-COMMIT AUTO-TEST ───
 
 @test "Pre-commit hook runs unit tests" {
-    run grep "test-fast" "$PRECOMMIT"
+    run grep -E "make.*test-fast" "$PRECOMMIT"
     assert_success
 }
 
 @test "Pre-commit hook blocks on test failure" {
-    run grep "BLOCKED.*test.*fail\|tests failed.*Fix" "$PRECOMMIT"
+    run grep -E "BLOCKED.*test.*fail|tests failed.*Fix" "$PRECOMMIT"
     assert_success
 }
 
 @test "Pre-commit does NOT run integration tests (too slow)" {
-    run grep "test-slow" "$PRECOMMIT"
+    run grep -E "test-slow|tests/bash/integration" "$PRECOMMIT"
     assert_failure
 }
 
 # ─── README ACCURACY ───
 
 @test "README shows universal execution loop in main flow" {
-    run grep -i "Universal Execution Loop\|MEASURE.*handoff\|reviewer.*rate" "$README"
+    run grep -Ei "Universal Execution Loop|MEASURE.*handoff|reviewer.*rate" "$README"
     assert_success
 }
 
@@ -97,8 +96,8 @@ teardown() {
     assert_success
 }
 
-@test "Bash PostToolUse hook mentions /cr" {
-    run grep "/cr status\|cr review" "$HOOKS"
+@test "Bash PostToolUse hook mentions /cr review" {
+    run grep -E "/cr review" "$HOOKS"
     assert_success
 }
 
@@ -110,7 +109,7 @@ teardown() {
 }
 
 @test "Gate blocks without CR approval" {
-    run grep "GATE BLOCKS without CR\|NON-NEGOTIABLE" "$FORGE_DIR/commands/gate.md"
+    run grep -E "GATE BLOCKS without CR|NON-NEGOTIABLE" "$FORGE_DIR/commands/gate.md"
     assert_success
 }
 
