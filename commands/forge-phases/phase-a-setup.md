@@ -45,7 +45,8 @@ Discovery notes = single source of truth. Autoresearch is BOUNDED — NEVER inve
      Partial?           → INCOMPLETE
    FOR EACH item in output not traceable to input:
      → INVENTED (flag for removal — agent hallucinated this)
-   SCORE = COVERED / (COVERED + MISSING + INCOMPLETE)
+   SCORE = COVERED / (COVERED + MISSING + INCOMPLETE + INVENTED)
+   Note: INVENTED items reduce the score — hallucinations are failures too
 
 5. IF SCORE < 100%:
    AUTORESEARCH (BOUNDED enhancement — ADD context, NEVER remove):
@@ -60,22 +61,27 @@ Discovery notes = single source of truth. Autoresearch is BOUNDED — NEVER inve
 
 6. IF STILL < 100%: further enhance → ATTEMPT 3 → MEASURE
 
-7. IF CRITICAL GAP FOUND (agent discovers something missing from input):
+7. IF ALL 3 ATTEMPTS < 100%:
+   ESCALATE to user: "After 3 attempts, best score is {SCORE}%. Missing: [list]. Should I proceed with best output or do you want to adjust discovery notes?"
+   User decides: proceed with best (accept gaps) OR update discovery notes → re-run
+
+8. IF CRITICAL GAP FOUND (agent discovers something missing from input):
    RAISE QUESTION to user: "I found a gap: {gap}. Should I add {X}?"
    User answers → update discovery notes → re-run with updated input
    This is the ONLY way new info enters (via user, not agent invention)
 
-8. PICK BEST output (highest SCORE from 3 attempts)
+9. PICK BEST output (highest SCORE from 3 attempts)
 
-9. REVERSE ENGINEER + CROSS-VERIFY (bidirectional):
-   FORWARD:  Does previous step output data appear in current output?
-   BACKWARD: Does current output data trace back to previous step?
-   Mismatch → flag and fix or raise question to user
+10. REVERSE ENGINEER + CROSS-VERIFY (bidirectional):
+    FORWARD:  Does previous step output data appear in current output?
+    BACKWARD: Does current output data trace back to previous step?
+    Mismatch → flag and fix or raise question to user
 
-10. RATE: spawn @reviewer (1-5, must be >= 4)
-    If < 4: counts as failed attempt
+11. RATE: spawn @reviewer (1-5, must be >= 4)
+    Rating uses a SEPARATE retry budget (max 2 re-reviews, independent of the 3 prompt attempts)
+    If < 4 after 2 re-reviews: escalate to user
 
-11. PROCEED to next step with verified output
+12. PROCEED to next step with verified output
 ```
 
 **BOUNDED AUTORESEARCH RULES:**
@@ -124,10 +130,10 @@ PM must NOT exit S2 until discovery notes have all 14 fields filled.
 
 PM asks questions ONE AT A TIME. Each question follows the **Per-Question Protocol**:
 
-**Per-Question Protocol (6 parts — ALL mandatory):**
+**Per-Question Protocol (8 parts — ALL mandatory):**
 1. INPUTS: variables from previous questions this one depends on
 2. OUTPUTS: new variables this question produces
-3. ACCUMULATED CONTEXT: restate what PM knows from all previous answers (spoken TO the user — they see their words reflected back)
+3. ACCUMULATED CONTEXT: restate what PM knows from all previous answers (spoken TO the user — they see their words reflected)
 4. DYNAMIC SEARCH: web search queries built from ALL accumulated variables (not static templates)
 5. QUESTION + OPTIONS: the question, with options that each have WHY explanations and proof citations
 6. HINTS: domain-specific suggestions for unsure users ("Not sure? Here's what's typical...")
@@ -137,15 +143,15 @@ PM asks questions ONE AT A TIME. Each question follows the **Per-Question Protoc
 **Inference Chain Rule:** Every question MUST reference its input variables when framing the question, search queries, and options. The user must see HOW previous answers shaped the current question.
 
 **VARIABLE CHAIN (reference card — PM consults this before each question):**
-```
+```text
 Q1 outputs:  INTENT_SEED, PROJECT_NAME, DOMAIN, COMPLIANCE[], HIGH_RISK
 Q2 inputs:   INTENT_SEED + DOMAIN
-   outputs:  USERS[], SCALE_TIER, A11Y, I18N, DEPLOYMENT_HINTS[]
+   outputs:  USERS[], SCALE_TIER, A11Y_REQUIRED, I18N_REQUIRED, DEPLOYMENT_HINTS[]
 Q3 inputs:   INTENT_SEED + DOMAIN + USERS[]
-   outputs:  PROBLEM, CURRENT_SOLUTION, COMPETITORS[], MOBILE, INTEGRATIONS[]
+   outputs:  PROBLEM, CURRENT_SOLUTION, COMPETITORS[], MOBILE_REQUIRED, INTEGRATIONS[]
 Q3.5 inputs: INTENT_SEED + DOMAIN + USERS[] + PROBLEM + COMPETITORS[]
    outputs:  SUCCESS_CRITERIA[], SCALE_UPDATE
-Q4 inputs:   DOMAIN + SCALE_TIER + COMPLIANCE[] + MOBILE + SUCCESS_CRITERIA[]
+Q4 inputs:   INTENT_SEED + DOMAIN + SCALE_TIER + COMPLIANCE[] + MOBILE_REQUIRED + SUCCESS_CRITERIA[]
    outputs:  STACK_BACKEND, STACK_FRONTEND, STACK_PROVEN
 Q5 inputs:   ALL accumulated variables
    outputs:  FEATURES_CONFIRMED[], FEATURES_REJECTED[], FEATURES_ADDITIONAL[], DEEP_DIVE_TRIGGERED

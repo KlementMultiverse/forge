@@ -10,7 +10,7 @@
 # Exit codes:
 #   0 = all items covered
 #   1 = missing items found (handoff incomplete)
-#   2 = invented items found (agent hallucinated)
+#   2 = usage error or malformed input
 
 set -euo pipefail
 
@@ -104,7 +104,7 @@ check_dimension() {
         item="$(echo "$item" | sed 's/\[//g;s/\]//g')"
         if [ -z "$item" ]; then continue; fi
         total=$((total + 1))
-        if grep -qi "$item" "$output_file" 2>/dev/null; then
+        if grep -qFi "$item" "$output_file" 2>/dev/null; then
             covered=$((covered + 1))
         fi
     done
@@ -173,12 +173,13 @@ do_check() {
     local total=$((covered + missing + incomplete))
     echo ""
     echo "=== SCORE ==="
-    if [ "$total" -gt 0 ]; then
-        local score=$((covered * 100 / total))
-        echo "COVERED: $covered / $total ($score%)"
-    else
-        echo "COVERED: 0 / 0 (no dimensions found)"
+    if [ "$total" -eq 0 ]; then
+        echo "ERROR: No dimensions found in discovery notes — cannot verify handoff"
+        echo "FAIL CLOSED: Malformed discovery notes or missing FINAL DIMENSIONS section"
+        exit 2
     fi
+    local score=$((covered * 100 / total))
+    echo "COVERED: $covered / $total ($score%)"
     echo "MISSING: $missing"
     echo "INCOMPLETE: $incomplete"
     echo "SKIPPED: $skipped"
@@ -224,5 +225,6 @@ case "${1:-}" in
         ;;
     *)
         show_help
+        exit 2
         ;;
 esac
