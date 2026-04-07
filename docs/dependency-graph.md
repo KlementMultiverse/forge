@@ -123,6 +123,7 @@ graph TD
         scripts_forge_triangle_sh[forge-triangle.sh]
         scripts_forge_phase_map_sh[forge-phase-map.sh]
         scripts_forge_auto_sync_sh[forge-auto-sync.sh]
+        scripts_forge_flex_detect_sh[forge-flex-detect.sh]
         scripts_forge_review_guard_sh[forge-review-guard.sh]
         scripts_forge_ownership_sh[forge-ownership.sh]
         scripts_forge_handoff_check_sh[forge-handoff-check.sh]
@@ -241,6 +242,7 @@ graph TD
     agents_system_architect --> commands_investigate
     agents_system_architect --> commands_learn
     agents_system_architect --> commands_requirements
+    agents_system_architect --> scripts_forge_handoff_check_sh
     agents_self_review --> commands_investigate
     agents_self_review --> commands_learn
     agents_learning_guide --> commands_investigate
@@ -593,6 +595,7 @@ graph TD
     scripts_forge_phase_map_sh --> scripts_forge_phase_map_sh
     scripts_forge_auto_sync_sh --> scripts_forge_readme_sync_sh
     scripts_forge_auto_sync_sh --> scripts_forge_triangle_sh
+    scripts_forge_flex_detect_sh --> scripts_forge_flex_detect_sh
     scripts_forge_handoff_check_sh --> scripts_forge_handoff_check_sh
     scripts_forge_grow_sh --> scripts_forge_grow_sh
     scripts_forge_enforce_sh --> scripts_forge_deps_sh
@@ -604,12 +607,14 @@ graph TD
     hooks_Stop --> scripts_forge_step_gate_sh
     hooks_UserPromptSubmit --> scripts_forge_state_sync_sh
     hooks_PreToolUse_Edit --> scripts_forge_change_validator_sh
-    hooks_PostToolUse_Write|Edit --> scripts_forge_auto_sync_sh
     hooks_PostToolUse_Write|Edit --> scripts_forge_change_validator_sh
-    hooks_PostToolUse_Agent --> scripts_forge_auto_state_sh
+    hooks_PostToolUse_Write|Edit --> scripts_forge_auto_sync_sh
     hooks_PostToolUse_Agent --> scripts_forge_handoff_targets_sh
     hooks_PostToolUse_Agent --> scripts_forge_handoff_check_sh
-    hooks_PostToolUse_Skill --> scripts_forge_auto_state_sh
+    hooks_PostToolUse_Agent --> scripts_forge_auto_state_sh
+    hooks_PostToolUse_Agent --> scripts_forge_flex_detect_sh
     hooks_PostToolUse_Skill --> scripts_forge_handoff_targets_sh
     hooks_PostToolUse_Skill --> scripts_forge_handoff_check_sh
+    hooks_PostToolUse_Skill --> scripts_forge_auto_state_sh
+    hooks_PostToolUse_Skill --> scripts_forge_flex_detect_sh
 ```

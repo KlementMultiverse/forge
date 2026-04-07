@@ -4,6 +4,7 @@
 This loop is NON-OPTIONAL. Every step MUST follow it — whether agent spawn OR slash command.
 Hooks report handoff status after each step (advisory); PM MUST act on MISSING/INCOMPLETE reports.
 Discovery notes = single source of truth. Autoresearch is BOUNDED — NEVER invents new requirements.
+Step 11 (FLEX CHECKPOINT) is a DEFINITIVE STEP — always runs, has full authority within its correction loop, only exits when clean.
 </system-reminder>
 
 ```text
@@ -58,12 +59,93 @@ Discovery notes = single source of truth. Autoresearch is BOUNDED — NEVER inve
     BACKWARD: Does current output data trace back to previous step?
     Mismatch → flag and fix or raise question to user
 
-11. RATE: spawn @reviewer (1-5, must be >= 4)
+11. FLEX CHECKPOINT (ALWAYS runs — definitive step, not optional):
+    Scan output for FLEX_SIGNAL section.
+    IF no FLEX_SIGNAL → pass through (step is clean)
+    IF FLEX_SIGNAL found:
+      Parse: TYPE, TARGET, STEP, WHAT, WHY, PROPOSED, SEVERITY
+      IF SEVERITY = INFO → log to trace, pass through
+      IF SEVERITY = ADVISORY → persist to docs/flex-signals.log AND forge-state.json
+        (survives session crashes — flagged for next /review)
+      IF SEVERITY = BLOCKING → ENTER CORRECTION LOOP:
+        ┌─ GATE 1: CR reviews proposal (post to PR/issue, get feedback)
+        │   CR rejects → ESCALATE to user (BLOCKING signals cannot be skipped)
+        │   User decides: reclassify to ADVISORY, fix differently, or override
+        ├─ GATE 2: Spawn correct agent to fix TARGET:
+        │   CLAUDE.md        → @system-architect
+        │   SPEC.md          → @requirements-analyst
+        │   Design doc       → @backend-architect
+        │   agent-routing.md → @system-architect
+        │   Scaffold/infra   → @devops-architect
+        │   Security rules   → @security-engineer
+        │   New agent needed → @agent-factory
+        │   Tests            → @quality-engineer
+        │   Discovery notes  → PM + USER confirmation (highest impact)
+        ├─ GATE 3: Simplified loop on the fix (attempt → measure → max 3)
+        │   NOTE: This is a FLAT loop — NO recursive FLEX CHECKPOINT inside.
+        │   The fix agent runs steps 1-10 only (no nested step 11).
+        │   This prevents infinite recursion. If the fix itself needs a
+        │   correction, it becomes a NEW signal in the OUTER loop's re-scan.
+        ├─ GATE 4: @reviewer rates fix (>= 4, SEPARATE from signaling agent)
+        ├─ GATE 5: Impact check (machine-readable)
+        │   Run: forge-registry.py --impact {TARGET} --json
+        │   Parse JSON: {file, dependents[], phases[], action_items[]}
+        │   CLAUDE.md changed → re-validate downstream artifacts
+        │   SPEC.md changed → re-check traceability
+        │   Design doc changed → re-check implementation
+        │   If dependents is empty → low impact, proceed
+        │   If dependents > 5 → high impact, warn PM
+        ├─ Re-scan: did fix produce NEW signals?
+        │   Signal identity = TYPE + TARGET (same type+target = same signal)
+        │   Different TYPE or TARGET = new signal (gets own 5-iteration budget)
+        │   Same TYPE + TARGET recurring = same signal (shares budget)
+        │   YES (new signal) → loop again
+        │   NO → EXIT correction loop
+        └─ Max limits (apply to OUTER loop only):
+           5 iterations per signal (same TYPE+TARGET)
+           10 total flex signals per step
+           30 total per phase
+           Exceeded → ESCALATE to user with full context
+    EXIT with all corrections applied.
+
+12. RATE: spawn @reviewer (1-5, must be >= 4)
     Rating uses a SEPARATE retry budget (max 2 re-reviews)
     If < 4 after 2 re-reviews: escalate to user
 
-12. PROCEED to next step with verified output
+13. PROCEED to next step with verified output
 ```
+
+## FLEX_SIGNAL Format
+
+Every agent MUST include this if they discover an issue with a previous artifact:
+
+```text
+## FLEX_SIGNAL
+TYPE: AMEND_RULES | UPDATE_SPEC | FIX_DESIGN | FIX_ROUTING | FIX_SCAFFOLD |
+      ADD_SECURITY | SPAWN_AGENT | UPDATE_TESTS | DEEP_REVIEW
+TARGET: [file path — CLAUDE.md, SPEC.md, docs/design-doc.md, etc.]
+STEP: [which step created it — S3, N0, Step 14, etc.]
+WHAT: [exact problem description]
+WHY: [evidence — quote conflicting parts]
+PROPOSED: [what should change — propose, never decide]
+SEVERITY: INFO | ADVISORY | BLOCKING
+```
+
+## Decision Authority (manifesto: agents propose, never decide)
+
+| Decision | Proposes | Reviews | Approves | Implements |
+|---|---|---|---|---|
+| Amend CLAUDE.md (AMEND_RULES) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @system-architect |
+| Update SPEC.md (UPDATE_SPEC) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @requirements-analyst |
+| Fix design doc (FIX_DESIGN) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @backend-architect |
+| Fix routing (FIX_ROUTING) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @system-architect |
+| Fix scaffold (FIX_SCAFFOLD) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @devops-architect |
+| Add security rule (ADD_SECURITY) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @security-engineer |
+| Spawn new agent (SPAWN_AGENT) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @agent-factory |
+| Update tests (UPDATE_TESTS) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @quality-engineer |
+| Loop back (LOOP_BACK) | Agent (signal) | CR (plan) | @reviewer (>= 4) | Agent for target step |
+| Deep review (DEEP_REVIEW) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @reviewer (extended) |
+| Update discovery | Agent signals | PM asks user | USER decides | PM updates |
 
 ## Bounded Autoresearch Rules
 - Discovery notes are the SINGLE SOURCE OF TRUTH
@@ -72,3 +154,12 @@ Discovery notes = single source of truth. Autoresearch is BOUNDED — NEVER inve
 - NEVER add compliance user explicitly rejected
 - Enhance = ADD more context from discovery notes, NEVER remove existing prompt
 - The ONLY way new info enters is via user answering a RAISED QUESTION
+- FLEX_SIGNAL corrections go through 5 gates — no single entity decides
+
+## Safety Limits
+- Max 5 correction iterations per signal
+- Max 10 flex checkpoints per step
+- Max 30 per phase
+- Same file amended max 3 times (prevent oscillation)
+- Discovery notes loop-back requires USER confirmation
+- After any max exceeded → ESCALATE to user

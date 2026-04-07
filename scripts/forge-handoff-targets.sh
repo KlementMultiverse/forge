@@ -1,7 +1,17 @@
 #!/bin/bash
 # forge-handoff-targets.sh — Maps current step/skill to expected output artifact(s)
-# Used by PostToolUse hooks to check the RIGHT files, not just CLAUDE.md/SPEC.md
-# Exit codes: 0=targets found, 1=no targets (skip check)
+#
+# Resolves which files the handoff check should verify for the current step.
+# Instead of always checking CLAUDE.md/SPEC.md, this script reads the activity
+# log to determine what agent/skill just ran and returns the appropriate target
+# file paths (one per line).
+#
+# Called by: PostToolUse Agent/Skill hooks (templates/hooks.json)
+# Reads: docs/forge-state.json (current step), docs/.builder-activity.log
+#
+# Exit codes:
+#   0 = targets found (printed to stdout, one per line)
+#   1 = no targets for this step (skip handoff check)
 
 set -euo pipefail
 
