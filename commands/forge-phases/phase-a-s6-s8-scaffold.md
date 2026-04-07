@@ -12,28 +12,17 @@ HANDOFF METRIC (S6):
 mkdir -p .claude/rules/
 ```
 
-**STACK REGISTRY CHECK** (do this FIRST):
+**STACK REGISTRY** (optional reference — NEVER overrides fresh research):
 ```bash
-STACK_DIR="$HOME/.claude/stacks/{STACK_BACKEND}"  # e.g., django, fastapi, nextjs
+STACK_DIR="$HOME/.claude/stacks/{STACK_BACKEND}"
 if [ -d "$STACK_DIR" ]; then
-  # Copy stack rules into project
-  cp "$STACK_DIR/rules.md" .claude/rules/{STACK_BACKEND}-rules.md
-  # Use stack agent routing as base for agent-routing.md
-  STACK_AGENTS=$(cat "$STACK_DIR/agents.md")
-  # Read stack learnings — include in all agent prompts this build
-  STACK_LEARNINGS=$(cat "$STACK_DIR/learnings.md")
-  # Read stack scaffold instructions for Step S7
-  STACK_SCAFFOLD=$(cat "$STACK_DIR/scaffold.md")
+  # Read learnings for reference (informational only)
+  STACK_LEARNINGS=$(cat "$STACK_DIR/learnings.md" 2>/dev/null || echo "")
 fi
 ```
 
-If stack registry exists: use agents.md as the base for agent-routing.md (customize for this project's specific apps).
-If no registry: fall back to @system-architect generating from scratch (below).
-
-For sdlc-flow.md: PM fills the template with project-specific stages.
-
-For agent-routing.md: If stack registry provided agents.md, adapt it to this project's app structure.
-Otherwise, @system-architect fills the agent matrix based on stack:
+@system-architect generates agent-routing.md FRESH based on this project's stack choice.
+Stack registry learnings are informational — they inform but NEVER dictate agent selection.
 
 Execute: spawn Agent with subagent_type="system-architect"
   prompt: |
@@ -42,25 +31,22 @@ Execute: spawn Agent with subagent_type="system-architect"
     Stack: {STACK_BACKEND}
     Features: {features}
 
-    IMPORTANT: Check if ~/.claude/stacks/{STACK_BACKEND}/agents.md exists.
-    If YES: use it as the BASE template, adapt for this project's specific apps/folders.
-    If NO: create from scratch using the mappings below.
-
     Fill the agent matrix table:
     | Domain | Files | Agent | context7 Libraries |
 
-    Default mappings (only if no stack registry):
-    - Django models → @django-tenants-agent (if multi-tenant) or @backend-architect
-    - Django API → @django-ninja-agent
-    - FastAPI → @backend-architect (or @agent-factory creates one)
-    - S3/Lambda → @s3-lambda-agent
-    - AI/LLM → @llm-integration-agent
-    - Frontend templates → /sc:implement
-    - React/Next.js → @frontend-architect
-    - Auth → @django-ninja-agent or stack-specific agent
-    - Infrastructure → @devops-architect
-    - AWS → @aws-setup-agent
-    - GCP → @gcp-setup-agent
+    AGENT SELECTION RULES (open, not biased to forge's built-in agents):
+    1. MUST map each domain to the BEST AVAILABLE agent for the chosen stack
+    2. Check available agents: list all agents in ~/.claude/agents/ and agents/universal/
+    3. If a matching agent exists (e.g., @django-ninja-agent for Django Ninja API) → use it
+    4. If NO matching agent exists → use @agent-factory to create one for this stack
+    5. NEVER force a stack-specific agent onto a different stack (e.g., don't use @django-ninja-agent for FastAPI)
+    6. For generic domains (models, services, config) → @backend-architect (universal)
+    7. For frontend → @frontend-architect (universal, works for any frontend framework)
+    8. For infrastructure → @devops-architect (universal)
+    9. For security → @security-engineer (universal)
+    10. For testing → @quality-engineer (universal)
+    11. The agent matrix is PROJECT-SPECIFIC — generated fresh each time from the user's stack choice
+    12. Web search for "{STACK_BACKEND} best practices agents tools" to inform routing
 
 Verify: agent-routing.md has at least 3 rows in table
 Trace: save to docs/forge-trace/S6-rules/
