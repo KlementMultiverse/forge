@@ -118,6 +118,7 @@ graph TD
         scripts_forge_auto_sync_sh[forge-auto-sync.sh]
         scripts_forge_review_guard_sh[forge-review-guard.sh]
         scripts_forge_ownership_sh[forge-ownership.sh]
+        scripts_forge_handoff_check_sh[forge-handoff-check.sh]
         scripts_forge_grow_sh[forge-grow.sh]
         scripts_forge_enforce_sh[forge-enforce.sh]
         scripts_forge_test_guard_sh[forge-test-guard.sh]
@@ -576,6 +577,7 @@ graph TD
     scripts_forge_phase_map_sh --> scripts_forge_phase_map_sh
     scripts_forge_auto_sync_sh --> scripts_forge_readme_sync_sh
     scripts_forge_auto_sync_sh --> scripts_forge_triangle_sh
+    scripts_forge_handoff_check_sh --> scripts_forge_handoff_check_sh
     scripts_forge_grow_sh --> scripts_forge_grow_sh
     scripts_forge_enforce_sh --> scripts_forge_deps_sh
     scripts_forge_enforce_sh --> scripts_forge_phase_map_sh
@@ -588,5 +590,6 @@ graph TD
     hooks_PostToolUse_Write|Edit --> scripts_forge_auto_sync_sh
     hooks_PostToolUse_Write|Edit --> scripts_forge_change_validator_sh
     hooks_PostToolUse_Agent --> scripts_forge_auto_state_sh
+    hooks_PostToolUse_Agent --> scripts_forge_handoff_check_sh
     hooks_PostToolUse_Skill --> scripts_forge_auto_state_sh
 ```

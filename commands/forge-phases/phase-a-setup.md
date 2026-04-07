@@ -16,6 +16,78 @@ SESSION 1 RULES:
 - NO CODE IS WRITTEN in Session 1 — only planning/spec/config files
 </system-reminder>
 
+---
+
+**UNIVERSAL AGENT EXECUTION LOOP** (apply to EVERY agent spawn in ALL phases)
+
+<system-reminder>
+This loop is NON-OPTIONAL. Every agent spawn MUST follow it. Hooks enforce it mechanically.
+Discovery notes = single source of truth. Autoresearch is BOUNDED — NEVER invents new requirements.
+</system-reminder>
+
+```
+1. PREPARE:
+   PM reads input artifact (discovery notes / SPEC / previous step output)
+   PM reads agent-specific context (stack registry, templates, prior traces)
+   PM prepares prompt with ALL accumulated context
+
+2. DEFINE HANDOFF METRIC (per-step — see each STEP below):
+   MUST PROPAGATE: items from input that MUST appear in output
+   MUST NOT APPEAR: items from EXCLUDED / rejected items
+
+3. ATTEMPT 1:
+   Spawn agent with prepared prompt → receive output
+
+4. MEASURE (BOUNDED by discovery notes — NEVER invent):
+   FOR EACH item in MUST PROPAGATE:
+     Present in output? → COVERED
+     Missing?           → MISSING
+     Partial?           → INCOMPLETE
+   FOR EACH item in output not traceable to input:
+     → INVENTED (flag for removal — agent hallucinated this)
+   SCORE = COVERED / (COVERED + MISSING + INCOMPLETE)
+
+5. IF SCORE < 100%:
+   AUTORESEARCH (BOUNDED enhancement — ADD context, NEVER remove):
+     - List MISSING items with exact quotes from discovery notes
+     - List INCOMPLETE items with what needs more detail
+     - List INVENTED items to remove
+     - ENHANCE prompt: keep ALL of previous prompt + append:
+       "YOU MISSED: [exact items from discovery notes]"
+       "REMOVE: [invented items not in discovery notes]"
+       "INCOMPLETE: [items needing more detail]"
+   → ATTEMPT 2 with enhanced prompt → MEASURE again
+
+6. IF STILL < 100%: further enhance → ATTEMPT 3 → MEASURE
+
+7. IF CRITICAL GAP FOUND (agent discovers something missing from input):
+   RAISE QUESTION to user: "I found a gap: {gap}. Should I add {X}?"
+   User answers → update discovery notes → re-run with updated input
+   This is the ONLY way new info enters (via user, not agent invention)
+
+8. PICK BEST output (highest SCORE from 3 attempts)
+
+9. REVERSE ENGINEER + CROSS-VERIFY (bidirectional):
+   FORWARD:  Does previous step output data appear in current output?
+   BACKWARD: Does current output data trace back to previous step?
+   Mismatch → flag and fix or raise question to user
+
+10. RATE: spawn @reviewer (1-5, must be >= 4)
+    If < 4: counts as failed attempt
+
+11. PROCEED to next step with verified output
+```
+
+**BOUNDED AUTORESEARCH RULES:**
+- Discovery notes are the SINGLE SOURCE OF TRUTH
+- NEVER invent requirements not in discovery notes
+- NEVER override user decisions from S2
+- NEVER add compliance user explicitly rejected
+- Enhance = ADD more context from discovery notes, NEVER remove existing prompt
+- The ONLY way new info enters is via user answering a RAISED QUESTION
+
+---
+
 **STEP S1: PREPARE** (PM prepares workspace — no agents)
 
 NOTE: Project type detection (GREENFIELD/BROWNFIELD/EXISTING) was already done by the UserPromptSubmit hook before reaching this file. S1 does NOT re-detect — it only prepares the workspace.
@@ -567,6 +639,18 @@ S2 COMPLETION GATE: docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md must
 
 **STEP S3: GENERATE CLAUDE.md** → @system-architect agent
 
+HANDOFF METRIC (S3):
+  MUST PROPAGATE from discovery notes → CLAUDE.md:
+    - Every COMPLIANCE[] item → at least 1 MUST/NEVER rule in Architecture Rules
+    - Every STACK item → row in Tech Stack table with version
+    - Every EXCLUDED[] item → bullet in "What NOT to Build"
+    - Every INTEGRATIONS[] item → Integration Rules section (if any)
+    - A11Y requirements → accessibility rules (if confirmed)
+    - SUCCESS criteria → referenced in rules (if measurable)
+  MUST NOT APPEAR:
+    - Architecture rules for items in EXCLUDED[]
+    - Compliance rules for compliance items user rejected in Q5
+
 Execute: spawn Agent with subagent_type="system-architect"
   prompt: |
     Generate CLAUDE.md for a new project. Follow these rules STRICTLY:
@@ -642,6 +726,21 @@ Verify: has ## Tech Stack, ## Architecture Rules, ## What NOT to Build, ## Testi
 Trace: save to docs/forge-trace/S3-claude-md/
 
 **STEP S4: GENERATE SPEC.md** → @requirements-analyst agent
+
+HANDOFF METRIC (S4):
+  MUST PROPAGATE from discovery notes → SPEC.md:
+    - Every FEATURE → at least 1 [REQ-xxx]
+    - Every COMPLIANCE[] → [REQ-COMPLIANCE-xxx] with proof citation
+    - Every INTEGRATION → [REQ-INT-xxx]
+    - SUCCESS criteria → [REQ-SUCCESS-xxx] with measurable target
+    - SCALE → [REQ-SCALE-xxx] with NUMBERS not "fast"
+    - A11Y → [REQ-A11Y-xxx] if confirmed
+    - I18N → [REQ-I18N-xxx] if confirmed
+    - MOBILE → [REQ-MOBILE-xxx] if confirmed
+    - Every USERS[] type → referenced in at least one REQ
+  MUST NOT APPEAR:
+    - Any [REQ-xxx] for items in EXCLUDED[] list
+    - Requirements for features user rejected in Q5
 
 Execute: spawn Agent with subagent_type="requirements-analyst"
   prompt: |
