@@ -143,6 +143,7 @@ SEVERITY: INFO | ADVISORY | BLOCKING
 | Add security rule (ADD_SECURITY) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @security-engineer |
 | Spawn new agent (SPAWN_AGENT) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @agent-factory |
 | Update tests (UPDATE_TESTS) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @quality-engineer |
+| Loop back (LOOP_BACK) | Agent (signal) | CR (plan) | @reviewer (>= 4) | Agent for target step |
 | Deep review (DEEP_REVIEW) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @reviewer (extended) |
 | Update discovery | Agent signals | PM asks user | USER decides | PM updates |
 

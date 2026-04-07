@@ -1,6 +1,7 @@
 #!/usr/bin/env bats
 # Tests for forge-flex-detect.sh — FLEX_SIGNAL detection in agent output
 # Related: #202, CR plan Phase 2 Task 2.1
+# Exit codes: 0=signal found, 1=no signal, 2=file missing, 3=malformed signal
 
 setup() {
     load '../../test_helper/common-setup'
@@ -133,7 +134,7 @@ SIGNAL
 
 # ─── JSON OUTPUT ───
 
-@test "supports --json flag" {
+@test "supports --json flag with valid JSON" {
     cat > "$TEST_DIR/output.md" <<'SIGNAL'
 ## FLEX_SIGNAL
 TYPE: AMEND_RULES
@@ -146,14 +147,61 @@ SEVERITY: BLOCKING
 SIGNAL
     run "$SCRIPT" --json "$TEST_DIR/output.md"
     assert_success
-    # Should be valid JSON
-    echo "$output" | python3 -c "import json,sys; json.load(sys.stdin)" 2>/dev/null
-    assert [ $? -eq 0 ]
+    echo "$output" | python3 -c "import json,sys; json.load(sys.stdin)"
+}
+
+@test "--json output contains all required FLEX_SIGNAL fields" {
+    cat > "$TEST_DIR/output.md" <<'SIGNAL'
+## FLEX_SIGNAL
+TYPE: AMEND_RULES
+TARGET: CLAUDE.md
+STEP: S3
+WHAT: Rule conflict
+WHY: Evidence here
+PROPOSED: Fix it
+SEVERITY: BLOCKING
+SIGNAL
+    run "$SCRIPT" --json "$TEST_DIR/output.md"
+    assert_success
+    echo "$output" | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+sigs = data if isinstance(data, list) else [data]
+required = {'type','target','severity','step','what','why','proposed'}
+for s in sigs:
+    missing = required - set(k.lower() for k in s.keys())
+    assert not missing, f'Missing fields: {missing}'
+"
+}
+
+@test "--json with multiple signals returns a JSON array" {
+    cat > "$TEST_DIR/output.md" <<'SIGNAL'
+## FLEX_SIGNAL
+TYPE: AMEND_RULES
+TARGET: CLAUDE.md
+STEP: S3
+WHAT: A
+WHY: B
+PROPOSED: C
+SEVERITY: BLOCKING
+
+## FLEX_SIGNAL
+TYPE: UPDATE_SPEC
+TARGET: SPEC.md
+STEP: S4
+WHAT: D
+WHY: E
+PROPOSED: F
+SEVERITY: ADVISORY
+SIGNAL
+    run "$SCRIPT" --json "$TEST_DIR/output.md"
+    assert_success
+    echo "$output" | python3 -c "import json,sys; d=json.load(sys.stdin); assert isinstance(d,list) and len(d)==2, f'Expected list of 2, got {type(d)} len {len(d) if isinstance(d,list) else \"N/A\"}'"
 }
 
 # ─── SEVERITY FILTER ───
 
-@test "supports --severity-filter flag" {
+@test "supports --severity-filter single value" {
     cat > "$TEST_DIR/output.md" <<'SIGNAL'
 ## FLEX_SIGNAL
 TYPE: AMEND_RULES
@@ -167,6 +215,32 @@ SIGNAL
     run "$SCRIPT" --severity-filter BLOCKING "$TEST_DIR/output.md"
     # INFO signal filtered out when asking for BLOCKING only
     [ "$status" -eq 1 ]
+}
+
+@test "severity-filter BLOCKING,ADVISORY includes both, filters INFO" {
+    cat > "$TEST_DIR/output.md" <<'SIGNAL'
+## FLEX_SIGNAL
+TYPE: AMEND_RULES
+TARGET: CLAUDE.md
+STEP: S3
+WHAT: Info thing
+WHY: Not important
+PROPOSED: Skip
+SEVERITY: INFO
+
+## FLEX_SIGNAL
+TYPE: UPDATE_SPEC
+TARGET: SPEC.md
+STEP: S4
+WHAT: Advisory thing
+WHY: Should review
+PROPOSED: Check
+SEVERITY: ADVISORY
+SIGNAL
+    run "$SCRIPT" --severity-filter BLOCKING,ADVISORY "$TEST_DIR/output.md"
+    assert_success
+    assert_output --partial "ADVISORY"
+    refute_output --partial "INFO"
 }
 
 # ─── MULTIPLE SIGNALS ───
@@ -203,7 +277,7 @@ SIGNAL
 
 # ─── MALFORMED SIGNALS ───
 
-@test "handles malformed signal gracefully" {
+@test "malformed signal returns exit 3" {
     cat > "$TEST_DIR/output.md" <<'SIGNAL'
 ## FLEX_SIGNAL
 TYPE: AMEND_RULES
@@ -211,8 +285,27 @@ TARGET:
 SEVERITY:
 SIGNAL
     run "$SCRIPT" "$TEST_DIR/output.md"
-    # Should detect but report as malformed
+    # Exit 3 = signal found but malformed (missing required fields)
+    [ "$status" -eq 3 ]
     assert_output --partial "AMEND_RULES"
+}
+
+# ─── STDIN / PIPE SUPPORT ───
+
+@test "reads from stdin when no file argument" {
+    cat > "$TEST_DIR/output.md" <<'SIGNAL'
+## FLEX_SIGNAL
+TYPE: ADD_SECURITY
+TARGET: CLAUDE.md
+STEP: N7
+WHAT: New pattern
+WHY: Found in scan
+PROPOSED: Add rule
+SEVERITY: ADVISORY
+SIGNAL
+    run bash -c "cat '$TEST_DIR/output.md' | '$SCRIPT' -"
+    assert_success
+    assert_output --partial "ADD_SECURITY"
 }
 
 # ─── DESIGN RULES IN LOOP FILE ───
@@ -235,7 +328,7 @@ SIGNAL
 }
 
 @test "decision authority table has all 10 types" {
-    for type in AMEND_RULES UPDATE_SPEC FIX_DESIGN FIX_ROUTING FIX_SCAFFOLD ADD_SECURITY SPAWN_AGENT UPDATE_TESTS DEEP_REVIEW; do
+    for type in AMEND_RULES UPDATE_SPEC FIX_DESIGN FIX_ROUTING FIX_SCAFFOLD ADD_SECURITY SPAWN_AGENT UPDATE_TESTS LOOP_BACK DEEP_REVIEW; do
         run grep "$type" "$FORGE_DIR/rules/universal-agent-loop.md"
         assert_success
     done
@@ -247,7 +340,7 @@ SIGNAL
 }
 
 @test "Gate 3 is FLAT (no recursive step 11)" {
-    run grep -i "FLAT.*loop\|NO recursive" "$FORGE_DIR/rules/universal-agent-loop.md"
+    run grep -Ei "FLAT.*loop|NO recursive" "$FORGE_DIR/rules/universal-agent-loop.md"
     assert_success
 }
 
