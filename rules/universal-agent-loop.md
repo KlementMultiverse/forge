@@ -68,7 +68,8 @@ Step 11 (FLEX CHECKPOINT) is a DEFINITIVE STEP — always runs, has full authori
       IF SEVERITY = ADVISORY → log to trace, flag for next /review
       IF SEVERITY = BLOCKING → ENTER CORRECTION LOOP:
         ┌─ GATE 1: CR reviews proposal (post to PR/issue, get feedback)
-        │   CR rejects → log reason, skip signal
+        │   CR rejects → ESCALATE to user (BLOCKING signals cannot be skipped)
+        │   User decides: reclassify to ADVISORY, fix differently, or override
         ├─ GATE 2: Spawn correct agent to fix TARGET:
         │   CLAUDE.md        → @system-architect
         │   SPEC.md          → @requirements-analyst
@@ -81,11 +82,14 @@ Step 11 (FLEX CHECKPOINT) is a DEFINITIVE STEP — always runs, has full authori
         │   Discovery notes  → PM + USER confirmation (highest impact)
         ├─ GATE 3: Universal loop on the fix (attempt → measure → max 3)
         ├─ GATE 4: @reviewer rates fix (>= 4, SEPARATE from signaling agent)
-        ├─ GATE 5: Impact check
-        │   Run: forge-registry.py --impact {TARGET}
+        ├─ GATE 5: Impact check (machine-readable)
+        │   Run: forge-registry.py --impact {TARGET} --format json
+        │   Parse JSON output: {"affected_files": [...], "affected_phases": [...]}
         │   CLAUDE.md changed → re-validate downstream artifacts
         │   SPEC.md changed → re-check traceability
         │   Design doc changed → re-check implementation
+        │   If affected_files is empty → low impact, proceed
+        │   If affected_files > 5 → high impact, warn PM
         ├─ Re-scan: did fix produce NEW signals?
         │   YES → loop again (max 5 iterations per signal)
         │   NO  → EXIT correction loop
@@ -120,11 +124,15 @@ SEVERITY: INFO | ADVISORY | BLOCKING
 
 | Decision | Proposes | Reviews | Approves | Implements |
 |---|---|---|---|---|
-| Amend CLAUDE.md | Agent (signal) | CR (plan) | @reviewer (>= 4) | @system-architect |
-| Update SPEC.md | Agent (signal) | CR (plan) | @reviewer (>= 4) | @requirements-analyst |
-| Fix design doc | Agent (signal) | CR (plan) | @reviewer (>= 4) | @backend-architect |
-| Spawn new agent | Agent (signal) | CR (plan) | @reviewer (>= 4) | @agent-factory |
-| Add security rule | Agent (signal) | CR (plan) | @reviewer (>= 4) | @security-engineer |
+| Amend CLAUDE.md (AMEND_RULES) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @system-architect |
+| Update SPEC.md (UPDATE_SPEC) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @requirements-analyst |
+| Fix design doc (FIX_DESIGN) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @backend-architect |
+| Fix routing (FIX_ROUTING) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @system-architect |
+| Fix scaffold (FIX_SCAFFOLD) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @devops-architect |
+| Add security rule (ADD_SECURITY) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @security-engineer |
+| Spawn new agent (SPAWN_AGENT) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @agent-factory |
+| Update tests (UPDATE_TESTS) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @quality-engineer |
+| Deep review (DEEP_REVIEW) | Agent (signal) | CR (plan) | @reviewer (>= 4) | @reviewer (extended) |
 | Update discovery | Agent signals | PM asks user | USER decides | PM updates |
 
 ## Bounded Autoresearch Rules
