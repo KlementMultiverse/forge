@@ -702,13 +702,15 @@ Execute: spawn Agent with subagent_type="system-architect"
 
     {numbered rules, MUST/NEVER format, with code snippets}
     RULES MUST BE GENERATED DYNAMICALLY (never hardcoded):
-    1. Research trending best practices for {STACK} in {current_year} (web search + context7 docs)
-    2. Generate MUST/NEVER rules from research findings (not from forge defaults)
-    3. User's Q4 tech preferences are PRIMARY — never override user choice
-    4. Stack registry learnings SECONDARY — proven patterns from previous builds
-    5. For all stacks: "All credentials from os.environ — NEVER hardcoded" (universal security rule)
-    6. Include code snippets for critical patterns (e.g., concurrency, auth, validation)
-    7. Rules must reference the SPECIFIC tools/libraries the user chose, not forge preferences
+    - MUST research trending best practices for {STACK} in {current_year} (web search + context7 docs)
+    - MUST generate rules in MUST/NEVER binary format from research findings
+    - MUST treat user's Q4 tech preferences as PRIMARY input for all rules
+    - MUST reference the SPECIFIC tools/libraries the user chose, not forge defaults
+    - MUST include code snippets for critical patterns (concurrency, auth, validation)
+    - MUST read all credentials from os.environ — NEVER hardcode secrets (universal)
+    - NEVER override user's tech choice with forge preferences
+    - NEVER generate rules for a framework/library the user did not choose
+    - Stack registry learnings are SECONDARY — proven patterns from previous builds
 
     ## Compliance Rules
     <!-- Only if compliance confirmed in discovery. Omit section entirely if none. -->
@@ -1059,7 +1061,7 @@ HANDOFF METRIC (S9):
     - Anti-scope: no EXCLUDED item appears in any [REQ-xxx]
   ESCALATE: any rating < 4 → fix → re-review (max 2)
 
-Execute: spawn Agent with subagent_type="self-review"
+Execute: spawn Agent with subagent_type="reviewer"
   prompt: |
     Review all generated files for this new project:
     1. CLAUDE.md — at least 20 lines, under 100? Real rules? MUST/NEVER format? Code snippets?
