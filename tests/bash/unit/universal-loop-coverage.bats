@@ -90,6 +90,30 @@ teardown() {
     [ "$count" -ge 2 ]
 }
 
+# ─── BASH HOOK CR DETECTION ───
+
+@test "Bash PostToolUse hook detects git push" {
+    run grep "git push" "$HOOKS"
+    assert_success
+}
+
+@test "Bash PostToolUse hook mentions /cr" {
+    run grep "/cr status\|cr review" "$HOOKS"
+    assert_success
+}
+
+# ─── GATE CR INTEGRATION ───
+
+@test "Gate command requires /cr approve" {
+    run grep "/cr approve" "$FORGE_DIR/commands/gate.md"
+    assert_success
+}
+
+@test "Gate blocks without CR approval" {
+    run grep "GATE BLOCKS without CR\|NON-NEGOTIABLE" "$FORGE_DIR/commands/gate.md"
+    assert_success
+}
+
 # ─── HOOKS JSON STRUCTURE ───
 
 @test "hooks.json is valid JSON" {

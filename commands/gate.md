@@ -50,8 +50,10 @@ bash scripts/forge-enforce.sh update-gate {phase_number}
 bash scripts/forge-enforce.sh update-step {gate_step_number} DONE
 ```
 
-If CodeRabbit is available (PR exists) → also check CodeRabbit approval.
-If CodeRabbit is NOT available → checklist above is sufficient.
+10. CodeRabbit approval: run `/cr approve` → must return APPROVED
+    If CHANGES_REQUESTED → fix findings → `/cr resolve` → `/cr review` → re-check
+    If PENDING → wait 60s → re-check (max 3 polls)
+    GATE BLOCKS without CR approval. This is NON-NEGOTIABLE.
 
 NEVER skip verification. NEVER assume passing without running checks.
 </system-reminder>

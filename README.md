@@ -31,11 +31,11 @@ What gets installed (to `~/.claude/`, shared by all projects):
 | Component | Count | Location | Purpose |
 |-----------|-------|----------|---------|
 | Agents | 53 | ~/.claude/agents/ | Specialist AI agents (backend, security, reviewer, etc.) |
-| Commands | 45 | ~/.claude/commands/ | Slash commands (/forge, /discover, /gate, sc:*, etc.) |
+| Commands | 46 | ~/.claude/commands/ | Slash commands (/forge, /discover, /gate, sc:*, etc.) |
 | Rules | 9 | ~/.claude/rules/ | Global rules (security, python, docker, PM behaviors, etc.) |
 | Scripts | 31 | ~/.claude/scripts/ | Enforcement, traceability, ownership, testing |
 | Templates | 22 | ~/.claude/templates/ | Project scaffolding (CLAUDE.md, SPEC.md, hooks, etc.) |
-| Tests | 520 | tests/ | BATS + pytest test suite (100% script coverage) |
+| Tests | 538 | tests/ | BATS + pytest test suite (100% script coverage) |
 | Shell fn | 1 | ~/.bashrc / ~/.zshrc | `forge` terminal command |
 
 ---
@@ -213,7 +213,7 @@ Check FORGE.md for queued items. Loop or done.
 | 6 | PostToolUse (Write/Edit) | Runs ruff lint + warns if file >300 lines + FORGE TRACE reminder |
 | 7 | PostToolUse (Agent) | Logs activity + updates forge-state.json + handoff check |
 | 8 | PostToolUse (Skill) | Logs activity + updates forge-state.json + handoff check |
-| 9 | PostToolUse (Bash) | Logs command to activity log |
+| 9 | PostToolUse (Bash) | Logs command + detects git push → prompts /cr review |
 
 Plus two git hooks:
 - `commit-msg` — blocks commits without issue references (#N) and enforces conventional commit format with scope

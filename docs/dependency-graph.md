@@ -60,6 +60,7 @@ graph TD
     subgraph Commands
         commands_requirements[requirements]
         commands_feasibility[feasibility]
+        commands_cr[cr]
         commands_build_project[build-project]
         commands_retro[retro]
         commands_specify[specify]
@@ -339,6 +340,9 @@ graph TD
     commands_feasibility --> agents_system_architect
     commands_feasibility --> commands_feasibility
     commands_feasibility --> commands_requirements
+    commands_cr --> commands_checkpoint
+    commands_cr --> commands_cr
+    commands_cr --> commands_gate
     commands_build_project --> agents_aws_setup_agent
     commands_build_project --> agents_backend_architect
     commands_build_project --> agents_context_loader_agent
@@ -595,10 +599,10 @@ graph TD
     hooks_Stop --> scripts_forge_phase_gate_sh
     hooks_UserPromptSubmit --> scripts_forge_state_sync_sh
     hooks_PreToolUse_Edit --> scripts_forge_change_validator_sh
-    hooks_PostToolUse_Write|Edit --> scripts_forge_change_validator_sh
     hooks_PostToolUse_Write|Edit --> scripts_forge_auto_sync_sh
-    hooks_PostToolUse_Agent --> scripts_forge_handoff_check_sh
+    hooks_PostToolUse_Write|Edit --> scripts_forge_change_validator_sh
     hooks_PostToolUse_Agent --> scripts_forge_auto_state_sh
-    hooks_PostToolUse_Skill --> scripts_forge_handoff_check_sh
+    hooks_PostToolUse_Agent --> scripts_forge_handoff_check_sh
     hooks_PostToolUse_Skill --> scripts_forge_auto_state_sh
+    hooks_PostToolUse_Skill --> scripts_forge_handoff_check_sh
 ```
