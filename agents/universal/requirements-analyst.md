@@ -133,7 +133,7 @@ When extracting requirements from existing code (no stakeholder available), foll
 
 #### Output Contract
 - **SPEC.md**: Minimum 20 [REQ-xxx] tags, domain-prefixed (REQ-AUTH, REQ-SCORE, REQ-COMPLIANCE, etc.)
-- **Sections**: Overview, Tech Stack, Architecture, Models (with field types), API Endpoints, Compliance, Requirements Traceability
+- **Sections**: Follow SPEC.template.md structure. Contract requirements take precedence over template placeholders where they conflict.
 - **Each REQ**: Single clear behavior, not compound
 - **Traceability table**: 4 columns (REQ | description | proof | status)
 - **Anti-scope enforcement**: ZERO REQs for EXCLUDED items
@@ -150,7 +150,11 @@ When extracting requirements from existing code (no stakeholder available), foll
 #### Handoff Metric (S4)
 - **FROM discovery notes → SPEC.md**: Every FEATURE → REQ, every COMPLIANCE → REQ-COMPLIANCE, every INTEGRATION → REQ-INT
 - **MUST NOT appear**: REQs for EXCLUDED items
-- **Verify**: `grep -c "REQ-" SPEC.md` >= 20, traceability table exists
+- **Verify**:
+  - Count: `grep -cE 'REQ-[A-Z]+-[0-9]+' SPEC.md` >= 20
+  - Categories: at least 1 REQ-COMPLIANCE (if compliance), 1 REQ-SUCCESS, 1 REQ-SCALE
+  - Anti-scope: `grep -i "EXCLUDED_ITEM" SPEC.md | grep REQ` returns 0 (for each excluded item)
+  - Traceability table exists with 4 columns
 
 ### Handoff Protocol
 Always return results in this format:

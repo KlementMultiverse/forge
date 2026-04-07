@@ -155,7 +155,7 @@ From Claude Code's `coordinatorMode.ts`, the coordinator pattern strictly separa
 - **Format**: PM extracts ACTUAL values from discovery notes, passes them in prompt — NOT placeholders
 
 #### Output Contract
-- **S3 (CLAUDE.md)**: Under 100 lines, 5 sections (Tech Stack, Architecture Rules, Compliance Rules, What NOT to Build, Testing), every rule is MUST/NEVER, code snippets for critical patterns
+- **S3 (CLAUDE.md)**: Under 100 lines. Required core sections: Tech Stack, Architecture Rules, What NOT to Build, Testing. Optional sections (only if confirmed): Compliance Rules, Integration Rules. Follow CLAUDE.template.md structure. Every rule is MUST/NEVER with code snippets for critical patterns.
 - **S6 (agent-routing.md)**: Agent matrix table with domain → files → agent → context7, per-app breakdown with REQ mapping, routing rules
 - **Design doc**: 10 sections complete, every decision has trade-off + alternative considered
 
@@ -171,7 +171,12 @@ From Claude Code's `coordinatorMode.ts`, the coordinator pattern strictly separa
 #### Handoff Metric (S3)
 - **FROM discovery notes → CLAUDE.md**: Every COMPLIANCE[] → MUST/NEVER rule, every STACK → tech table row, every EXCLUDED → bullet in anti-scope
 - **MUST NOT appear**: Rules for EXCLUDED items, compliance for rejected items
-- **Verify**: `grep -c "MUST\|NEVER" CLAUDE.md` >= 5, `wc -l CLAUDE.md` between 20-100
+- **Verify**:
+  - Structural: `grep -cE "MUST|NEVER" CLAUDE.md` >= 5 and `wc -l CLAUDE.md` between 20-100
+  - Compliance: for each COMPLIANCE[] item, grep for it in CLAUDE.md (must appear in a rule)
+  - Stack: for each STACK item, grep for it in Tech Stack table
+  - Anti-scope: for each EXCLUDED[] item, grep in "What NOT to Build" section (must be listed)
+  - Exclusion: for each EXCLUDED[] item, grep in Architecture Rules (must NOT appear as a feature rule)
 
 ### Handoff Protocol
 Always return results in this format:

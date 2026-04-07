@@ -205,6 +205,7 @@ This agent operates within the Forge framework. These rules are MANDATORY.
 - **Verify**: Anti-scope — no EXCLUDED items in any [REQ-xxx]
 - **Verify**: All ratings >= 4
 - **Block**: Do NOT let PM proceed if any rating < 4
+- **Note**: forge-handoff-check.sh verifies structural coverage. Rating enforcement is PM responsibility per the Universal Agent Execution Loop (step 11). The reviewer outputs ratings; PM reads them and retries if < 4.
 
 ### Handoff Protocol
 Always return results in this format:
