@@ -1,15 +1,15 @@
 {
   "version": "2.0",
-  "generated": "2026-04-07T10:57:58.904175+00:00",
+  "generated": "2026-04-07T15:29:48.889615+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
     "commands": 56,
-    "scripts": 33,
+    "scripts": 34,
     "hooks": 9,
     "templates": 17,
     "rules": 9,
-    "edges": 472,
+    "edges": 476,
     "phase_mapped_components": 36,
     "flows": 9
   },
@@ -328,6 +328,9 @@
             "investigate",
             "learn",
             "requirements"
+          ],
+          "scripts": [
+            "forge-handoff-check.sh"
           ]
         }
       },
@@ -1948,6 +1951,15 @@
           ]
         }
       },
+      "forge-flex-detect.sh": {
+        "type": "script",
+        "path": "scripts/forge-flex-detect.sh",
+        "depends_on": {
+          "scripts": [
+            "forge-flex-detect.sh"
+          ]
+        }
+      },
       "forge-review-guard.sh": {
         "type": "script",
         "path": "scripts/forge-review-guard.sh",
@@ -2121,8 +2133,8 @@
         "matcher": "",
         "depends_on": {
           "scripts": [
-            "forge-phase-gate.sh",
-            "forge-step-gate.sh"
+            "forge-step-gate.sh",
+            "forge-phase-gate.sh"
           ]
         }
       },
@@ -2164,8 +2176,8 @@
         "matcher": "Write|Edit",
         "depends_on": {
           "scripts": [
-            "forge-auto-sync.sh",
-            "forge-change-validator.sh"
+            "forge-change-validator.sh",
+            "forge-auto-sync.sh"
           ]
         }
       },
@@ -2176,8 +2188,9 @@
         "matcher": "Agent",
         "depends_on": {
           "scripts": [
-            "forge-auto-state.sh",
             "forge-handoff-targets.sh",
+            "forge-auto-state.sh",
+            "forge-flex-detect.sh",
             "forge-handoff-check.sh"
           ]
         }
@@ -2189,8 +2202,9 @@
         "matcher": "Skill",
         "depends_on": {
           "scripts": [
-            "forge-auto-state.sh",
             "forge-handoff-targets.sh",
+            "forge-auto-state.sh",
+            "forge-flex-detect.sh",
             "forge-handoff-check.sh"
           ]
         }
@@ -2845,6 +2859,11 @@
       "from": "agents/system-architect",
       "to": "commands/requirements",
       "type": "commands"
+    },
+    {
+      "from": "agents/system-architect",
+      "to": "scripts/forge-handoff-check.sh",
+      "type": "scripts"
     },
     {
       "from": "agents/self-review",
@@ -4607,6 +4626,11 @@
       "type": "scripts"
     },
     {
+      "from": "scripts/forge-flex-detect.sh",
+      "to": "scripts/forge-flex-detect.sh",
+      "type": "scripts"
+    },
+    {
       "from": "scripts/forge-handoff-check.sh",
       "to": "scripts/forge-handoff-check.sh",
       "type": "scripts"
@@ -4643,12 +4667,12 @@
     },
     {
       "from": "hooks/Stop",
-      "to": "scripts/forge-phase-gate.sh",
+      "to": "scripts/forge-step-gate.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/Stop",
-      "to": "scripts/forge-step-gate.sh",
+      "to": "scripts/forge-phase-gate.sh",
       "type": "scripts"
     },
     {
@@ -4663,12 +4687,17 @@
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-auto-sync.sh",
+      "to": "scripts/forge-change-validator.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-change-validator.sh",
+      "to": "scripts/forge-auto-sync.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Agent",
+      "to": "scripts/forge-handoff-targets.sh",
       "type": "scripts"
     },
     {
@@ -4678,7 +4707,7 @@
     },
     {
       "from": "hooks/PostToolUse:Agent",
-      "to": "scripts/forge-handoff-targets.sh",
+      "to": "scripts/forge-flex-detect.sh",
       "type": "scripts"
     },
     {
@@ -4688,12 +4717,17 @@
     },
     {
       "from": "hooks/PostToolUse:Skill",
+      "to": "scripts/forge-handoff-targets.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Skill",
       "to": "scripts/forge-auto-state.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Skill",
-      "to": "scripts/forge-handoff-targets.sh",
+      "to": "scripts/forge-flex-detect.sh",
       "type": "scripts"
     },
     {
@@ -5213,7 +5247,8 @@
       },
       "scripts/forge-handoff-check.sh": {
         "agents": [
-          "reviewer"
+          "reviewer",
+          "system-architect"
         ],
         "commands": [
           "phase:phase-a-s9-s10-review",
@@ -5967,6 +6002,15 @@
           "forge-shell.sh"
         ]
       },
+      "scripts/forge-flex-detect.sh": {
+        "scripts": [
+          "forge-flex-detect.sh"
+        ],
+        "hooks": [
+          "PostToolUse:Agent",
+          "PostToolUse:Skill"
+        ]
+      },
       "scripts/forge-grow.sh": {
         "scripts": [
           "forge-grow.sh"
@@ -6626,20 +6670,130 @@
     "general": [
       {
         "date": "2026-04-07",
-        "commit": "228f2059",
-        "change_type": "bugfix",
+        "commit": "ca20b62e",
+        "change_type": "test",
         "scope": "general",
-        "summary": "address all 6 CodeRabbit findings",
+        "summary": "add 4 CR-required tests \u2014 persistence + hook wiring",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/forge-flex-detect.bats"
+        ],
+        "issues": [
+          "#202"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "4d611ec0",
+        "change_type": "test",
+        "scope": "general",
+        "summary": "address CR test feedback \u2014 7 additions + 3 fixes",
         "breaking": false,
         "requires_reinstall": true,
         "files": [
+          "rules/universal-agent-loop.md",
+          "tests/bash/unit/forge-flex-detect.bats"
+        ],
+        "issues": [
+          "#202"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "a8bfe577",
+        "change_type": "test",
+        "scope": "general",
+        "summary": "TDD RED \u2014 forge-flex-detect.sh tests before implementation",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/forge-flex-detect.bats"
+        ],
+        "issues": [
+          "#202"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "70603fee",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "address 6 CR findings \u2014 recursion, identity, persistence, schema",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "rules/universal-agent-loop.md"
+        ],
+        "issues": [
+          "#202"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "e2bc2d31",
+        "change_type": "bugfix",
+        "scope": "general",
+        "summary": "address 3 CR findings on FLEX CHECKPOINT design",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "rules/universal-agent-loop.md"
+        ],
+        "issues": [
+          "#202"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "a79fe0bd",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "step 11 FLEX CHECKPOINT \u2014 self-correcting loop with 5 gates",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "rules/universal-agent-loop.md"
+        ],
+        "issues": [
+          "#202"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "088547aa",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "universal loop + /cr command + mechanical enforcement + agent contracts (#196 #197 #199 #200 #201)",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "agents/universal/requirements-analyst.md",
+          "agents/universal/system-architect.md",
+          "commands/cr.md",
           "commands/gate.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "rules/universal-agent-loop.md",
+          "scripts/forge-handoff-targets.sh",
+          "scripts/forge-step-gate.sh",
           "templates/hooks.json",
+          "templates/pre-commit",
+          "tests/bash/unit/cr-command.bats",
+          "tests/bash/unit/handoff-targets.bats",
+          "tests/bash/unit/step-gate.bats",
           "tests/bash/unit/universal-loop-coverage.bats"
         ],
         "issues": [
           "#1",
-          "#196"
+          "#186",
+          "#193",
+          "#196",
+          "#197",
+          "#199",
+          "#200",
+          "#201"
         ]
       },
       {
@@ -8191,182 +8345,39 @@
         "requires_reinstall": false
       }
     ],
-    "hooks": [
+    "templates": [
       {
         "date": "2026-04-07",
-        "commit": "57cdc077",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "/cr enforced at gate + bash push detection",
+        "commit": "6f1a9bf3",
+        "change_type": "bugfix",
+        "scope": "templates",
+        "summary": "nested HTML comments broke Pipe 1 safety in CLAUDE.template.md",
         "breaking": false,
         "requires_reinstall": true,
         "files": [
-          "README.md",
-          "commands/gate.md",
           "docs/dependency-graph.md",
           "forge-registry.json",
-          "templates/hooks.json",
-          "tests/bash/unit/universal-loop-coverage.bats"
-        ],
-        "issues": [
-          "#196"
-        ]
-      },
-      {
-        "date": "2026-04-07",
-        "commit": "830021cd",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "universal execution loop covers ALL steps \u2014 agent AND command #196",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "rules/universal-agent-loop.md",
-          "templates/hooks.json",
-          "templates/pre-commit",
-          "tests/bash/unit/universal-loop-coverage.bats"
-        ],
-        "issues": [
-          "#196",
-          "#197"
-        ]
-      },
-      {
-        "date": "2026-04-07",
-        "commit": "f895927b",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "auto-regenerate registry on pre-commit when tracked files change",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/pre-commit"
-        ],
-        "issues": [
-          "#189"
-        ]
-      },
-      {
-        "date": "2026-04-07",
-        "commit": "3ea708e6",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "visible handoff evaluation after every agent + S9 gate",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/hooks.json"
-        ],
-        "issues": [
-          "#189"
+          "templates/CLAUDE.template.md"
         ]
       },
       {
         "date": "2026-04-06",
-        "commit": "ddbd7d1d",
-        "change_type": "bugfix",
-        "scope": "hooks",
-        "summary": "grep portability \u2014 use ERE not GNU BRE for placeholder detection",
+        "commit": "ed35ae06",
+        "change_type": "test",
+        "scope": "templates",
+        "summary": "add 10 Pipe 1/2 validation tests for templates + fix safety violation",
         "breaking": false,
         "requires_reinstall": true,
         "files": [
-          "templates/hooks.json"
+          "templates/forge-timeline.template.md",
+          "tests/bash/unit/templates-validation.bats"
         ],
         "issues": [
-          "#113"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "3825dbcc",
-        "change_type": "bugfix",
-        "scope": "hooks",
-        "summary": "fix 10 CASE detection edge cases from CodeRabbit analysis",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "commands/forge.md",
-          "forge-registry.json",
-          "templates/hooks.json",
-          "tests/bash/integration/case-detection-edge-cases.bats"
-        ],
-        "issues": [
-          "#111"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "d0aa943c",
-        "change_type": "bugfix",
-        "scope": "hooks",
-        "summary": "fix broken JSON in hooks.json \u2014 unescaped quotes around CLAUDE_TOOL_INPUT",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "templates/hooks.json"
-        ],
-        "issues": [
-          "#103"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "e0c652fe",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "improve GitHub setup guidance \u2014 detect gh CLI, auth, provide links",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/hooks.json",
-          "tests/bash/integration/github-setup.bats"
-        ],
-        "issues": [
-          "#94"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "80d0b029",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "refactor UserPromptSubmit \u2014 gate on /forge, add SessionStart, add CASE_RESUME",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "scripts/forge-state-sync.sh",
-          "templates/hooks.json",
-          "tests/bash/integration/hook-routing.bats"
-        ],
-        "issues": [
-          "#92"
+          "#84"
         ]
       }
     ],
     "commands": [
-      {
-        "date": "2026-04-07",
-        "commit": "84eda7fe",
-        "change_type": "feature",
-        "scope": "commands",
-        "summary": "/cr \u2014 unified CodeRabbit integration command",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/cr.md",
-          "tests/bash/unit/cr-command.bats"
-        ],
-        "issues": [
-          "#196"
-        ]
-      },
       {
         "date": "2026-04-07",
         "commit": "a53398fe",
@@ -8939,38 +8950,6 @@
         ]
       }
     ],
-    "templates": [
-      {
-        "date": "2026-04-07",
-        "commit": "6f1a9bf3",
-        "change_type": "bugfix",
-        "scope": "templates",
-        "summary": "nested HTML comments broke Pipe 1 safety in CLAUDE.template.md",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "templates/CLAUDE.template.md"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "ed35ae06",
-        "change_type": "test",
-        "scope": "templates",
-        "summary": "add 10 Pipe 1/2 validation tests for templates + fix safety violation",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/forge-timeline.template.md",
-          "tests/bash/unit/templates-validation.bats"
-        ],
-        "issues": [
-          "#84"
-        ]
-      }
-    ],
     "agents": [
       {
         "date": "2026-04-07",
@@ -9149,6 +9128,123 @@
         ],
         "issues": [
           "#48"
+        ]
+      }
+    ],
+    "hooks": [
+      {
+        "date": "2026-04-07",
+        "commit": "f895927b",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "auto-regenerate registry on pre-commit when tracked files change",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/pre-commit"
+        ],
+        "issues": [
+          "#189"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "3ea708e6",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "visible handoff evaluation after every agent + S9 gate",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#189"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "ddbd7d1d",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "grep portability \u2014 use ERE not GNU BRE for placeholder detection",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#113"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "3825dbcc",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "fix 10 CASE detection edge cases from CodeRabbit analysis",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge.md",
+          "forge-registry.json",
+          "templates/hooks.json",
+          "tests/bash/integration/case-detection-edge-cases.bats"
+        ],
+        "issues": [
+          "#111"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "d0aa943c",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "fix broken JSON in hooks.json \u2014 unescaped quotes around CLAUDE_TOOL_INPUT",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#103"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "e0c652fe",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "improve GitHub setup guidance \u2014 detect gh CLI, auth, provide links",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/hooks.json",
+          "tests/bash/integration/github-setup.bats"
+        ],
+        "issues": [
+          "#94"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "80d0b029",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "refactor UserPromptSubmit \u2014 gate on /forge, add SessionStart, add CASE_RESUME",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/forge-state-sync.sh",
+          "templates/hooks.json",
+          "tests/bash/integration/hook-routing.bats"
+        ],
+        "issues": [
+          "#92"
         ]
       }
     ],
