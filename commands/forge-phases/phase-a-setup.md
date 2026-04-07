@@ -255,6 +255,10 @@ CLOUD_PROVIDER:
 ARCH_PATTERN:
 AUTH_STRATEGY:
 API_PATTERN:
+DATA_MODEL:
+AI_PATTERN:
+REALTIME_PATTERN:
+DEPLOY_STRATEGY:
 FEATURES: []
 COMPLIANCE: []
 SCALE:
@@ -532,7 +536,7 @@ Q4: "Tech Stack — let me research what's best for your project"
 
   AFTER USER ANSWERS:
     → PM WRITES to discovery notes: all stack choices with research sources and cost estimates
-    → Stack registry: auto-create entry (`forge-stack.sh create {stack} --auto`) for FUTURE reference only
+    → Stack registry: auto-create entry (`forge-stack.sh create {STACK_BACKEND} --auto`) for FUTURE reference only
 
   TRANSITION: "Stack set. Now let me check a few architecture decisions before we get to features."
 
@@ -674,7 +678,8 @@ Q5: Features — SMART TWO-PART (adaptive based on ALL Q1-Q4.5 variables)
   DEEP-DIVE TRIGGER (after Q5, only if needed):
   If ANY of these are true:
     - HIGH_RISK domain confirmed
-    - HIPAA/GDPR/PCI-DSS/SOC2 confirmed in Part A
+    - HIPAA/GDPR/PCI-DSS/SOC2/EEOC confirmed in Part A
+    - AI + people-affecting domain (hiring/HR/lending/insurance/criminal justice)
     - Multi-tenant selected in Part B
     - AI/LLM features selected in Part B
     - >3 user types identified in Q2
@@ -796,8 +801,8 @@ HANDOFF METRIC (S3):
 PM MUST first:
 1. Read docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md → extract ACTUAL values (not placeholders)
 2. Read templates/CLAUDE.template.md → follow exact structure
-3. Fetch latest docs: spawn @context-loader-agent for {stack} framework (MANDATORY)
-4. Optionally read ~/.claude/stacks/{stack}/rules.md for reference (NEVER override internet research with registry)
+3. Fetch latest docs: spawn @context-loader-agent for {STACK_BACKEND} framework (MANDATORY)
+4. Optionally read ~/.claude/stacks/{STACK_BACKEND}/rules.md for reference (NEVER override internet research with registry)
 
 Execute: spawn Agent with subagent_type="system-architect"
   prompt: |
@@ -806,7 +811,7 @@ Execute: spawn Agent with subagent_type="system-architect"
     PROJECT INFO (PM reads actual values from docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md):
     - Name: {name}
     - Description: {description}
-    - Stack: {stack}
+    - Stack: {STACK_BACKEND} + {STACK_FRONTEND} + {STACK_DB}
     - Features: {features}
     - Excluded: {excluded}
     - Compliance: {compliance} (from domain inference — generate MUST/NEVER rules)
@@ -918,7 +923,7 @@ Execute: spawn Agent with subagent_type="requirements-analyst"
 
     PROJECT INFO (from discovery notes):
     - Name: {name}
-    - Stack: {stack}
+    - Stack: {STACK_BACKEND} + {STACK_FRONTEND} + {STACK_DB}
     - Features: {features}
     - Users: {users}
     - Excluded: {excluded} (NEVER generate requirements for excluded items)
@@ -990,7 +995,7 @@ HANDOFF METRIC (S6):
   MUST PROPAGATE:
     - STACK → agent-routing.md has correct agent mappings for this stack
     - FEATURES → agent-routing.md covers all feature domains (auth, API, infra, etc.)
-    - Stack registry rules → copied to .claude/rules/{stack}-rules.md (if exists)
+    - Stack registry rules → copied to .claude/rules/{STACK_BACKEND}-rules.md (if exists)
   MUST NOT APPEAR:
     - Agent mappings for EXCLUDED features
 
@@ -1000,10 +1005,10 @@ mkdir -p .claude/rules/
 
 **STACK REGISTRY CHECK** (do this FIRST):
 ```bash
-STACK_DIR="$HOME/.claude/stacks/{stack}"  # e.g., django, fastapi, nextjs
+STACK_DIR="$HOME/.claude/stacks/{STACK_BACKEND}"  # e.g., django, fastapi, nextjs
 if [ -d "$STACK_DIR" ]; then
   # Copy stack rules into project
-  cp "$STACK_DIR/rules.md" .claude/rules/{stack}-rules.md
+  cp "$STACK_DIR/rules.md" .claude/rules/{STACK_BACKEND}-rules.md
   # Use stack agent routing as base for agent-routing.md
   STACK_AGENTS=$(cat "$STACK_DIR/agents.md")
   # Read stack learnings — include in all agent prompts this build
@@ -1025,10 +1030,10 @@ Execute: spawn Agent with subagent_type="system-architect"
   prompt: |
     Create .claude/rules/agent-routing.md for this project.
 
-    Stack: {stack}
+    Stack: {STACK_BACKEND}
     Features: {features}
 
-    IMPORTANT: Check if ~/.claude/stacks/{stack}/agents.md exists.
+    IMPORTANT: Check if ~/.claude/stacks/{STACK_BACKEND}/agents.md exists.
     If YES: use it as the BASE template, adapt for this project's specific apps/folders.
     If NO: create from scratch using the mappings below.
 
@@ -1063,7 +1068,7 @@ HANDOFF METRIC (S7):
 
 Execute: spawn Agent with subagent_type="devops-architect"
   prompt: |
-    Create project scaffold for {stack}.
+    Create project scaffold for {STACK_BACKEND}.
     Read CLAUDE.md for rules. Read ~/.claude/rules/docker.md for Docker rules.
     Follow the Docker rules file — it covers volume mounts, dev vs prod, .dockerignore.
     Generate REAL files:

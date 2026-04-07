@@ -36,8 +36,11 @@ if [ -f "$REGISTRY_SCRIPT" ] && [ -f "$REGISTRY_FILE" ]; then
     if [ "$TRACKED_CHANGES" -gt 0 ]; then
         # Compute checksum of current registry
         OLD_SUM=$(md5sum "$REGISTRY_FILE" 2>/dev/null | cut -d' ' -f1)
-        # Regenerate
-        python3 "$REGISTRY_SCRIPT" --regenerate 2>/dev/null
+        # Regenerate — block commit if this fails
+        if ! python3 "$REGISTRY_SCRIPT" --regenerate 2>/dev/null; then
+            echo "[FORGE] ERROR: Registry regeneration failed. Fix the issue before committing."
+            exit 1
+        fi
         NEW_SUM=$(md5sum "$REGISTRY_FILE" 2>/dev/null | cut -d' ' -f1)
         # If changed, auto-stage
         if [ "$OLD_SUM" != "$NEW_SUM" ]; then
