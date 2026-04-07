@@ -308,6 +308,72 @@ SIGNAL
     assert_output --partial "ADD_SECURITY"
 }
 
+# ─── PERSISTENCE ───
+
+@test "ADVISORY signal writes to docs/flex-signals.log" {
+    mkdir -p "$TEST_DIR/docs"
+    cat > "$TEST_DIR/output.md" <<'SIGNAL'
+## FLEX_SIGNAL
+TYPE: UPDATE_SPEC
+TARGET: SPEC.md
+STEP: N3
+WHAT: Gap found
+WHY: Evidence
+PROPOSED: Add REQ
+SEVERITY: ADVISORY
+SIGNAL
+    FORGE_DIR="$TEST_DIR" run "$SCRIPT" "$TEST_DIR/output.md"
+    assert_success
+    assert [ -f "$TEST_DIR/docs/flex-signals.log" ]
+    run grep "ADVISORY" "$TEST_DIR/docs/flex-signals.log"
+    assert_success
+}
+
+@test "BLOCKING signal writes to docs/flex-signals.log as UNRESOLVED" {
+    mkdir -p "$TEST_DIR/docs"
+    cat > "$TEST_DIR/output.md" <<'SIGNAL'
+## FLEX_SIGNAL
+TYPE: FIX_DESIGN
+TARGET: docs/design-doc.md
+STEP: N0
+WHAT: Bad contract
+WHY: Evidence
+PROPOSED: Fix
+SEVERITY: BLOCKING
+SIGNAL
+    FORGE_DIR="$TEST_DIR" run "$SCRIPT" "$TEST_DIR/output.md"
+    assert_success
+    run grep "UNRESOLVED" "$TEST_DIR/docs/flex-signals.log"
+    assert_success
+}
+
+@test "INFO signal does NOT write to docs/flex-signals.log" {
+    mkdir -p "$TEST_DIR/docs"
+    cat > "$TEST_DIR/output.md" <<'SIGNAL'
+## FLEX_SIGNAL
+TYPE: AMEND_RULES
+TARGET: CLAUDE.md
+STEP: N4
+WHAT: Style
+WHY: Minor
+PROPOSED: Adjust
+SEVERITY: INFO
+SIGNAL
+    FORGE_DIR="$TEST_DIR" run "$SCRIPT" "$TEST_DIR/output.md"
+    assert_success
+    if [ -f "$TEST_DIR/docs/flex-signals.log" ]; then
+        run grep "INFO" "$TEST_DIR/docs/flex-signals.log"
+        assert_failure
+    fi
+}
+
+# ─── HOOKS WIRING ───
+
+@test "hooks.json has FLEX_SIGNAL detection in hooks" {
+    run grep -E "FLEX_SIGNAL|forge-flex-detect" "$FORGE_DIR/templates/hooks.json"
+    assert_success
+}
+
 # ─── DESIGN RULES IN LOOP FILE ───
 
 @test "universal-agent-loop.md has 13 steps" {
