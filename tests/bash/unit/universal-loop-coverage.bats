@@ -142,6 +142,24 @@ teardown() {
     [ "$output" -ge 2 ]
 }
 
+# ─── FLEX CHECKPOINT ───
+
+@test "Universal loop has 13 steps" {
+    run grep "13\\. PROCEED" "$LOOP"
+    assert_success
+}
+
+@test "Step 11 is FLEX CHECKPOINT" {
+    run grep "11\\. FLEX CHECKPOINT" "$LOOP"
+    assert_success
+}
+
+@test "Agent hook has FLEX_SIGNAL detection" {
+    run grep -A20 '"matcher": "Agent"' "$HOOKS"
+    assert_success
+    assert_output --partial "forge-flex-detect"
+}
+
 # ─── SCRIPTS EXIST ───
 
 @test "forge-step-gate.sh exists and is executable" {
