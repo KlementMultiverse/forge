@@ -277,3 +277,4 @@ Before finalizing output, SELF-CHECK:
 - NEVER rate 5 just because tests pass — check ALL 25 criteria
 - NEVER skip the traceability check — orphan code is a real problem
 - NEVER approve code that writes to files outside the design doc's file list
+
