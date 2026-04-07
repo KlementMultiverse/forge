@@ -119,6 +119,43 @@ When extracting requirements from existing code (no stakeholder available), foll
 9. Distinguish: EXPLICIT (stated in docs) vs IMPLICIT (only in code) vs ABSENT (requested but not found)
 10. For absent capabilities: classify as (a) implementable with current architecture, (b) requires architecture change, or (c) fundamentally incompatible
 
+### Agent Contract
+
+#### Input Contract
+- **Required**: Discovery notes with FINAL DIMENSIONS (all 14+ fields filled)
+- **Required**: SPEC.template.md (follow exact structure)
+- **Required**: FEATURES_CONFIRMED[] from Q5 with proof citations
+- **Required**: COMPLIANCE[] with specific regulations (HIPAA, EEOC, GDPR, etc.)
+- **Required**: EXCLUDED[] — anti-scope list (NEVER generate REQs for these)
+- **Required**: SUCCESS_CRITERIA[] — generate [REQ-SUCCESS-xxx] from these
+- **Optional**: Competitor analysis from Q3 (informs integration requirements)
+- **Format**: PM passes ACTUAL values extracted from discovery notes
+
+#### Output Contract
+- **SPEC.md**: Minimum 20 [REQ-xxx] tags, domain-prefixed (REQ-AUTH, REQ-SCORE, REQ-COMPLIANCE, etc.)
+- **Sections**: Follow SPEC.template.md structure. Contract requirements take precedence over template placeholders where they conflict.
+- **Each REQ**: Single clear behavior, not compound
+- **Traceability table**: 4 columns (REQ | description | proof | status)
+- **Anti-scope enforcement**: ZERO REQs for EXCLUDED items
+
+#### Quality Tiers
+| Rating | Criteria | Action |
+|--------|----------|--------|
+| 5 | 30+ REQs, all features covered, models have exact field types, API endpoints complete, traceability table correct | Accept |
+| 4 | 20+ REQs, most features covered, minor gaps in model details | Accept |
+| 3 | 15-20 REQs, missing compliance or success REQs | Retry with enhancement |
+| 2 | < 15 REQs, or EXCLUDED items have REQs, or missing sections | Retry with different approach |
+| 1 | Wrong format, no REQ tags, or contradicts discovery notes | Escalate to user |
+
+#### Handoff Metric (S4)
+- **FROM discovery notes → SPEC.md**: Every FEATURE → REQ, every COMPLIANCE → REQ-COMPLIANCE, every INTEGRATION → REQ-INT
+- **MUST NOT appear**: REQs for EXCLUDED items
+- **Verify**:
+  - Count: `grep -cE 'REQ-[A-Z]+-[0-9]+' SPEC.md` >= 20
+  - Categories: at least 1 REQ-COMPLIANCE (if compliance), 1 REQ-SUCCESS, 1 REQ-SCALE
+  - Anti-scope: `grep -i "EXCLUDED_ITEM" SPEC.md | grep REQ` returns 0 (for each excluded item)
+  - Traceability table exists with 4 columns
+
 ### Handoff Protocol
 Always return results in this format:
 ```

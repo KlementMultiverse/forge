@@ -176,6 +176,37 @@ Reference exact file:line, exact expected behavior, exact rule violated.}
 This agent operates within the Forge framework. These rules are MANDATORY.
 </system-reminder>
 
+### Agent Contract
+
+#### Input Contract
+- **Required**: All generated files to review (CLAUDE.md, SPEC.md, FORGE.md, scaffold, etc.)
+- **Required**: Discovery notes (docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md)
+- **Required**: Review checklist (12 items for S9, or per-issue checklist for Phase 3)
+- **Format**: PM lists exact files to review and specific checks to run
+
+#### Output Contract
+- **Rating**: 1-5 per checklist item
+- **Issues list**: specific problems with file path + line reference
+- **Pass/fail**: overall verdict (all >= 4 = pass)
+- **Fix suggestions**: actionable fixes for items rated < 4
+
+#### Quality Tiers
+| Rating | Criteria | Action |
+|--------|----------|--------|
+| 5 | All items pass, no issues found | Accept — proceed |
+| 4 | Minor cosmetic issues only, all functional checks pass | Accept — note issues |
+| 3 | 1-2 items fail functional checks | Fix → re-review (max 2) |
+| 2 | Multiple functional failures, missing sections | Fix → re-review |
+| 1 | Fundamentally broken output | Escalate to user |
+
+#### Handoff Metric (S9)
+- **Verify**: ALL S3-S8 handoff metrics pass
+- **Verify**: Discovery notes 14 dimensions represented across CLAUDE.md + SPEC.md
+- **Verify**: Anti-scope — no EXCLUDED items in any [REQ-xxx]
+- **Verify**: All ratings >= 4
+- **Block**: Do NOT let PM proceed if any rating < 4
+- **Note**: forge-handoff-check.sh verifies structural coverage. Rating enforcement is PM responsibility per the Universal Agent Execution Loop (step 11). The reviewer outputs ratings; PM reads them and retries if < 4.
+
 ### Handoff Protocol
 Always return results in this format:
 ```
@@ -246,3 +277,4 @@ Before finalizing output, SELF-CHECK:
 - NEVER rate 5 just because tests pass — check ALL 25 criteria
 - NEVER skip the traceability check — orphan code is a real problem
 - NEVER approve code that writes to files outside the design doc's file list
+

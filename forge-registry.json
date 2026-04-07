@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-07T07:17:21.888637+00:00",
+  "generated": "2026-04-07T08:23:14.138229+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -2315,8 +2315,8 @@
         "matcher": "Write|Edit",
         "depends_on": {
           "scripts": [
-            "forge-auto-sync.sh",
-            "forge-change-validator.sh"
+            "forge-change-validator.sh",
+            "forge-auto-sync.sh"
           ]
         }
       },
@@ -2327,8 +2327,8 @@
         "matcher": "Agent",
         "depends_on": {
           "scripts": [
-            "forge-handoff-check.sh",
-            "forge-auto-state.sh"
+            "forge-auto-state.sh",
+            "forge-handoff-check.sh"
           ]
         }
       },
@@ -4776,22 +4776,22 @@
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-auto-sync.sh",
-      "type": "scripts"
-    },
-    {
-      "from": "hooks/PostToolUse:Write|Edit",
       "to": "scripts/forge-change-validator.sh",
       "type": "scripts"
     },
     {
-      "from": "hooks/PostToolUse:Agent",
-      "to": "scripts/forge-handoff-check.sh",
+      "from": "hooks/PostToolUse:Write|Edit",
+      "to": "scripts/forge-auto-sync.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Agent",
       "to": "scripts/forge-auto-state.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Agent",
+      "to": "scripts/forge-handoff-check.sh",
       "type": "scripts"
     },
     {
@@ -6778,16 +6778,18 @@
     }
   },
   "changelog": {
-    "hooks": [
+    "docs": [
       {
         "date": "2026-04-07",
-        "commit": "3ea708e6",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "visible handoff evaluation after every agent + S9 gate",
+        "commit": "47d82a01",
+        "change_type": "bugfix",
+        "scope": "docs",
+        "summary": "CR re-review \u2014 3 findings fixed",
         "breaking": false,
         "requires_reinstall": true,
         "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/domain-inference-rules.md",
           "templates/hooks.json"
         ],
         "issues": [
@@ -6795,92 +6797,147 @@
         ]
       },
       {
-        "date": "2026-04-06",
-        "commit": "ddbd7d1d",
-        "change_type": "bugfix",
-        "scope": "hooks",
-        "summary": "grep portability \u2014 use ERE not GNU BRE for placeholder detection",
+        "date": "2026-04-07",
+        "commit": "57e5cd1b",
+        "change_type": "feature",
+        "scope": "docs",
+        "summary": "AI+regulated domain support, internet-first stack research",
         "breaking": false,
         "requires_reinstall": true,
         "files": [
-          "templates/hooks.json"
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/domain-inference-rules.md"
         ],
         "issues": [
-          "#113"
+          "#189"
         ]
       },
       {
         "date": "2026-04-06",
-        "commit": "3825dbcc",
+        "commit": "600cbd94",
+        "change_type": "chore",
+        "scope": "docs",
+        "summary": "add .coderabbit.yml \u2014 enable request_changes_workflow for explicit approvals",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          ".coderabbit.yml"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "7a8311ea",
         "change_type": "bugfix",
-        "scope": "hooks",
-        "summary": "fix 10 CASE detection edge cases from CodeRabbit analysis",
+        "scope": "docs",
+        "summary": "address 2 CodeRabbit comments \u2014 remove hardcoded counts in structure, fix GNU-specific flags",
         "breaking": false,
         "requires_reinstall": true,
         "files": [
           "README.md",
-          "commands/forge.md",
-          "forge-registry.json",
-          "templates/hooks.json",
-          "tests/bash/integration/case-detection-edge-cases.bats"
+          "scripts/forge-readme-sync.sh"
         ],
         "issues": [
-          "#111"
+          "#98"
         ]
       },
       {
         "date": "2026-04-06",
-        "commit": "d0aa943c",
-        "change_type": "bugfix",
-        "scope": "hooks",
-        "summary": "fix broken JSON in hooks.json \u2014 unescaped quotes around CLAUDE_TOOL_INPUT",
+        "commit": "4732dc29",
+        "change_type": "documentation",
+        "scope": "docs",
+        "summary": "sync README with current state + create auto-sync script",
         "breaking": false,
         "requires_reinstall": true,
         "files": [
           "README.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "templates/hooks.json"
+          "scripts/forge-readme-sync.sh",
+          "tests/bash/unit/forge-readme-sync.bats"
         ],
         "issues": [
-          "#103"
+          "#98"
         ]
       },
       {
         "date": "2026-04-06",
-        "commit": "e0c652fe",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "improve GitHub setup guidance \u2014 detect gh CLI, auth, provide links",
+        "commit": "6ac8fd3f",
+        "change_type": "documentation",
+        "scope": "docs",
+        "summary": "make CodeRabbit required \u2014 used for review, architecture, design, gates",
         "breaking": false,
-        "requires_reinstall": true,
+        "requires_reinstall": false,
         "files": [
-          "templates/hooks.json",
-          "tests/bash/integration/github-setup.bats"
+          "README.md",
+          "tests/bash/integration/coderabbit-required.bats"
         ],
         "issues": [
-          "#94"
+          "#96"
         ]
       },
       {
-        "date": "2026-04-06",
-        "commit": "80d0b029",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "refactor UserPromptSubmit \u2014 gate on /forge, add SessionStart, add CASE_RESUME",
+        "date": "2026-04-05",
+        "commit": "cecf7cae",
+        "change_type": "documentation",
+        "scope": "docs",
+        "summary": "create component creation protocols \u2014 scripts, commands, agents, hooks, tests",
         "breaking": false,
-        "requires_reinstall": true,
+        "requires_reinstall": false,
         "files": [
-          "scripts/forge-state-sync.sh",
-          "templates/hooks.json",
-          "tests/bash/integration/hook-routing.bats"
+          "docs/protocols/component-creation.md",
+          "tests/bash/unit/protocols-validation.bats"
         ],
         "issues": [
-          "#92"
+          "#79"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "b3f26827",
+        "change_type": "documentation",
+        "scope": "docs",
+        "summary": "simplify install section + update counts and new features",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "README.md"
+        ],
+        "issues": [
+          "#48"
         ]
       }
     ],
     "commands": [
+      {
+        "date": "2026-04-07",
+        "commit": "a23c7f2b",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "CR review \u2014 9 findings on PR",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "templates/hooks.json",
+          "templates/pre-commit"
+        ],
+        "issues": [
+          "#190"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "f1452284",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "Q4 shopping cart + Q4.5 design decisions + rule categories",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md"
+        ],
+        "issues": [
+          "#191"
+        ]
+      },
       {
         "date": "2026-04-07",
         "commit": "939ecc78",
@@ -7369,18 +7426,32 @@
         ]
       }
     ],
-    "docs": [
+    "hooks": [
       {
         "date": "2026-04-07",
-        "commit": "57e5cd1b",
+        "commit": "f895927b",
         "change_type": "feature",
-        "scope": "docs",
-        "summary": "AI+regulated domain support, internet-first stack research",
+        "scope": "hooks",
+        "summary": "auto-regenerate registry on pre-commit when tracked files change",
         "breaking": false,
         "requires_reinstall": true,
         "files": [
-          "commands/forge-phases/phase-a-setup.md",
-          "docs/domain-inference-rules.md"
+          "templates/pre-commit"
+        ],
+        "issues": [
+          "#189"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "3ea708e6",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "visible handoff evaluation after every agent + S9 gate",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/hooks.json"
         ],
         "issues": [
           "#189"
@@ -7388,98 +7459,107 @@
       },
       {
         "date": "2026-04-06",
-        "commit": "600cbd94",
-        "change_type": "chore",
-        "scope": "docs",
-        "summary": "add .coderabbit.yml \u2014 enable request_changes_workflow for explicit approvals",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          ".coderabbit.yml"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "7a8311ea",
+        "commit": "ddbd7d1d",
         "change_type": "bugfix",
-        "scope": "docs",
-        "summary": "address 2 CodeRabbit comments \u2014 remove hardcoded counts in structure, fix GNU-specific flags",
+        "scope": "hooks",
+        "summary": "grep portability \u2014 use ERE not GNU BRE for placeholder detection",
         "breaking": false,
         "requires_reinstall": true,
         "files": [
-          "README.md",
-          "scripts/forge-readme-sync.sh"
+          "templates/hooks.json"
         ],
         "issues": [
-          "#98"
+          "#113"
         ]
       },
       {
         "date": "2026-04-06",
-        "commit": "4732dc29",
-        "change_type": "documentation",
-        "scope": "docs",
-        "summary": "sync README with current state + create auto-sync script",
+        "commit": "3825dbcc",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "fix 10 CASE detection edge cases from CodeRabbit analysis",
         "breaking": false,
         "requires_reinstall": true,
         "files": [
           "README.md",
-          "scripts/forge-readme-sync.sh",
-          "tests/bash/unit/forge-readme-sync.bats"
+          "commands/forge.md",
+          "forge-registry.json",
+          "templates/hooks.json",
+          "tests/bash/integration/case-detection-edge-cases.bats"
         ],
         "issues": [
-          "#98"
+          "#111"
         ]
       },
       {
         "date": "2026-04-06",
-        "commit": "6ac8fd3f",
-        "change_type": "documentation",
-        "scope": "docs",
-        "summary": "make CodeRabbit required \u2014 used for review, architecture, design, gates",
+        "commit": "d0aa943c",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "fix broken JSON in hooks.json \u2014 unescaped quotes around CLAUDE_TOOL_INPUT",
         "breaking": false,
-        "requires_reinstall": false,
+        "requires_reinstall": true,
         "files": [
           "README.md",
-          "tests/bash/integration/coderabbit-required.bats"
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "templates/hooks.json"
         ],
         "issues": [
-          "#96"
+          "#103"
         ]
       },
       {
-        "date": "2026-04-05",
-        "commit": "cecf7cae",
-        "change_type": "documentation",
-        "scope": "docs",
-        "summary": "create component creation protocols \u2014 scripts, commands, agents, hooks, tests",
+        "date": "2026-04-06",
+        "commit": "e0c652fe",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "improve GitHub setup guidance \u2014 detect gh CLI, auth, provide links",
         "breaking": false,
-        "requires_reinstall": false,
+        "requires_reinstall": true,
         "files": [
-          "docs/protocols/component-creation.md",
-          "tests/bash/unit/protocols-validation.bats"
+          "templates/hooks.json",
+          "tests/bash/integration/github-setup.bats"
         ],
         "issues": [
-          "#79"
+          "#94"
         ]
       },
       {
-        "date": "2026-04-05",
-        "commit": "b3f26827",
-        "change_type": "documentation",
-        "scope": "docs",
-        "summary": "simplify install section + update counts and new features",
+        "date": "2026-04-06",
+        "commit": "80d0b029",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "refactor UserPromptSubmit \u2014 gate on /forge, add SessionStart, add CASE_RESUME",
         "breaking": false,
-        "requires_reinstall": false,
+        "requires_reinstall": true,
         "files": [
-          "README.md"
+          "scripts/forge-state-sync.sh",
+          "templates/hooks.json",
+          "tests/bash/integration/hook-routing.bats"
         ],
         "issues": [
-          "#48"
+          "#92"
         ]
       }
     ],
     "scripts": [
+      {
+        "date": "2026-04-07",
+        "commit": "d74f31bb",
+        "change_type": "chore",
+        "scope": "scripts",
+        "summary": "regenerate registry and dependency graph",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "docs/dependency-graph.md",
+          "forge-registry.json"
+        ],
+        "issues": [
+          "#189"
+        ]
+      },
       {
         "date": "2026-04-06",
         "commit": "e947a108",
