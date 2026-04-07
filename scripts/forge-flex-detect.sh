@@ -1,7 +1,20 @@
 #!/bin/bash
 # forge-flex-detect.sh — Detects FLEX_SIGNAL blocks in agent/command output
-# Part of the FLEX CHECKPOINT system (Universal Loop Step 11)
-# Exit codes: 0=signal(s) found, 1=no signal, 2=file missing/error, 3=malformed signal
+#
+# Part of the FLEX CHECKPOINT system (Universal Loop Step 11).
+# Scans agent output files or stdin for structured FLEX_SIGNAL blocks,
+# parses TYPE/TARGET/STEP/WHAT/WHY/PROPOSED/SEVERITY fields, and reports
+# them in human-readable or JSON format. Supports severity filtering and
+# persists ADVISORY/BLOCKING signals to docs/flex-signals.log.
+#
+# Called by: PostToolUse Agent/Skill hooks (piped via CLAUDE_TOOL_RESULT)
+# Writes to: $PROJECT_DIR/docs/flex-signals.log (ADVISORY + BLOCKING only)
+#
+# Exit codes:
+#   0 = signal(s) found and valid
+#   1 = no signal found (clean output)
+#   2 = file missing, read error, or invalid arguments
+#   3 = signal found but malformed (missing required fields)
 
 set -euo pipefail
 

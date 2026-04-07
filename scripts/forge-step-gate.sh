@@ -1,7 +1,18 @@
 #!/bin/bash
 # forge-step-gate.sh — Blocks progress if reviewer hasn't run or trace is missing
-# Called by Stop hook to enforce per-step quality gates
-# Exit codes: 0=pass, 1=blocked (reviewer missing), 2=blocked (trace missing), 3=error
+#
+# Enforces per-step quality gates at Stop hook time. Checks that:
+#   1. @reviewer has run after the last agent/skill execution
+#   2. Trace files (input.md, output.md, meta.md) exist for the current step
+#
+# Called by: Stop hook (templates/hooks.json)
+# Reads: docs/forge-state.json (current step), docs/.builder-activity.log
+#
+# Exit codes:
+#   0 = all checks pass
+#   1 = reviewer not run for current step (BLOCKING)
+#   2 = trace files missing for current step (BLOCKING)
+#   3 = error (invalid command, missing args)
 
 set -euo pipefail
 
