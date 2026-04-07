@@ -1,15 +1,15 @@
 {
   "version": "2.0",
-  "generated": "2026-04-06T22:28:48.671013+00:00",
+  "generated": "2026-04-07T00:47:23.881829+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
     "commands": 51,
-    "scripts": 30,
+    "scripts": 31,
     "hooks": 9,
     "templates": 17,
     "rules": 8,
-    "edges": 457,
+    "edges": 459,
     "phase_mapped_components": 50,
     "flows": 9
   },
@@ -2104,6 +2104,11 @@
           }
         ]
       },
+      "forge-handoff-check.sh": {
+        "type": "script",
+        "path": "scripts/forge-handoff-check.sh",
+        "depends_on": {}
+      },
       "forge-grow.sh": {
         "type": "script",
         "path": "scripts/forge-grow.sh",
@@ -2277,7 +2282,8 @@
         "matcher": "Agent",
         "depends_on": {
           "scripts": [
-            "forge-auto-state.sh"
+            "forge-auto-state.sh",
+            "forge-handoff-check.sh"
           ]
         }
       },
@@ -4654,6 +4660,11 @@
       "type": "scripts"
     },
     {
+      "from": "hooks/PostToolUse:Agent",
+      "to": "scripts/forge-handoff-check.sh",
+      "type": "hook_to_script"
+    },
+    {
       "from": "scripts/forge-grow.sh",
       "to": "scripts/forge-grow.sh",
       "type": "scripts"
@@ -4711,6 +4722,11 @@
     {
       "from": "hooks/PostToolUse:Agent",
       "to": "scripts/forge-auto-state.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Agent",
+      "to": "scripts/forge-handoff-check.sh",
       "type": "scripts"
     },
     {
@@ -6022,6 +6038,11 @@
           "forge-shell.sh"
         ]
       },
+      "scripts/forge-handoff-check.sh": {
+        "hooks": [
+          "PostToolUse:Agent"
+        ]
+      },
       "scripts/forge-grow.sh": {
         "scripts": [
           "forge-grow.sh"
@@ -6679,6 +6700,32 @@
   },
   "changelog": {
     "commands": [
+      {
+        "date": "2026-04-06",
+        "commit": "23473c3c",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "explicit inference chains in S2 adaptive discovery",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "tests/bash/unit/adaptive-discovery.bats"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "4103106e",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "address 3 CR comments \u2014 add missing REQ prefixes, regenerate registry",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "forge-registry.json"
+        ]
+      },
       {
         "date": "2026-04-06",
         "commit": "d20ec526",
@@ -9404,6 +9451,24 @@
         "summary": "initialize Forge \u2014 autonomous software development framework",
         "breaking": false,
         "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "e956da93",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "universal agent execution loop with handoff metrics — forge-handoff-check.sh + PostToolUse:Agent hook #185",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/forge-handoff-check.sh",
+          "templates/hooks.json",
+          "commands/forge-phases/phase-a-setup.md",
+          "tests/bash/unit/handoff-check.bats"
+        ],
+        "issues": [
+          "#185"
+        ]
       }
     ]
   }

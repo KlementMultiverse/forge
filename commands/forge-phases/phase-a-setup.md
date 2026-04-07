@@ -16,6 +16,84 @@ SESSION 1 RULES:
 - NO CODE IS WRITTEN in Session 1 — only planning/spec/config files
 </system-reminder>
 
+---
+
+**UNIVERSAL AGENT EXECUTION LOOP** (apply to EVERY agent spawn in ALL phases)
+
+<system-reminder>
+This loop is NON-OPTIONAL. Every agent spawn MUST follow it. Hooks report handoff status after each agent (advisory); PM MUST act on MISSING/INCOMPLETE reports.
+Discovery notes = single source of truth. Autoresearch is BOUNDED — NEVER invents new requirements.
+</system-reminder>
+
+```text
+1. PREPARE:
+   PM reads input artifact (discovery notes / SPEC / previous step output)
+   PM reads agent-specific context (stack registry, templates, prior traces)
+   PM prepares prompt with ALL accumulated context
+
+2. DEFINE HANDOFF METRIC (per-step — see each STEP below):
+   MUST PROPAGATE: items from input that MUST appear in output
+   MUST NOT APPEAR: items from EXCLUDED / rejected items
+
+3. ATTEMPT 1:
+   Spawn agent with prepared prompt → receive output
+
+4. MEASURE (BOUNDED by discovery notes — NEVER invent):
+   FOR EACH item in MUST PROPAGATE:
+     Present in output? → COVERED
+     Missing?           → MISSING
+     Partial?           → INCOMPLETE
+   FOR EACH item in output not traceable to input:
+     → INVENTED (flag for removal — agent hallucinated this)
+   SCORE = COVERED / (COVERED + MISSING + INCOMPLETE + INVENTED)
+   Note: INVENTED items reduce the score — hallucinations are failures too
+
+5. IF SCORE < 100%:
+   AUTORESEARCH (BOUNDED enhancement — ADD context, NEVER remove):
+     - List MISSING items with exact quotes from discovery notes
+     - List INCOMPLETE items with what needs more detail
+     - List INVENTED items to remove
+     - ENHANCE prompt: keep ALL of previous prompt + append:
+       "YOU MISSED: [exact items from discovery notes]"
+       "REMOVE: [invented items not in discovery notes]"
+       "INCOMPLETE: [items needing more detail]"
+   → ATTEMPT 2 with enhanced prompt → MEASURE again
+
+6. IF STILL < 100%: further enhance → ATTEMPT 3 → MEASURE
+
+7. IF ALL 3 ATTEMPTS < 100%:
+   ESCALATE to user: "After 3 attempts, best score is {SCORE}%. Missing: [list]. Should I proceed with best output or do you want to adjust discovery notes?"
+   User decides: proceed with best (accept gaps) OR update discovery notes → re-run
+
+8. IF CRITICAL GAP FOUND (agent discovers something missing from input):
+   RAISE QUESTION to user: "I found a gap: {gap}. Should I add {X}?"
+   User answers → update discovery notes → re-run with updated input
+   This is the ONLY way new info enters (via user, not agent invention)
+
+9. PICK BEST output (highest SCORE from 3 attempts)
+
+10. REVERSE ENGINEER + CROSS-VERIFY (bidirectional):
+    FORWARD:  Does previous step output data appear in current output?
+    BACKWARD: Does current output data trace back to previous step?
+    Mismatch → flag and fix or raise question to user
+
+11. RATE: spawn @reviewer (1-5, must be >= 4)
+    Rating uses a SEPARATE retry budget (max 2 re-reviews, independent of the 3 prompt attempts)
+    If < 4 after 2 re-reviews: escalate to user
+
+12. PROCEED to next step with verified output
+```
+
+**BOUNDED AUTORESEARCH RULES:**
+- Discovery notes are the SINGLE SOURCE OF TRUTH
+- NEVER invent requirements not in discovery notes
+- NEVER override user decisions from S2
+- NEVER add compliance user explicitly rejected
+- Enhance = ADD more context from discovery notes, NEVER remove existing prompt
+- The ONLY way new info enters is via user answering a RAISED QUESTION
+
+---
+
 **STEP S1: PREPARE** (PM prepares workspace — no agents)
 
 NOTE: Project type detection (GREENFIELD/BROWNFIELD/EXISTING) was already done by the UserPromptSubmit hook before reaching this file. S1 does NOT re-detect — it only prepares the workspace.
@@ -212,7 +290,7 @@ Q1: "What are you building? Describe it in one sentence."
 ---
 
 Q2: "Who uses {PROJECT_NAME}?"
-  INPUTS:  INTENT_SEED, PROJECT_NAME, DOMAIN, COMPLIANCE[], HIGH_RISK
+  INPUTS: INTENT_SEED, PROJECT_NAME, DOMAIN, COMPLIANCE[], HIGH_RISK
   OUTPUTS: USERS[], SCALE_TIER, A11Y_REQUIRED, I18N_REQUIRED, DEPLOYMENT_HINTS[]
 
   ACCUMULATED CONTEXT (state to user):
@@ -259,7 +337,7 @@ Q2: "Who uses {PROJECT_NAME}?"
 
 Q3: "What problem does {PROJECT_NAME} solve for {USERS[primary]}?"
   INPUTS: INTENT_SEED, PROJECT_NAME, DOMAIN, USERS[], SCALE_TIER, COMPLIANCE[]
-  OUTPUTS: PROBLEM, CURRENT_SOLUTION, COMPETITORS[], MOBILE_REQUIRED, INTEGRATIONS[]
+  OUTPUTS: PROBLEM, CURRENT_SOLUTION, COMPETITORS[], COMPETITOR_GAPS[], MOBILE_REQUIRED, INTEGRATIONS[]
 
   ACCUMULATED CONTEXT (state to user):
     "You're building {PROJECT_NAME} ({DOMAIN}), used by {USERS[] as comma list}.
@@ -350,7 +428,7 @@ Q3.5: "What does success look like for {PROJECT_NAME} in 6 months?"
 ---
 
 Q4: "Tech preferences? Or should I recommend based on what we know?"
-  INPUTS: INTENT_SEED, DOMAIN, USERS[], SCALE_TIER, COMPLIANCE[], MOBILE_REQUIRED, SUCCESS_CRITERIA[]
+  INPUTS: DOMAIN, USERS[], SCALE_TIER, COMPLIANCE[], MOBILE_REQUIRED, SUCCESS_CRITERIA[]
   OUTPUTS: STACK_BACKEND, STACK_FRONTEND, STACK_PROVEN
 
   ACCUMULATED CONTEXT (state to user):
@@ -528,23 +606,23 @@ Q7: "Confirm everything — all 14 dimensions:"
      🔍 Inferred from research (proof in discovery notes)
      📋 Domain default from domain-inference-rules.md"
 
-    ```text
-    PROJECT:      {PROJECT_NAME} — {INTENT_SEED}                    [source: Q1]
-    USERS:        {USERS[] with access levels}                       [source: Q2]
-    PROBLEM:      {PROBLEM}                                          [source: Q3]
-    SUCCESS:      {SUCCESS_CRITERIA[]}                               [source: Q3.5]
-    STACK:        {STACK_BACKEND} + {STACK_FRONTEND}                 [source: Q4]
-    FEATURES:     {FEATURES_CONFIRMED[]}                             [source: Q5]
-    COMPLIANCE:   {COMPLIANCE[] or 'none'} (confidence: {%})         [source: Q1 inference]
-    SCALE:        {SCALE_TIER} — {numbers if available}              [source: Q2 + Q3.5]
-    DEPLOYMENT:   {DEPLOYMENT_HINTS[]}                               [source: Q2 inference]
-    INTEGRATIONS: {INTEGRATIONS[]}                                   [source: Q3 + Q5]
-    A11Y:         {A11Y_REQUIRED — level}                            [source: Q2 inference]
-    I18N:         {I18N_REQUIRED — languages}                        [source: Q2 inference]
-    MOBILE:       {MOBILE_REQUIRED — type}                           [source: Q3 inference]
-    EXCLUDED:     {EXCLUDED[]}                                       [source: Q6]
-    ```
-    "Correct? (yes / change)"
+```text
+PROJECT:      {PROJECT_NAME} — {INTENT_SEED}                    [source: Q1]
+USERS:        {USERS[] with access levels}                       [source: Q2]
+PROBLEM:      {PROBLEM}                                          [source: Q3]
+SUCCESS:      {SUCCESS_CRITERIA[]}                               [source: Q3.5]
+STACK:        {STACK_BACKEND} + {STACK_FRONTEND}                 [source: Q4]
+FEATURES:     {FEATURES_CONFIRMED[]}                             [source: Q5]
+COMPLIANCE:   {COMPLIANCE[] or 'none'} (confidence: {%})         [source: Q1 inference]
+SCALE:        {SCALE_TIER} — {numbers if available}              [source: Q2 + Q3.5]
+DEPLOYMENT:   {DEPLOYMENT_HINTS[]}                               [source: Q2 inference]
+INTEGRATIONS: {INTEGRATIONS[]}                                   [source: Q3 + Q5]
+A11Y:         {A11Y_REQUIRED — level}                            [source: Q2 inference]
+I18N:         {I18N_REQUIRED — languages}                        [source: Q2 inference]
+MOBILE:       {MOBILE_REQUIRED — type}                           [source: Q3 inference]
+EXCLUDED:     {EXCLUDED[]}                                       [source: Q6]
+```
+"Correct? (yes / change)"
 
   HINTS:
     💡 Check especially:
@@ -567,11 +645,29 @@ S2 COMPLETION GATE: docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md must
 
 **STEP S3: GENERATE CLAUDE.md** → @system-architect agent
 
+HANDOFF METRIC (S3):
+  MUST PROPAGATE from discovery notes → CLAUDE.md:
+    - Every COMPLIANCE[] item → at least 1 MUST/NEVER rule in Architecture Rules
+    - Every STACK item → row in Tech Stack table with version
+    - Every EXCLUDED[] item → bullet in "What NOT to Build"
+    - Every INTEGRATIONS[] item → Integration Rules section (if any)
+    - A11Y requirements → MUST/NEVER rule in Architecture Rules (if confirmed, e.g., "MUST meet WCAG 2.1 AA")
+    - SUCCESS criteria → referenced in Architecture Rules or Testing section (if measurable)
+  MUST NOT APPEAR:
+    - Architecture rules for items in EXCLUDED[]
+    - Compliance rules for compliance items user rejected in Q5
+
+PM MUST first:
+1. Read docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md → extract ACTUAL values (not placeholders)
+2. Read ~/.claude/stacks/{stack}/rules.md → include proven stack rules (if exists)
+3. Read templates/CLAUDE.template.md → follow exact structure
+4. Fetch latest docs: spawn @context-loader-agent for {stack} framework
+
 Execute: spawn Agent with subagent_type="system-architect"
   prompt: |
     Generate CLAUDE.md for a new project. Follow these rules STRICTLY:
 
-    PROJECT INFO (from discovery notes — docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md):
+    PROJECT INFO (PM reads actual values from docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md):
     - Name: {name}
     - Description: {description}
     - Stack: {stack}
@@ -583,6 +679,7 @@ Execute: spawn Agent with subagent_type="system-architect"
     - Integrations: {integrations} (third-party services to plan for)
     - A11Y: {a11y} (accessibility rules if required)
     - Success criteria: {success} (what "done" looks like)
+    - Stack registry rules: {stack_rules} (proven rules from previous builds, if any)
 
     TEMPLATE (MUST follow this structure — under 100 lines):
     ```
@@ -614,6 +711,15 @@ Execute: spawn Agent with subagent_type="system-architect"
     - For all: "All credentials from os.environ — NEVER hardcoded"
     - Add stack-specific rules based on research
 
+    ## Compliance Rules
+    <!-- Only if compliance confirmed in discovery. Omit section entirely if none. -->
+    {MUST/NEVER rules from domain-inference-rules.md Security Signals table}
+    {e.g., "MUST encrypt all patient data at rest and in transit" for HIPAA}
+
+    ## Integration Rules
+    <!-- Only if integrations confirmed in discovery. Omit section entirely if none. -->
+    {Rules for each confirmed third-party integration}
+
     ## What NOT to Build
 
     {bullet list from excluded items}
@@ -642,6 +748,21 @@ Verify: has ## Tech Stack, ## Architecture Rules, ## What NOT to Build, ## Testi
 Trace: save to docs/forge-trace/S3-claude-md/
 
 **STEP S4: GENERATE SPEC.md** → @requirements-analyst agent
+
+HANDOFF METRIC (S4):
+  MUST PROPAGATE from discovery notes → SPEC.md:
+    - Every FEATURE → at least 1 [REQ-xxx]
+    - Every COMPLIANCE[] → [REQ-COMPLIANCE-xxx] with proof citation
+    - Every INTEGRATION → [REQ-INT-xxx]
+    - SUCCESS criteria → [REQ-SUCCESS-xxx] with measurable target
+    - SCALE → [REQ-SCALE-xxx] with NUMBERS not "fast"
+    - A11Y → [REQ-A11Y-xxx] if confirmed
+    - I18N → [REQ-I18N-xxx] if confirmed
+    - MOBILE → [REQ-MOBILE-xxx] if confirmed
+    - Every USERS[] type → referenced in at least one REQ (via API auth levels, permissions, or user-facing features)
+  MUST NOT APPEAR:
+    - Any [REQ-xxx] for items in EXCLUDED[] list
+    - Requirements for features user rejected in Q5
 
 Execute: spawn Agent with subagent_type="requirements-analyst"
   prompt: |
@@ -691,6 +812,10 @@ Trace: save to docs/forge-trace/S4-spec-md/
 
 **STEP S5: GENERATE FORGE.md** → PM (simple, no agent needed)
 
+HANDOFF METRIC (S5):
+  MUST PROPAGATE: PROJECT_NAME and description from discovery notes in QUEUED entry
+  MUST NOT APPEAR: N/A (simple template)
+
 PM writes FORGE.md from template:
 ```markdown
 # FORGE.md — Work Queue
@@ -712,6 +837,14 @@ Verify: file exists with QUEUED entry
 Trace: save to docs/forge-trace/S5-forge-md/
 
 **STEP S6: GENERATE .claude/rules/** → PM + @system-architect agent
+
+HANDOFF METRIC (S6):
+  MUST PROPAGATE:
+    - STACK → agent-routing.md has correct agent mappings for this stack
+    - FEATURES → agent-routing.md covers all feature domains (auth, API, infra, etc.)
+    - Stack registry rules → copied to .claude/rules/{stack}-rules.md (if exists)
+  MUST NOT APPEAR:
+    - Agent mappings for EXCLUDED features
 
 ```bash
 mkdir -p .claude/rules/
@@ -772,6 +905,14 @@ Trace: save to docs/forge-trace/S6-rules/
 
 **STEP S7: GENERATE scaffold** → @devops-architect agent
 
+HANDOFF METRIC (S7):
+  MUST PROPAGATE:
+    - STACK → correct project structure for this stack
+    - DEPLOYMENT → Dockerfile + docker-compose match deployment target
+    - COMPLIANCE[] → .env.example includes compliance-related vars (e.g., ENCRYPTION_KEY for HIPAA)
+  MUST NOT APPEAR:
+    - Files for EXCLUDED features or stacks not chosen
+
 Execute: spawn Agent with subagent_type="devops-architect"
   prompt: |
     Create project scaffold for {stack}.
@@ -817,6 +958,14 @@ Verify: key files exist (pyproject.toml OR package.json, Dockerfile, docker-comp
 Trace: save to docs/forge-trace/S7-scaffold/
 
 **STEP S8: GENERATE project infrastructure** → PM (no agent needed)
+
+HANDOFF METRIC (S8):
+  MUST PROPAGATE:
+    - hooks.json → all 8 hook groups present
+    - playbook structure → 3 files exist
+    - forge-timeline.md → project name from discovery notes
+    - git hooks → commit-msg + pre-commit installed
+  MUST NOT APPEAR: N/A (infrastructure, not content)
 
 PM creates all project infrastructure that /forge needs to operate:
 
@@ -881,6 +1030,7 @@ EOF
 mkdir -p scripts
 cp ~/.claude/scripts/traceability.sh scripts/ 2>/dev/null || true
 cp ~/.claude/scripts/sync-report.sh scripts/ 2>/dev/null || true
+cp ~/.claude/scripts/forge-handoff-check.sh scripts/ 2>/dev/null || true
 chmod +x scripts/*.sh 2>/dev/null || true
 
 # 9. Install git hooks (enforces issue-first workflow + REQ impact analysis)
@@ -895,6 +1045,14 @@ Verify: docs/forge-timeline.md exists
 Trace: save to docs/forge-trace/S8-infrastructure/
 
 **STEP S9: REVIEW all generated files** → @reviewer agent
+
+HANDOFF METRIC (S9):
+  MUST VERIFY:
+    - ALL S3-S8 handoff metrics pass (run forge-handoff-check.sh for each)
+    - Every rating >= 4
+    - Discovery notes 14 dimensions ALL represented across CLAUDE.md + SPEC.md
+    - Anti-scope: no EXCLUDED item appears in any [REQ-xxx]
+  ESCALATE: any rating < 4 → fix → re-review (max 2)
 
 Execute: spawn Agent with subagent_type="self-review"
   prompt: |
@@ -924,7 +1082,10 @@ Trace: save to docs/forge-trace/S9-review/
 **STEP S10: COMMIT + DONE**
 
 ```bash
-git add -A
+# Add specific files — NEVER git add -A (could include .env or credentials)
+git add CLAUDE.md SPEC.md FORGE.md .claude/ .forge/ docs/ scripts/ \
+  pyproject.toml Dockerfile docker-compose.yml .dockerignore .gitignore \
+  .env.example config/ apps/ manage.py conftest.py 2>/dev/null || true
 git commit -m "init: scaffold project with forge"
 ```
 

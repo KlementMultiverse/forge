@@ -68,7 +68,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'D=\"$PWD\"; mkdir -p \"$D/docs\"; echo \"$(date -u +%H:%M:%S) AGENT ${CLAUDE_TOOL_INPUT_SUBAGENT_TYPE:-unknown} ${CLAUDE_TOOL_INPUT_DESCRIPTION:-}\" >> \"$D/docs/.builder-activity.log\"; bash ~/.claude/scripts/forge-auto-state.sh \"\" \"${CLAUDE_TOOL_INPUT_SUBAGENT_TYPE:-} ${CLAUDE_TOOL_INPUT_DESCRIPTION:-}\" 2>/dev/null; true'"
+            "command": "bash -c 'D=\"$PWD\"; mkdir -p \"$D/docs\"; echo \"$(date -u +%H:%M:%S) AGENT ${CLAUDE_TOOL_INPUT_SUBAGENT_TYPE:-unknown} ${CLAUDE_TOOL_INPUT_DESCRIPTION:-}\" >> \"$D/docs/.builder-activity.log\"; bash ~/.claude/scripts/forge-auto-state.sh \"\" \"${CLAUDE_TOOL_INPUT_SUBAGENT_TYPE:-} ${CLAUDE_TOOL_INPUT_DESCRIPTION:-}\" 2>/dev/null; NOTES=\"$D/docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md\"; if [ -f \"$NOTES\" ]; then for TARGET in \"$D/CLAUDE.md\" \"$D/SPEC.md\" \"$D/FORGE.md\"; do [ -f \"$TARGET\" ] && bash ~/.claude/scripts/forge-handoff-check.sh check \"$NOTES\" \"$TARGET\" 2>/dev/null || true; done; fi; true'"
           }
         ]
       },
