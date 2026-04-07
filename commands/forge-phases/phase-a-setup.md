@@ -52,10 +52,10 @@ PM must NOT exit S2 until discovery notes have all 14 fields filled.
 
 PM asks questions ONE AT A TIME. Each question follows the **Per-Question Protocol**:
 
-**Per-Question Protocol (6 parts — ALL mandatory):**
+**Per-Question Protocol (8 parts — ALL mandatory):**
 1. INPUTS: variables from previous questions this one depends on
 2. OUTPUTS: new variables this question produces
-3. ACCUMULATED CONTEXT: restate what PM knows from all previous answers (spoken TO the user — they see their words reflected back)
+3. ACCUMULATED CONTEXT: restate what PM knows from all previous answers (spoken TO the user — they see their words reflected)
 4. DYNAMIC SEARCH: web search queries built from ALL accumulated variables (not static templates)
 5. QUESTION + OPTIONS: the question, with options that each have WHY explanations and proof citations
 6. HINTS: domain-specific suggestions for unsure users ("Not sure? Here's what's typical...")
@@ -65,15 +65,15 @@ PM asks questions ONE AT A TIME. Each question follows the **Per-Question Protoc
 **Inference Chain Rule:** Every question MUST reference its input variables when framing the question, search queries, and options. The user must see HOW previous answers shaped the current question.
 
 **VARIABLE CHAIN (reference card — PM consults this before each question):**
-```
+```text
 Q1 outputs:  INTENT_SEED, PROJECT_NAME, DOMAIN, COMPLIANCE[], HIGH_RISK
 Q2 inputs:   INTENT_SEED + DOMAIN
-   outputs:  USERS[], SCALE_TIER, A11Y, I18N, DEPLOYMENT_HINTS[]
+   outputs:  USERS[], SCALE_TIER, A11Y_REQUIRED, I18N_REQUIRED, DEPLOYMENT_HINTS[]
 Q3 inputs:   INTENT_SEED + DOMAIN + USERS[]
-   outputs:  PROBLEM, CURRENT_SOLUTION, COMPETITORS[], MOBILE, INTEGRATIONS[]
+   outputs:  PROBLEM, CURRENT_SOLUTION, COMPETITORS[], MOBILE_REQUIRED, INTEGRATIONS[]
 Q3.5 inputs: INTENT_SEED + DOMAIN + USERS[] + PROBLEM + COMPETITORS[]
    outputs:  SUCCESS_CRITERIA[], SCALE_UPDATE
-Q4 inputs:   DOMAIN + SCALE_TIER + COMPLIANCE[] + MOBILE + SUCCESS_CRITERIA[]
+Q4 inputs:   INTENT_SEED + DOMAIN + SCALE_TIER + COMPLIANCE[] + MOBILE_REQUIRED + SUCCESS_CRITERIA[]
    outputs:  STACK_BACKEND, STACK_FRONTEND, STACK_PROVEN
 Q5 inputs:   ALL accumulated variables
    outputs:  FEATURES_CONFIRMED[], FEATURES_REJECTED[], FEATURES_ADDITIONAL[], DEEP_DIVE_TRIGGERED
@@ -212,7 +212,7 @@ Q1: "What are you building? Describe it in one sentence."
 ---
 
 Q2: "Who uses {PROJECT_NAME}?"
-  INPUTS: INTENT_SEED, PROJECT_NAME, DOMAIN, COMPLIANCE[], HIGH_RISK
+  INPUTS:  INTENT_SEED, PROJECT_NAME, DOMAIN, COMPLIANCE[], HIGH_RISK
   OUTPUTS: USERS[], SCALE_TIER, A11Y_REQUIRED, I18N_REQUIRED, DEPLOYMENT_HINTS[]
 
   ACCUMULATED CONTEXT (state to user):
@@ -259,7 +259,7 @@ Q2: "Who uses {PROJECT_NAME}?"
 
 Q3: "What problem does {PROJECT_NAME} solve for {USERS[primary]}?"
   INPUTS: INTENT_SEED, PROJECT_NAME, DOMAIN, USERS[], SCALE_TIER, COMPLIANCE[]
-  OUTPUTS: PROBLEM, CURRENT_SOLUTION, COMPETITORS[], COMPETITOR_GAPS[], MOBILE_REQUIRED, INTEGRATIONS[]
+  OUTPUTS: PROBLEM, CURRENT_SOLUTION, COMPETITORS[], MOBILE_REQUIRED, INTEGRATIONS[]
 
   ACCUMULATED CONTEXT (state to user):
     "You're building {PROJECT_NAME} ({DOMAIN}), used by {USERS[] as comma list}.
@@ -350,7 +350,7 @@ Q3.5: "What does success look like for {PROJECT_NAME} in 6 months?"
 ---
 
 Q4: "Tech preferences? Or should I recommend based on what we know?"
-  INPUTS: DOMAIN, USERS[], SCALE_TIER, COMPLIANCE[], MOBILE_REQUIRED, SUCCESS_CRITERIA[]
+  INPUTS: INTENT_SEED, DOMAIN, USERS[], SCALE_TIER, COMPLIANCE[], MOBILE_REQUIRED, SUCCESS_CRITERIA[]
   OUTPUTS: STACK_BACKEND, STACK_FRONTEND, STACK_PROVEN
 
   ACCUMULATED CONTEXT (state to user):
@@ -528,7 +528,7 @@ Q7: "Confirm everything — all 14 dimensions:"
      🔍 Inferred from research (proof in discovery notes)
      📋 Domain default from domain-inference-rules.md"
 
-    ```
+    ```text
     PROJECT:      {PROJECT_NAME} — {INTENT_SEED}                    [source: Q1]
     USERS:        {USERS[] with access levels}                       [source: Q2]
     PROBLEM:      {PROBLEM}                                          [source: Q3]
