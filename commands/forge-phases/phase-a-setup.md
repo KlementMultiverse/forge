@@ -254,10 +254,11 @@ Q1: "What are you building? Describe it in one sentence."
 
   ACCUMULATED CONTEXT: (none — this is the first question)
 
-  DYNAMIC SEARCH (after user answers):
+  DYNAMIC SEARCH (after user answers — use ultrathink for domain classification):
     - "{user's exact sentence} software requirements"
     - "{detected DOMAIN} compliance regulations"
     - "{detected DOMAIN} software common features"
+    - Use @deep-research-agent for thorough domain analysis when HIGH_RISK detected
 
   QUESTION:
     "What are you building? Describe it in one sentence."
@@ -700,16 +701,16 @@ Execute: spawn Agent with subagent_type="system-architect"
     </system-reminder>
 
     {numbered rules, MUST/NEVER format, with code snippets}
-    RULES MUST INCLUDE (based on stack):
-    - For Django: "Django Ninja for ALL API — NEVER import rest_framework"
-    - For Django: "uv for packages — NEVER pip install"
-    - For Django: "Run tests after EVERY change: uv run python manage.py test"
-    - For multi-tenant: "TenantMainMiddleware MUST be position 0"
-    - For multi-tenant: "Database MUST be django_tenants.postgresql_backend"
-    - For AI/LLM: "LLM output MUST be sanitized with strip_tags() before storage"
-    - For S3: "Presigned URLs expire after 15 minutes — NEVER serve files directly"
-    - For all: "All credentials from os.environ — NEVER hardcoded"
-    - Add stack-specific rules based on research
+    RULES MUST BE GENERATED DYNAMICALLY (never hardcoded):
+    - MUST research trending best practices for {STACK} in {current_year} (web search + context7 docs)
+    - MUST generate rules in MUST/NEVER binary format from research findings
+    - MUST treat user's Q4 tech preferences as PRIMARY input for all rules
+    - MUST reference the SPECIFIC tools/libraries the user chose, not forge defaults
+    - MUST include code snippets for critical patterns (concurrency, auth, validation)
+    - MUST read all credentials from os.environ — NEVER hardcode secrets (universal)
+    - NEVER override user's tech choice with forge preferences
+    - NEVER generate rules for a framework/library the user did not choose
+    - Stack registry learnings are SECONDARY — proven patterns from previous builds
 
     ## Compliance Rules
     <!-- Only if compliance confirmed in discovery. Omit section entirely if none. -->
@@ -1044,7 +1045,13 @@ Verify: .forge/playbook/ exists with 3 files
 Verify: docs/forge-timeline.md exists
 Trace: save to docs/forge-trace/S8-infrastructure/
 
-**STEP S9: REVIEW all generated files** → @reviewer agent
+<!-- HARD GATE: PM MUST NOT skip S9 or S10. Phase A is NOT complete without both. -->
+<system-reminder>
+S9 and S10 are MANDATORY. Do NOT say "Phase A complete" until BOTH have executed.
+S9 must spawn @self-review agent. S10 must git commit. Skipping either is a VIOLATION.
+</system-reminder>
+
+**STEP S9: REVIEW all generated files** → @reviewer agent (MANDATORY — DO NOT SKIP)
 
 HANDOFF METRIC (S9):
   MUST VERIFY:
@@ -1054,7 +1061,7 @@ HANDOFF METRIC (S9):
     - Anti-scope: no EXCLUDED item appears in any [REQ-xxx]
   ESCALATE: any rating < 4 → fix → re-review (max 2)
 
-Execute: spawn Agent with subagent_type="self-review"
+Execute: spawn Agent with subagent_type="reviewer"
   prompt: |
     Review all generated files for this new project:
     1. CLAUDE.md — at least 20 lines, under 100? Real rules? MUST/NEVER format? Code snippets?
@@ -1079,7 +1086,7 @@ Verify: all ratings >= 4
 If any < 4 → fix → re-review
 Trace: save to docs/forge-trace/S9-review/
 
-**STEP S10: COMMIT + DONE**
+**STEP S10: COMMIT + DONE** (MANDATORY — DO NOT SKIP)
 
 ```bash
 # Add specific files — NEVER git add -A (could include .env or credentials)
