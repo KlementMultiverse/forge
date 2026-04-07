@@ -95,6 +95,15 @@ teardown() {
     assert_success
 }
 
+@test "step-gate blocks when activity log missing but step active" {
+    echo '{"current_step": 5}' > "$TEST_DIR/docs/forge-state.json"
+    # No activity log
+    run "$SCRIPT" check "$TEST_DIR"
+    assert_failure
+    assert_output --partial "BLOCKED"
+    assert_output --partial "Activity log missing"
+}
+
 @test "step-gate passes at step 0" {
     echo '{"current_step": 0}' > "$TEST_DIR/docs/forge-state.json"
     run "$SCRIPT" check "$TEST_DIR"

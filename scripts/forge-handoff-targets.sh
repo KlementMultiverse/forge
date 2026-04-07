@@ -53,15 +53,15 @@ elif echo "$LAST_ACTION" | grep -qi "AGENT devops-architect"; then
     echo "$DIR/Dockerfile"
     echo "$DIR/docker-compose.yml"
 elif echo "$LAST_ACTION" | grep -qi "AGENT backend-architect"; then
-    # Find the latest trace output
-    LATEST=$(ls -1d "$DIR/docs/forge-trace"/*/ 2>/dev/null | tail -1)
-    if [ -n "$LATEST" ] && [ -f "$LATEST/output.md" ]; then
-        echo "$LATEST/output.md"
+    # Find trace folder matching current step
+    STEP_TRACE=$(find "$DIR/docs/forge-trace" -maxdepth 1 -name "${CURRENT_STEP}*" -type d 2>/dev/null | head -1)
+    if [ -n "$STEP_TRACE" ] && [ -f "$STEP_TRACE/output.md" ]; then
+        echo "$STEP_TRACE/output.md"
     fi
 elif echo "$LAST_ACTION" | grep -qi "AGENT security-engineer"; then
-    LATEST=$(ls -1d "$DIR/docs/forge-trace"/*/ 2>/dev/null | tail -1)
-    if [ -n "$LATEST" ] && [ -f "$LATEST/output.md" ]; then
-        echo "$LATEST/output.md"
+    STEP_TRACE=$(find "$DIR/docs/forge-trace" -maxdepth 1 -name "${CURRENT_STEP}*" -type d 2>/dev/null | head -1)
+    if [ -n "$STEP_TRACE" ] && [ -f "$STEP_TRACE/output.md" ]; then
+        echo "$STEP_TRACE/output.md"
     fi
 elif echo "$LAST_ACTION" | grep -qi "AGENT reviewer"; then
     # Reviewer output doesn't need handoff check — it IS the check
@@ -71,6 +71,9 @@ elif echo "$LAST_ACTION" | grep -qi "SKILL gate"; then
     exit 1
 elif echo "$LAST_ACTION" | grep -qi "SKILL checkpoint"; then
     # Checkpoint doesn't produce artifacts
+    exit 1
+elif echo "$LAST_ACTION" | grep -qi "SKILL cr"; then
+    # /cr is a meta-command, not an artifact producer
     exit 1
 else
     # Default: check CLAUDE.md and SPEC.md if they exist

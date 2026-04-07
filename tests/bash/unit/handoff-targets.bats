@@ -92,6 +92,13 @@ teardown() {
     [ "$status" -eq 1 ]
 }
 
+@test "handoff-targets skips /cr (exit 1)" {
+    echo '{"current_step": 10}' > "$TEST_DIR/docs/forge-state.json"
+    echo "10:00:00 SKILL cr" > "$TEST_DIR/docs/.builder-activity.log"
+    run "$SCRIPT" "$TEST_DIR"
+    [ "$status" -eq 1 ]
+}
+
 @test "handoff-targets skips checkpoint (exit 1)" {
     echo '{"current_step": 7}' > "$TEST_DIR/docs/forge-state.json"
     echo "10:00:00 SKILL checkpoint" > "$TEST_DIR/docs/.builder-activity.log"

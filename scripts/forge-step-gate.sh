@@ -53,6 +53,10 @@ fi
 
 # Get last completed action from activity log
 if [ ! -f "$ACTIVITY_LOG" ]; then
+    if [ "$CURRENT_STEP" -gt 0 ]; then
+        echo "[FORGE] BLOCKED: Activity log missing but step $CURRENT_STEP is active. Cannot verify reviewer ran."
+        exit 1
+    fi
     exit 0
 fi
 
@@ -77,13 +81,17 @@ fi
 # Check 2: Are trace files saved for the current step?
 TRACE_DIR="$DIR/docs/forge-trace"
 if [ -d "$TRACE_DIR" ]; then
-    # Find the latest trace folder
-    LATEST_TRACE=$(ls -1d "$TRACE_DIR"/*/ 2>/dev/null | tail -1)
-    if [ -n "$LATEST_TRACE" ]; then
+    # Find trace folder matching current step number
+    STEP_TRACE=$(find "$TRACE_DIR" -maxdepth 1 -name "${CURRENT_STEP}*" -o -name "0${CURRENT_STEP}*" -o -name "00${CURRENT_STEP}*" 2>/dev/null | head -1 || true)
+    if [ -z "$STEP_TRACE" ]; then
+        # Also check by latest folder as fallback
+        STEP_TRACE=$(ls -1d "$TRACE_DIR"/*/ 2>/dev/null | tail -1 || true)
+    fi
+    if [ -n "$STEP_TRACE" ] && [ -d "$STEP_TRACE" ]; then
         MISSING=0
         for FILE in input.md output.md meta.md; do
-            if [ ! -f "$LATEST_TRACE/$FILE" ]; then
-                echo "[FORGE] BLOCKED: Trace file missing: $LATEST_TRACE/$FILE"
+            if [ ! -f "$STEP_TRACE/$FILE" ]; then
+                echo "[FORGE] BLOCKED: Trace file missing: $STEP_TRACE/$FILE"
                 MISSING=$((MISSING + 1))
             fi
         done
