@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-07T00:47:10.674284+00:00",
+  "generated": "2026-04-07T00:47:23.881829+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -2107,11 +2107,7 @@
       "forge-handoff-check.sh": {
         "type": "script",
         "path": "scripts/forge-handoff-check.sh",
-        "depends_on": {
-          "scripts": [
-            "forge-handoff-check.sh"
-          ]
-        }
+        "depends_on": {}
       },
       "forge-grow.sh": {
         "type": "script",
@@ -4664,9 +4660,9 @@
       "type": "scripts"
     },
     {
-      "from": "scripts/forge-handoff-check.sh",
+      "from": "hooks/PostToolUse:Agent",
       "to": "scripts/forge-handoff-check.sh",
-      "type": "scripts"
+      "type": "hook_to_script"
     },
     {
       "from": "scripts/forge-grow.sh",
@@ -6043,9 +6039,6 @@
         ]
       },
       "scripts/forge-handoff-check.sh": {
-        "scripts": [
-          "forge-handoff-check.sh"
-        ],
         "hooks": [
           "PostToolUse:Agent"
         ]
@@ -9458,6 +9451,24 @@
         "summary": "initialize Forge \u2014 autonomous software development framework",
         "breaking": false,
         "requires_reinstall": false
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "e956da93",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "universal agent execution loop with handoff metrics — forge-handoff-check.sh + PostToolUse:Agent hook #185",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/forge-handoff-check.sh",
+          "templates/hooks.json",
+          "commands/forge-phases/phase-a-setup.md",
+          "tests/bash/unit/handoff-check.bats"
+        ],
+        "issues": [
+          "#185"
+        ]
       }
     ]
   }
