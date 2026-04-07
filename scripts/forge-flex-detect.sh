@@ -152,8 +152,13 @@ if [ "$JSON_MODE" = true ]; then
     for sig in "${FILTERED[@]}"; do
         IFS='|' read -r type target step what why proposed severity <<< "$sig"
         if [ "$FIRST" = true ]; then FIRST=false; else echo ","; fi
-        printf '{"type":"%s","target":"%s","step":"%s","what":"%s","why":"%s","proposed":"%s","severity":"%s"}' \
-            "$type" "$target" "$step" "$what" "$why" "$proposed" "$severity"
+        python3 -c "
+import json, sys
+print(json.dumps({
+    'type': sys.argv[1], 'target': sys.argv[2], 'step': sys.argv[3],
+    'what': sys.argv[4], 'why': sys.argv[5], 'proposed': sys.argv[6],
+    'severity': sys.argv[7]
+}), end='')" "$type" "$target" "$step" "$what" "$why" "$proposed" "$severity"
     done
     echo ""
     echo "]"

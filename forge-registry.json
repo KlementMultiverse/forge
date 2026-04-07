@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-07T15:29:48.889615+00:00",
+  "generated": "2026-04-07T15:44:46.860231+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -2133,8 +2133,8 @@
         "matcher": "",
         "depends_on": {
           "scripts": [
-            "forge-step-gate.sh",
-            "forge-phase-gate.sh"
+            "forge-phase-gate.sh",
+            "forge-step-gate.sh"
           ]
         }
       },
@@ -2189,9 +2189,9 @@
         "depends_on": {
           "scripts": [
             "forge-handoff-targets.sh",
+            "forge-handoff-check.sh",
             "forge-auto-state.sh",
-            "forge-flex-detect.sh",
-            "forge-handoff-check.sh"
+            "forge-flex-detect.sh"
           ]
         }
       },
@@ -2203,9 +2203,9 @@
         "depends_on": {
           "scripts": [
             "forge-handoff-targets.sh",
+            "forge-handoff-check.sh",
             "forge-auto-state.sh",
-            "forge-flex-detect.sh",
-            "forge-handoff-check.sh"
+            "forge-flex-detect.sh"
           ]
         }
       },
@@ -4667,12 +4667,12 @@
     },
     {
       "from": "hooks/Stop",
-      "to": "scripts/forge-step-gate.sh",
+      "to": "scripts/forge-phase-gate.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/Stop",
-      "to": "scripts/forge-phase-gate.sh",
+      "to": "scripts/forge-step-gate.sh",
       "type": "scripts"
     },
     {
@@ -4702,17 +4702,17 @@
     },
     {
       "from": "hooks/PostToolUse:Agent",
+      "to": "scripts/forge-handoff-check.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Agent",
       "to": "scripts/forge-auto-state.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Agent",
       "to": "scripts/forge-flex-detect.sh",
-      "type": "scripts"
-    },
-    {
-      "from": "hooks/PostToolUse:Agent",
-      "to": "scripts/forge-handoff-check.sh",
       "type": "scripts"
     },
     {
@@ -4722,17 +4722,17 @@
     },
     {
       "from": "hooks/PostToolUse:Skill",
+      "to": "scripts/forge-handoff-check.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Skill",
       "to": "scripts/forge-auto-state.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Skill",
       "to": "scripts/forge-flex-detect.sh",
-      "type": "scripts"
-    },
-    {
-      "from": "hooks/PostToolUse:Skill",
-      "to": "scripts/forge-handoff-check.sh",
       "type": "scripts"
     }
   ],
@@ -6668,6 +6668,41 @@
   },
   "changelog": {
     "general": [
+      {
+        "date": "2026-04-07",
+        "commit": "56def8bd",
+        "change_type": "documentation",
+        "scope": "general",
+        "summary": "update for 13-step loop + FLEX_SIGNAL detection",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "README.md",
+          "tests/bash/unit/universal-loop-coverage.bats"
+        ],
+        "issues": [
+          "#202"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "e0fc5f8b",
+        "change_type": "feature",
+        "scope": "general",
+        "summary": "implement forge-flex-detect.sh + wire hooks",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "scripts/forge-flex-detect.sh",
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#202"
+        ]
+      },
       {
         "date": "2026-04-07",
         "commit": "ca20b62e",

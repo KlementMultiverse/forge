@@ -374,6 +374,16 @@ SIGNAL
     assert_success
 }
 
+@test "hooks use CLAUDE_TOOL_RESULT for FLEX_SIGNAL detection" {
+    run grep "CLAUDE_TOOL_RESULT" "$FORGE_DIR/templates/hooks.json"
+    assert_success
+}
+
+@test "Stop hook checks for unresolved BLOCKING signals in forge-state.json" {
+    run grep "flex_checkpoints" "$FORGE_DIR/templates/hooks.json"
+    assert_success
+}
+
 # ─── DESIGN RULES IN LOOP FILE ───
 
 @test "universal-agent-loop.md has 13 steps" {
