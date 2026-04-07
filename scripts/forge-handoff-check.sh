@@ -74,7 +74,7 @@ extract_dimensions() {
                 break
             fi
             # Extract dimension: VALUE pairs
-            if echo "$line" | grep -qE "^[A-Z_]+:"; then
+            if echo "$line" | grep -qE "^[A-Z0-9_]+:"; then
                 echo "$line"
             fi
         fi
@@ -194,7 +194,7 @@ do_check() {
     if [ "$incomplete" -gt 0 ]; then
         echo ""
         echo "HANDOFF PARTIAL — some items need more detail"
-        exit 0  # Partial is warning, not blocking
+        exit 1  # Partial handoff is incomplete — should trigger retry
     fi
 
     echo ""

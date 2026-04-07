@@ -21,11 +21,11 @@ SESSION 1 RULES:
 **UNIVERSAL AGENT EXECUTION LOOP** (apply to EVERY agent spawn in ALL phases)
 
 <system-reminder>
-This loop is NON-OPTIONAL. Every agent spawn MUST follow it. Hooks enforce it mechanically.
+This loop is NON-OPTIONAL. Every agent spawn MUST follow it. Hooks report handoff status after each agent (advisory); PM MUST act on MISSING/INCOMPLETE reports.
 Discovery notes = single source of truth. Autoresearch is BOUNDED — NEVER invents new requirements.
 </system-reminder>
 
-```
+```text
 1. PREPARE:
    PM reads input artifact (discovery notes / SPEC / previous step output)
    PM reads agent-specific context (stack registry, templates, prior traces)
@@ -606,22 +606,22 @@ Q7: "Confirm everything — all 14 dimensions:"
      🔍 Inferred from research (proof in discovery notes)
      📋 Domain default from domain-inference-rules.md"
 
-    ```
-    PROJECT:      {PROJECT_NAME} — {INTENT_SEED}                    [source: Q1]
-    USERS:        {USERS[] with access levels}                       [source: Q2]
-    PROBLEM:      {PROBLEM}                                          [source: Q3]
-    SUCCESS:      {SUCCESS_CRITERIA[]}                               [source: Q3.5]
-    STACK:        {STACK_BACKEND} + {STACK_FRONTEND}                 [source: Q4]
-    FEATURES:     {FEATURES_CONFIRMED[]}                             [source: Q5]
-    COMPLIANCE:   {COMPLIANCE[] or 'none'} (confidence: {%})         [source: Q1 inference]
-    SCALE:        {SCALE_TIER} — {numbers if available}              [source: Q2 + Q3.5]
-    DEPLOYMENT:   {DEPLOYMENT_HINTS[]}                               [source: Q2 inference]
-    INTEGRATIONS: {INTEGRATIONS[]}                                   [source: Q3 + Q5]
-    A11Y:         {A11Y_REQUIRED — level}                            [source: Q2 inference]
-    I18N:         {I18N_REQUIRED — languages}                        [source: Q2 inference]
-    MOBILE:       {MOBILE_REQUIRED — type}                           [source: Q3 inference]
-    EXCLUDED:     {EXCLUDED[]}                                       [source: Q6]
-    ```
+```text
+PROJECT:      {PROJECT_NAME} — {INTENT_SEED}                    [source: Q1]
+USERS:        {USERS[] with access levels}                       [source: Q2]
+PROBLEM:      {PROBLEM}                                          [source: Q3]
+SUCCESS:      {SUCCESS_CRITERIA[]}                               [source: Q3.5]
+STACK:        {STACK_BACKEND} + {STACK_FRONTEND}                 [source: Q4]
+FEATURES:     {FEATURES_CONFIRMED[]}                             [source: Q5]
+COMPLIANCE:   {COMPLIANCE[] or 'none'} (confidence: {%})         [source: Q1 inference]
+SCALE:        {SCALE_TIER} — {numbers if available}              [source: Q2 + Q3.5]
+DEPLOYMENT:   {DEPLOYMENT_HINTS[]}                               [source: Q2 inference]
+INTEGRATIONS: {INTEGRATIONS[]}                                   [source: Q3 + Q5]
+A11Y:         {A11Y_REQUIRED — level}                            [source: Q2 inference]
+I18N:         {I18N_REQUIRED — languages}                        [source: Q2 inference]
+MOBILE:       {MOBILE_REQUIRED — type}                           [source: Q3 inference]
+EXCLUDED:     {EXCLUDED[]}                                       [source: Q6]
+```
     "Correct? (yes / change)"
 
   HINTS:
