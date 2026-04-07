@@ -113,6 +113,47 @@ teardown() {
     assert_success
 }
 
+# ─── MECHANICAL ENFORCEMENT ───
+
+@test "Stop hook runs forge-step-gate.sh" {
+    run grep "forge-step-gate" "$HOOKS"
+    assert_success
+}
+
+@test "Agent hook has reviewer reminder" {
+    run grep "REMINDER.*reviewer" "$HOOKS"
+    assert_success
+}
+
+@test "Skill hook has reviewer reminder" {
+    run grep -A10 '"matcher": "Skill"' "$HOOKS"
+    assert_success
+    assert_output --partial "REMINDER"
+}
+
+@test "Agent hook uses forge-handoff-targets.sh" {
+    run grep "forge-handoff-targets" "$HOOKS"
+    assert_success
+}
+
+@test "Both Agent and Skill hooks use forge-handoff-targets.sh" {
+    run grep -c "forge-handoff-targets" "$HOOKS"
+    assert_success
+    [ "$output" -ge 2 ]
+}
+
+# ─── SCRIPTS EXIST ───
+
+@test "forge-step-gate.sh exists and is executable" {
+    assert [ -f "$FORGE_DIR/scripts/forge-step-gate.sh" ]
+    assert [ -x "$FORGE_DIR/scripts/forge-step-gate.sh" ]
+}
+
+@test "forge-handoff-targets.sh exists and is executable" {
+    assert [ -f "$FORGE_DIR/scripts/forge-handoff-targets.sh" ]
+    assert [ -x "$FORGE_DIR/scripts/forge-handoff-targets.sh" ]
+}
+
 # ─── HOOKS JSON STRUCTURE ───
 
 @test "hooks.json is valid JSON" {
