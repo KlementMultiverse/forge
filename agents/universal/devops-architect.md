@@ -204,6 +204,36 @@ Key checks: `output: 'standalone'` in next.config, `NEXT_TELEMETRY_DISABLED=1`, 
 ### Claude Code Pattern: Gate-Based Execution
 From Claude Code's `autoDream.ts`, expensive operations use a three-gate pattern: cheapest check first (time gate), then medium (session count), then expensive (lock acquisition). Apply to CI/CD pipelines: lint/format first (seconds), then unit tests (minutes), then integration tests (minutes+), then deploy. Cancel early if cheap checks fail.
 
+### Agent Contract
+
+#### Input Contract
+- **Required**: CLAUDE.md (tech stack, architecture rules)
+- **Required**: STACK_BACKEND, STACK_FRONTEND, STACK_DB from Q4
+- **Required**: DEPLOY_STRATEGY from Q4.5
+- **Required**: SCALE_TIER from Q2
+- **Optional**: COMPLIANCE[] (affects Dockerfile security, env vars)
+- **Format**: PM reads CLAUDE.md and passes stack + deployment info in prompt
+
+#### Output Contract
+- **Scaffold files**: pyproject.toml/package.json, Dockerfile (multi-stage, non-root), docker-compose.yml (dev mode with volume mounts), .dockerignore, .env.example, .gitignore, config files
+- **Dockerfile**: Multi-stage build, non-root user, correct base image for stack
+- **docker-compose.yml**: Dev mode (volume mounts, hot reload), all services (DB, cache, workers)
+- **.env.example**: ALL required env vars listed with descriptions
+
+#### Quality Tiers
+| Rating | Criteria | Action |
+|--------|----------|--------|
+| 5 | All files present, Dockerfile builds, docker-compose runs, .env complete, security best practices | Accept |
+| 4 | All files present, minor issues (missing .dockerignore entry, etc.) | Accept |
+| 3 | Missing 1-2 files, or Dockerfile uses root user | Retry with enhancement |
+| 2 | Wrong stack scaffold, or missing key files (no Dockerfile, no docker-compose) | Retry with different approach |
+| 1 | Wrong language/framework entirely | Escalate to user |
+
+#### Handoff Metric (S7)
+- **FROM Q4 → scaffold**: Correct project structure for chosen STACK_BACKEND + STACK_FRONTEND
+- **FROM Q4.5 → Dockerfile**: DEPLOY_STRATEGY reflected (e.g., serverless → no Dockerfile, containers → multi-stage)
+- **Verify**: Key files exist (pyproject.toml OR package.json, Dockerfile, docker-compose.yml)
+
 ### Handoff Protocol
 Always return results in this format:
 ```

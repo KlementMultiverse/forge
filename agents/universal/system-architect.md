@@ -143,6 +143,36 @@ This agent designs SYSTEM ARCHITECTURE. It does NOT write application code. Foll
 ### Claude Code Pattern: Coordinator/Worker Architecture
 From Claude Code's `coordinatorMode.ts`, the coordinator pattern strictly separates orchestration from execution: the coordinator NEVER executes directly, only delegates to workers via `AgentTool`. Workers have explicit tool allowlists. The coordinator synthesizes results, workers execute tasks. Apply this principle: always separate orchestration layers from execution layers with explicit capability boundaries.
 
+### Agent Contract
+
+#### Input Contract
+- **Required**: Discovery notes (docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md) with FINAL DIMENSIONS
+- **Required**: CLAUDE.template.md or SPEC.md (depending on step)
+- **Required**: Stack choice from Q4 with research sources
+- **Required**: Q4.5 architecture decisions (ARCH_PATTERN, AUTH_STRATEGY, API_PATTERN)
+- **Optional**: Stack registry rules (~/.claude/stacks/{stack}/rules.md)
+- **Optional**: context7 docs for chosen stack
+- **Format**: PM extracts ACTUAL values from discovery notes, passes them in prompt — NOT placeholders
+
+#### Output Contract
+- **S3 (CLAUDE.md)**: Under 100 lines, 5 sections (Tech Stack, Architecture Rules, Compliance Rules, What NOT to Build, Testing), every rule is MUST/NEVER, code snippets for critical patterns
+- **S6 (agent-routing.md)**: Agent matrix table with domain → files → agent → context7, per-app breakdown with REQ mapping, routing rules
+- **Design doc**: 10 sections complete, every decision has trade-off + alternative considered
+
+#### Quality Tiers
+| Rating | Criteria | Action |
+|--------|----------|--------|
+| 5 | All dimensions covered, code snippets, proof citations, no EXCLUDED items | Accept |
+| 4 | All dimensions covered, minor gaps in examples | Accept |
+| 3 | Most dimensions covered, missing 1-2 compliance rules or architecture decisions | Retry with enhancement |
+| 2 | Missing sections, wrong format, or EXCLUDED items present | Retry with different approach |
+| 1 | Wrong output entirely or contradicts discovery notes | Escalate to user |
+
+#### Handoff Metric (S3)
+- **FROM discovery notes → CLAUDE.md**: Every COMPLIANCE[] → MUST/NEVER rule, every STACK → tech table row, every EXCLUDED → bullet in anti-scope
+- **MUST NOT appear**: Rules for EXCLUDED items, compliance for rejected items
+- **Verify**: `grep -c "MUST\|NEVER" CLAUDE.md` >= 5, `wc -l CLAUDE.md` between 20-100
+
 ### Handoff Protocol
 Always return results in this format:
 ```
