@@ -498,6 +498,8 @@ graph TD
     commands_phase_phase_0_2_plan --> commands_specify
     commands_phase_phase_a_setup --> agents_aws_setup_agent
     commands_phase_phase_a_setup --> agents_backend_architect
+    commands_phase_phase_a_setup --> agents_context_loader_agent
+    commands_phase_phase_a_setup --> agents_deep_research_agent
     commands_phase_phase_a_setup --> agents_devops_architect
     commands_phase_phase_a_setup --> agents_django_ninja_agent
     commands_phase_phase_a_setup --> agents_django_tenants_agent
@@ -506,6 +508,7 @@ graph TD
     commands_phase_phase_a_setup --> agents_llm_integration_agent
     commands_phase_phase_a_setup --> agents_repo_index
     commands_phase_phase_a_setup --> agents_requirements_analyst
+    commands_phase_phase_a_setup --> agents_reviewer
     commands_phase_phase_a_setup --> agents_s3_lambda_agent
     commands_phase_phase_a_setup --> agents_self_review
     commands_phase_phase_a_setup --> agents_system_architect
@@ -515,6 +518,7 @@ graph TD
     commands_phase_phase_a_setup --> commands_gate
     commands_phase_phase_a_setup --> commands_requirements
     commands_phase_phase_a_setup --> scripts_forge_enforce_sh
+    commands_phase_phase_a_setup --> scripts_forge_handoff_check_sh
     commands_phase_phase_a_setup --> scripts_forge_infra_check_sh
     commands_phase_phase_a_setup --> scripts_forge_stack_sh
     commands_phase_phase_3_implement --> agents_backend_architect
@@ -589,7 +593,7 @@ graph TD
     hooks_PreToolUse_Edit --> scripts_forge_change_validator_sh
     hooks_PostToolUse_Write|Edit --> scripts_forge_auto_sync_sh
     hooks_PostToolUse_Write|Edit --> scripts_forge_change_validator_sh
-    hooks_PostToolUse_Agent --> scripts_forge_auto_state_sh
     hooks_PostToolUse_Agent --> scripts_forge_handoff_check_sh
+    hooks_PostToolUse_Agent --> scripts_forge_auto_state_sh
     hooks_PostToolUse_Skill --> scripts_forge_auto_state_sh
 ```

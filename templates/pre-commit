@@ -27,4 +27,27 @@ if [ -f "$TEST_GUARD" ]; then
     bash "$TEST_GUARD" --changed 2>/dev/null
 fi
 
+# Registry auto-regeneration — if any tracked file changed, regenerate
+REGISTRY_SCRIPT="$HOME/.claude/scripts/forge-registry.py"
+REGISTRY_FILE="forge-registry.json"
+if [ -f "$REGISTRY_SCRIPT" ] && [ -f "$REGISTRY_FILE" ]; then
+    # Check if any script/command/template/hook/agent/rule changed in this commit
+    TRACKED_CHANGES=$(git diff --cached --name-only 2>/dev/null | grep -cE "^(scripts/|commands/|templates/|agents/|rules/|docs/domain-)" || true)
+    if [ "$TRACKED_CHANGES" -gt 0 ]; then
+        # Compute checksum of current registry
+        OLD_SUM=$(md5sum "$REGISTRY_FILE" 2>/dev/null | cut -d' ' -f1)
+        # Regenerate — block commit if this fails
+        if ! python3 "$REGISTRY_SCRIPT" --regenerate 2>/dev/null; then
+            echo "[FORGE] ERROR: Registry regeneration failed. Fix the issue before committing."
+            exit 1
+        fi
+        NEW_SUM=$(md5sum "$REGISTRY_FILE" 2>/dev/null | cut -d' ' -f1)
+        # If changed, auto-stage
+        if [ "$OLD_SUM" != "$NEW_SUM" ]; then
+            git add "$REGISTRY_FILE" docs/dependency-graph.md 2>/dev/null
+            echo "[FORGE] Registry auto-regenerated and staged (tracked files changed)"
+        fi
+    fi
+fi
+
 exit 0

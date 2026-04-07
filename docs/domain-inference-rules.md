@@ -15,22 +15,22 @@ Maps project domains to compliance, integrations, scale, deployment, and other n
 
 ## Domain Taxonomy
 
-| Domain Keywords | Compliance | Auth Pattern | Common Integrations | Scale Tier | Deployment | A11Y | i18n | Mobile | HIGH_RISK |
-|----------------|-----------|-------------|-------------------|-----------|-----------|------|------|--------|-----------|
-| healthcare, clinic, medical, patient, ehr, hospital | HIPAA, HITECH | RBAC with role hierarchy | EHR/EMR (HL7/FHIR), lab systems, pharmacy | Medium | Private cloud / on-prem | Recommended | Regional | PWA for appointments | YES |
-| fintech, banking, payments, trading, wallet | PCI-DSS, SOX, KYC/AML | MFA mandatory | Payment processors, credit bureaus, regulatory APIs | High | Private cloud, data residency | Required | Multi-currency | Native app | YES |
-| ecommerce, shop, store, cart, marketplace | PCI-DSS (if payments) | Customer accounts + guest | Payment gateway (Stripe/PayPal), shipping, inventory | High (spiky) | Cloud (CDN critical) | Recommended | Multi-region | PWA or native | NO |
-| education, learning, lms, course, school | FERPA, COPPA (if minors) | Institutional SSO (SAML) | LTI for LMS, SCORM for content, video streaming | Medium | Cloud | WCAG 2.1 AA required | Multi-language | Responsive web | YES (if minors) |
-| saas, platform, b2b, multi-tenant | SOC2 | SSO/SAML + API keys | Billing (Stripe), SSO providers, webhooks | Medium-High | Cloud with SLA | Recommended | Multi-region | Responsive web | NO |
-| government, civic, public-sector | FedRAMP, Section 508 | PIV/CAC or SSO | Government APIs, identity verification | Medium | Gov cloud (FedRAMP) | WCAG 2.1 AA required | Multi-language required | Responsive web | YES |
-| social, community, forum, messaging | GDPR, COPPA (if minors) | Social login + email | Push notifications, media CDN, search | High | Cloud (global CDN) | Recommended | Multi-language | Native app | NO |
-| iot, hardware, embedded, devices | Varies by industry | Device certificates + API keys | MQTT, device management, telemetry | High (event-driven) | Edge + cloud hybrid | N/A | Regional | Native app | NO |
-| ai, ml, llm, chatbot, agents | Varies + AI safety | API keys + user auth | LLM providers (OpenAI/Anthropic), vector DB | Medium | Cloud (GPU if needed) | Recommended | Multi-language | Web | NO |
-| internal, admin, backoffice, dashboard | Company security policy | LDAP/AD integration | Internal APIs, databases | Low (<100 users) | On-prem or VPN | Optional | Usually single | Web only | NO |
-| crm, sales, leads, customers | GDPR, CCPA | SSO + role-based | Email (SendGrid), calendar, phone (Twilio) | Medium | Cloud | Optional | Multi-region | Responsive web | NO |
-| legal, contracts, compliance, law | Attorney-client privilege | RBAC + MFA | Document management, e-signature (DocuSign) | Low-Medium | Private cloud | Optional | Regional | Web | YES |
-| media, content, publishing, blog | DMCA, copyright | Social login + author roles | CDN, media processing, search, RSS | Medium-High | Cloud (CDN critical) | Recommended | Multi-language | Responsive web | NO |
-| logistics, supply-chain, warehouse, shipping | Industry-specific | Multi-org RBAC | ERP systems, mapping APIs, barcode/RFID | Medium | Cloud or hybrid | Optional | Multi-region | Mobile (field workers) | NO |
+| Domain Keywords | Compliance | Auth Pattern | Common Integrations | Scale Tier | Deployment | A11Y | i18n | Mobile | HIGH_RISK | REGULATED |
+|----------------|-----------|-------------|-------------------|-----------|-----------|------|------|--------|-----------|-----------|
+| healthcare, clinic, medical, patient, ehr, hospital | HIPAA, HITECH | RBAC with role hierarchy | EHR/EMR (HL7/FHIR), lab systems, pharmacy | Medium | Private cloud / on-prem | Recommended | Regional | PWA for appointments | YES | YES |
+| fintech, banking, payments, trading, wallet | PCI-DSS, SOX, KYC/AML | MFA mandatory | Payment processors, credit bureaus, regulatory APIs | High | Private cloud, data residency | Required | Multi-currency | Native app | YES | YES |
+| ecommerce, shop, store, cart, marketplace | PCI-DSS (if payments) | Customer accounts + guest | Payment gateway (Stripe/PayPal), shipping, inventory | High (spiky) | Cloud (CDN critical) | Recommended | Multi-region | PWA or native | NO | IF payments |
+| education, learning, lms, course, school | FERPA, COPPA (if minors) | Institutional SSO (SAML) | LTI for LMS, SCORM for content, video streaming | Medium | Cloud | WCAG 2.1 AA required | Multi-language | Responsive web | IF minors | IF minors |
+| saas, platform, b2b, multi-tenant | SOC2 | SSO/SAML + API keys | Billing (Stripe), SSO providers, webhooks | Medium-High | Cloud with SLA | Recommended | Multi-region | Responsive web | NO | IF enterprise |
+| government, civic, public-sector | FedRAMP, Section 508 | PIV/CAC or SSO | Government APIs, identity verification | Medium | Gov cloud (FedRAMP) | WCAG 2.1 AA required | Multi-language required | Responsive web | YES | YES |
+| social, community, forum, messaging | GDPR, COPPA (if minors) | Social login + email | Push notifications, media CDN, search | High | Cloud (global CDN) | Recommended | Multi-language | Native app | NO | IF minors |
+| iot, hardware, embedded, devices | Varies by industry | Device certificates + API keys | MQTT, device management, telemetry | High (event-driven) | Edge + cloud hybrid | N/A | Regional | Native app | NO | IF safety-critical |
+| ai, ml, llm, chatbot, agents, screening, ranking | Varies + AI safety | API keys + user auth | LLM providers (OpenAI/Anthropic), vector DB | Medium | Cloud (GPU if needed) | Recommended | Multi-language | Web | NO | IF people-affecting (hiring/lending/insurance/criminal) |
+| internal, admin, backoffice, dashboard | Company security policy | LDAP/AD integration | Internal APIs, databases | Low (<100 users) | On-prem or VPN | Optional | Usually single | Web only | NO | NO |
+| crm, sales, leads, customers | GDPR, CCPA | SSO + role-based | Email (SendGrid), calendar, phone (Twilio) | Medium | Cloud | Optional | Multi-region | Responsive web | NO | IF PII heavy |
+| legal, contracts, compliance, law | Attorney-client privilege | RBAC + MFA | Document management, e-signature (DocuSign) | Low-Medium | Private cloud | Optional | Regional | Web | YES | YES |
+| media, content, publishing, blog | DMCA, copyright | Social login + author roles | CDN, media processing, search, RSS | Medium-High | Cloud (CDN critical) | Recommended | Multi-language | Responsive web | NO | NO |
+| logistics, supply-chain, warehouse, shipping | Industry-specific | Multi-org RBAC | ERP systems, mapping APIs, barcode/RFID | Medium | Cloud or hybrid | Optional | Multi-region | Mobile (field workers) | NO | IF hazmat/pharma |
 
 ---
 
@@ -45,6 +45,7 @@ Maps project domains to compliance, integrations, scale, deployment, and other n
 | FERPA | Student record protection, parent access rights, directory information opt-out | "MUST restrict student record access to authorized school officials", "NEVER expose student data to unauthorized users" |
 | FedRAMP | NIST 800-53 controls, continuous monitoring, authorized cloud provider | "MUST deploy to FedRAMP-authorized cloud provider", "MUST implement NIST 800-53 security controls" |
 | WCAG 2.1 AA | Color contrast 4.5:1, keyboard navigation, screen reader support, alt text, focus indicators | "MUST meet WCAG 2.1 AA contrast ratio (4.5:1)", "MUST support full keyboard navigation" |
+| EEOC / AI Bias | Disparate impact analysis (4/5ths rule), explainable AI decisions, human-in-the-loop for rejections, audit trail of all AI scores | "MUST log all AI scoring decisions with explainable reasoning", "MUST implement disparate impact analysis (EEOC 4/5ths rule)", "NEVER auto-reject candidates without human review", "MUST store model version + prompt used for each score" |
 
 ---
 
@@ -57,6 +58,7 @@ These conditions trigger mandatory follow-up questions after Q5:
 | Regulated industry | HIGH_RISK = YES in domain table | "Which specific regulations? Data residency requirements? Audit requirements?" |
 | Multi-tenant confirmed | User selected multi-tenant in Q5 | "Tenant isolation model? (schema/row/database) Tenant-level customization? Per-tenant billing?" |
 | AI/LLM features | User selected AI/LLM in Q5 | "Which model provider? What AI task type? Acceptable cost per interaction? AI failure handling?" |
+| AI + regulated domain | AI domain + hiring/HR/lending/insurance detected | "Is AI making decisions about people? Bias audit requirements? Explainability needed? Human-in-the-loop required? Which fairness metrics?" |
 | High scale | Success criteria implies >10K users or SCALE_TIER = High | "Expected concurrent users at launch? Peak patterns? Data volume growth?" |
 | Multiple user types (>3) | Q2 identified >3 distinct roles | "List each role's permissions. Any approval workflows? Role hierarchy?" |
 

@@ -152,8 +152,11 @@ Q3 inputs:   INTENT_SEED + DOMAIN + USERS[]
 Q3.5 inputs: INTENT_SEED + DOMAIN + USERS[] + PROBLEM + COMPETITORS[]
    outputs:  SUCCESS_CRITERIA[], SCALE_UPDATE
 Q4 inputs:   INTENT_SEED + DOMAIN + SCALE_TIER + COMPLIANCE[] + MOBILE_REQUIRED + SUCCESS_CRITERIA[]
-   outputs:  STACK_BACKEND, STACK_FRONTEND, STACK_PROVEN
-Q5 inputs:   ALL accumulated variables
+   outputs:  STACK_BACKEND, STACK_FRONTEND, STACK_DB, STACK_AI, CLOUD_PROVIDER, HOSTING_MODEL
+Q4.5 inputs: ALL Q4 outputs + COMPLIANCE[] + SCALE_TIER + DOMAIN
+   outputs:  ARCH_PATTERN, AUTH_STRATEGY, API_PATTERN, DATA_MODEL, AI_PATTERN, REALTIME_PATTERN, DEPLOY_STRATEGY
+   derived:  COST_ESTIMATE (shown to user, not a mutable input)
+Q5 inputs:   ALL accumulated variables (including Q4.5)
    outputs:  FEATURES_CONFIRMED[], FEATURES_REJECTED[], FEATURES_ADDITIONAL[], DEEP_DIVE_TRIGGERED
 Q6 inputs:   FEATURES_CONFIRMED[] + COMPETITORS[] + DOMAIN
    outputs:  EXCLUDED[]
@@ -222,11 +225,21 @@ Part B — Additional selected:
 Deep-dive triggered: yes/no
 Deep-dive answers:
 
+## Q4.5: Architecture decisions
+ARCH_PATTERN:
+AUTH_STRATEGY:
+API_PATTERN:
+DATA_MODEL:
+AI_PATTERN: (if AI features)
+REALTIME_PATTERN: (if realtime features)
+DEPLOY_STRATEGY:
+COST_ESTIMATE: $/month
+
 ## Q6: Anti-scope
 EXCLUDED: []
 
 ## Q7: Summary confirmed
-All 14 fields verified: yes
+All dimensions verified: yes
 User changes: none / [list]
 
 ## FINAL DIMENSIONS
@@ -234,7 +247,18 @@ PROJECT:
 USERS: []
 PROBLEM:
 SUCCESS:
-STACK:
+STACK_BACKEND:
+STACK_FRONTEND:
+STACK_DB:
+STACK_AI:
+CLOUD_PROVIDER:
+ARCH_PATTERN:
+AUTH_STRATEGY:
+API_PATTERN:
+DATA_MODEL:
+AI_PATTERN:
+REALTIME_PATTERN:
+DEPLOY_STRATEGY:
 FEATURES: []
 COMPLIANCE: []
 SCALE:
@@ -243,7 +267,8 @@ INTEGRATIONS: []
 A11Y:
 I18N:
 MOBILE:
-EXCLUDED: []
+EXCLUDED:
+COST_ESTIMATE:
 ```
 
 ---
@@ -258,7 +283,8 @@ Q1: "What are you building? Describe it in one sentence."
     - "{user's exact sentence} software requirements"
     - "{detected DOMAIN} compliance regulations"
     - "{detected DOMAIN} software common features"
-    - Use @deep-research-agent for thorough domain analysis when HIGH_RISK detected
+    - MUST use @deep-research-agent when: HIGH_RISK detected, OR compliance detected, OR AI + people-affecting domain
+    - MUST research trending tech stacks for this SPECIFIC domain from internet (NEVER default to previous project stacks)
 
   QUESTION:
     "What are you building? Describe it in one sentence."
@@ -428,62 +454,175 @@ Q3.5: "What does success look like for {PROJECT_NAME} in 6 months?"
 
 ---
 
-Q4: "Tech preferences? Or should I recommend based on what we know?"
-  INPUTS: DOMAIN, USERS[], SCALE_TIER, COMPLIANCE[], MOBILE_REQUIRED, SUCCESS_CRITERIA[]
-  OUTPUTS: STACK_BACKEND, STACK_FRONTEND, STACK_PROVEN
+Q4: "Tech Stack — let me research what's best for your project"
+  INPUTS: INTENT_SEED, DOMAIN, USERS[], SCALE_TIER, COMPLIANCE[], MOBILE_REQUIRED, SUCCESS_CRITERIA[]
+  OUTPUTS: STACK_BACKEND, STACK_FRONTEND, STACK_DB, STACK_AI, CLOUD_PROVIDER, HOSTING_MODEL
 
   ACCUMULATED CONTEXT (state to user):
     "You're building {PROJECT_NAME} ({DOMAIN}) for {USERS[]}.
      Problem: {PROBLEM}. Scale: {SCALE_TIER}. Compliance: {COMPLIANCE[]}.
      Mobile: {MOBILE_REQUIRED}. Success target: {SUCCESS_CRITERIA[0]}."
 
-  DYNAMIC SEARCH:
-    - "{DOMAIN} {SCALE_TIER} scale tech stack recommendations"
-    - "{DOMAIN} {COMPLIANCE[0]} compliant frameworks" (if compliance applies)
-    - "best backend framework for {INTENT_SEED} {SCALE_TIER} scale"
+  DYNAMIC SEARCH (MANDATORY — always research from internet, NEVER default to registry):
+    - "best tech stack for {DOMAIN} {INTENT_SEED} {current_year} production"
+    - "{DOMAIN} software trending backend framework {current_year} comparison"
+    - "best frontend framework for {INTENT_SEED} dashboard {current_year}"
+    - "best database for {DOMAIN} {INTENT_SEED} {current_year}"
+    - "{DOMAIN} cloud provider comparison cost {SCALE_TIER} scale {current_year}"
+    - If AI features detected: "AI/LLM integration framework {DOMAIN} {current_year}"
 
-  QUESTION + OPTIONS:
-    "Do you have tech preferences, or should I recommend based on your {DOMAIN} project at {SCALE_TIER} scale?"
-    A) "I have preferences" → PM asks: "Backend?" then "Frontend?"
-    B) "Recommend for me" → PM checks proven stacks FIRST:
-       Run: `bash ~/.claude/scripts/forge-stack.sh list 2>/dev/null || echo "(No stack registry)"`
-       Stacks with learnings > 0 are PROVEN.
-       PM presents recommendation WITH reasoning:
-       "For a {DOMAIN} project at {SCALE_TIER} scale with {COMPLIANCE[]} compliance:
-        Backend: {recommendation} — {WHY: e.g., 'Django has built-in RBAC and audit logging needed for HIPAA'}
-        Frontend: {recommendation} — {WHY: e.g., 'React for component reuse across {N} user dashboards'}
-        {If PROVEN stack: '✓ This stack has been used in {N} previous forge projects with {learnings}'}"
-    For full-stack: ask backend AND frontend separately.
-    Both stacks registered — lookup for EACH independently.
+  QUESTION: "Do you have tech preferences, or should I recommend based on research?"
+    A) "I have preferences" → PM asks each layer separately
+    B) "Recommend" → PM presents shopping cart comparison (below)
+
+  **SHOPPING CART FORMAT** — present TOP 3 per layer from internet research:
+
+  "Here's what {DOMAIN} teams are using in {current_year} (from research):"
+
+  Backend:
+  | # | Option | Performance | {DOMAIN} Fit | Built-in Features | Trending | Cost |
+  |---|--------|-------------|--------------|-------------------|----------|------|
+  | 1 | {opt1} | {stars}     | {stars}      | {details}         | {trend}  | Free |
+  | 2 | {opt2} | {stars}     | {stars}      | {details}         | {trend}  | Free |
+  | 3 | {opt3} | {stars}     | {stars}      | {details}         | {trend}  | Free |
+
+  Frontend:
+  | # | Option | Bundle Size | Ecosystem | Learning Curve | Trending | Cost |
+  (same format, top 3 from research)
+
+  Database:
+  | # | Option | AI/Vector Support | Scaling | Managed Options | Cost/month at {SCALE_TIER} |
+  (same format, top 3)
+
+  AI/LLM (only if AI features detected):
+  | # | Option | Models Supported | Cost per 1K calls | Explainability | Open Source |
+  (same format, top 3)
+
+  Cloud Provider:
+  | # | Option | Free Tier | Cost at {SCALE_TIER}/month | {COMPLIANCE[]} Support | Region Coverage |
+  (same format, top 3)
+
+  Hosting Model:
+  | # | Option | Cost/month | Scaling | Complexity | Best For |
+  | 1 | Containers (Docker) | ${X} | Manual | Medium | {SCALE_TIER} teams |
+  | 2 | Serverless | ${X} | Auto | Low | Spiky traffic |
+  | 3 | VPS | ${X} | Manual | Low | Budget MVP |
+
+  **INCOMPATIBILITY WARNINGS** (show before user picks):
+  If user picks conflicting options (e.g., tRPC + Python backend):
+    "⚠️ {option A} requires {constraint} — conflicts with your {option B} pick.
+     Suggested fix: switch to {alternative}, or change {other pick}."
+
+  **RECOMMENDED COMBO** (at bottom):
+  "🏆 Best fit for YOUR project ({DOMAIN} + {SCALE_TIER} + {COMPLIANCE[]}):
+   {BACKEND} + {FRONTEND} + {DB} + {CLOUD}
+   WHY: {specific reasons tied to THEIR problem, scale, compliance, success criteria}
+   Estimated monthly cost at {SCALE_TIER}: ${X}-${Y}/month
+   Pick this combo, or select from each row above."
 
   HINTS:
-    💡 Not sure about tech? Here's what works well for your project:
-       - If you know Python → Django or FastAPI are strong choices
-       - If you know JavaScript → Express/Next.js covers both backend and frontend
-       - For {DOMAIN} with {COMPLIANCE[]}: {specific framework that handles compliance well}
-       No wrong answer — I'll help make it work with whatever you pick.
+    💡 Not sure? The recommended combo is based on what {DOMAIN} teams are actually using.
+       - Tell me what languages you know and I'll adjust
+       - Or just say "recommended" and I'll set it up
+       These choices are reversible — but changing later costs time, not money.
 
   FALLBACK:
     If user says "I don't know" or "whatever works":
-      → PM recommends based on: DOMAIN + SCALE_TIER + COMPLIANCE[] + proven stacks
-      → PM explains WHY: "I'm recommending {X} because {reason tied to their specific answers}"
-    If user picks unfamiliar stack:
-      → PM checks stack registry. If no match: auto-create with `forge-stack.sh create {stack} --auto`
-      → PM notes: "This stack is new to forge — I'll research best practices."
+      → PM MUST present the recommended combo with cost estimate
+      → NEVER default to forge registry — always from internet research
+    If user picks something unexpected:
+      → PM researches it: "Let me check how {choice} works for {DOMAIN} projects..."
+      → Present pros/cons from research, let user confirm
 
   AFTER USER ANSWERS:
-    → STACK REGISTRY: For EACH stack, check ~/.claude/stacks/
-      If match: read rules.md, agents.md, learnings.md, scaffold.md
-      If no match: auto-create with `forge-stack.sh create {stack} --auto`
-    → PM WRITES to discovery notes: stack choice, registry status
+    → PM WRITES to discovery notes: all stack choices with research sources and cost estimates
+    → Stack registry: auto-create entry (`forge-stack.sh create {STACK_BACKEND} --auto`) for FUTURE reference only
 
-  TRANSITION: "Stack set: {BACKEND} + {FRONTEND}. Now let me suggest features based on everything so far."
+  TRANSITION: "Stack set. Now let me check a few architecture decisions before we get to features."
 
 ---
 
-Q5: Features — SMART TWO-PART (adaptive based on ALL Q1-Q4 variables)
+Q4.5: "Architecture & Design Decisions — confirming the expensive-to-change stuff"
+  INPUTS: STACK_BACKEND, STACK_FRONTEND, STACK_DB, STACK_AI, CLOUD_PROVIDER, COMPLIANCE[], SCALE_TIER, USERS[]
+  OUTPUTS: ARCH_PATTERN, AUTH_STRATEGY, API_PATTERN, DATA_MODEL, AI_PATTERN, REALTIME_PATTERN, DEPLOY_STRATEGY
+  DERIVED: COST_ESTIMATE (shown to user, not stored as mutable input)
+
+  ACCUMULATED CONTEXT (state to user):
+    "Stack confirmed: {STACK_BACKEND} + {STACK_FRONTEND} + {STACK_DB}.
+     Before features, let me confirm a few architecture decisions that are expensive to change later."
+
+  DYNAMIC SEARCH:
+    - "{STACK_BACKEND} architecture patterns {DOMAIN} {current_year}"
+    - "{STACK_BACKEND} authentication best practices {COMPLIANCE[]}"
+    - "{STACK_BACKEND} {STACK_FRONTEND} API pattern REST vs GraphQL {current_year}"
+
+  QUESTION: "I'm inferring these design decisions from your choices. Confirm or adjust:"
+
+  Each decision presented as: INFERRED DEFAULT + WHY + alternatives
+
+  1. **Architecture**: {monolith/modular-monolith/microservices}
+     Default: {inferred from SCALE_TIER + team size}
+     WHY: "{SCALE_TIER} scale with {team_size} → {pattern} is right because {reason}"
+     Alternatives: {list with trade-offs}
+
+  2. **Auth strategy**: {session/JWT/OAuth2}
+     Default: {inferred from STACK_BACKEND + COMPLIANCE[]}
+     WHY: "{STACK_BACKEND} with {COMPLIANCE[]} → {strategy} because {reason}"
+
+  3. **API pattern**: {REST/GraphQL/tRPC}
+     Default: {inferred from STACK_BACKEND + STACK_FRONTEND}
+     WHY: "{STACK_BACKEND} + {STACK_FRONTEND} → {pattern} because {reason}"
+
+  4. **Data model**: {single-tenant/multi-tenant, soft-delete/hard-delete}
+     Default: {inferred from USERS[] + COMPLIANCE[]}
+     (Only ask multi-tenant if multiple orgs detected; only ask soft-delete if compliance needs audit)
+
+  5. **AI integration** (only if AI features): {sync/async, cost control}
+     Default: {inferred from SCALE_TIER + expected volume}
+     WHY: "{volume} candidates/month → {pattern} because {cost_reason}"
+     "Cost per AI call: ~${X}. At {volume}/month = ~${Y}/month."
+
+  6. **Realtime** (only if notifications/collab features): {WebSocket/SSE/polling/none}
+     Default: {inferred from FEATURES_HINTED}
+     (Skip if no realtime features detected)
+
+  7. **Deployment strategy**: {single-server/load-balanced, managed-DB/self-hosted}
+     Default: {inferred from SCALE_TIER + CLOUD_PROVIDER}
+
+  **COST ESTIMATE** (derived — shown after all decisions confirmed):
+  "Based on your choices, estimated monthly cost at {SCALE_TIER}:
+   - Cloud hosting: ${X}/month
+   - Database (managed): ${X}/month
+   - AI/LLM calls ({volume}/month): ${X}/month
+   - Storage: ${X}/month
+   - Total: ~${TOTAL}/month
+   This is an estimate — actual costs depend on usage."
+
+  HINTS:
+    💡 Not sure? The defaults are based on your scale and compliance needs.
+       - For MVP: the defaults are almost always right
+       - Only change if you have specific experience or requirements
+       "Confirm all" is a valid answer.
+
+  FALLBACK:
+    If user says "confirm all" or "defaults are fine":
+      → PM uses all inferred defaults → fast path
+    If user wants to change one:
+      → PM explains trade-offs for that specific decision
+      → Only re-ask that one, not all 7
+
+  AFTER USER ANSWERS:
+    → PM WRITES to discovery notes: all decisions with reasoning
+    → These feed directly into CLAUDE.md Architecture Rules and design doc
+
+  TRANSITION: "Architecture locked. Now let me suggest features based on everything."
+
+---
+
+Q5: Features — SMART TWO-PART (adaptive based on ALL Q1-Q4.5 variables)
   INPUTS: INTENT_SEED, PROJECT_NAME, DOMAIN, USERS[], PROBLEM, COMPETITORS[], COMPLIANCE[],
-          SCALE_TIER, STACK_BACKEND, STACK_FRONTEND, MOBILE_REQUIRED, INTEGRATIONS[], SUCCESS_CRITERIA[]
+          SCALE_TIER, STACK_BACKEND, STACK_FRONTEND, STACK_DB, STACK_AI, MOBILE_REQUIRED,
+          INTEGRATIONS[], SUCCESS_CRITERIA[], ARCH_PATTERN, AUTH_STRATEGY, API_PATTERN, AI_PATTERN
   OUTPUTS: FEATURES_CONFIRMED[], FEATURES_REJECTED[], FEATURES_ADDITIONAL[], DEEP_DIVE_TRIGGERED
 
   ACCUMULATED CONTEXT (state to user):
@@ -539,7 +678,8 @@ Q5: Features — SMART TWO-PART (adaptive based on ALL Q1-Q4 variables)
   DEEP-DIVE TRIGGER (after Q5, only if needed):
   If ANY of these are true:
     - HIGH_RISK domain confirmed
-    - HIPAA/GDPR/PCI-DSS/SOC2 confirmed in Part A
+    - HIPAA/GDPR/PCI-DSS/SOC2/EEOC confirmed in Part A
+    - AI + people-affecting domain (hiring/HR/lending/insurance/criminal justice)
     - Multi-tenant selected in Part B
     - AI/LLM features selected in Part B
     - >3 user types identified in Q2
@@ -660,9 +800,9 @@ HANDOFF METRIC (S3):
 
 PM MUST first:
 1. Read docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md → extract ACTUAL values (not placeholders)
-2. Read ~/.claude/stacks/{stack}/rules.md → include proven stack rules (if exists)
-3. Read templates/CLAUDE.template.md → follow exact structure
-4. Fetch latest docs: spawn @context-loader-agent for {stack} framework
+2. Read templates/CLAUDE.template.md → follow exact structure
+3. Fetch latest docs: spawn @context-loader-agent for {STACK_BACKEND} framework (MANDATORY)
+4. Optionally read ~/.claude/stacks/{STACK_BACKEND}/rules.md for reference (NEVER override internet research with registry)
 
 Execute: spawn Agent with subagent_type="system-architect"
   prompt: |
@@ -671,7 +811,7 @@ Execute: spawn Agent with subagent_type="system-architect"
     PROJECT INFO (PM reads actual values from docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md):
     - Name: {name}
     - Description: {description}
-    - Stack: {stack}
+    - Stack: {STACK_BACKEND} + {STACK_FRONTEND} + {STACK_DB}
     - Features: {features}
     - Excluded: {excluded}
     - Compliance: {compliance} (from domain inference — generate MUST/NEVER rules)
@@ -701,16 +841,28 @@ Execute: spawn Agent with subagent_type="system-architect"
     </system-reminder>
 
     {numbered rules, MUST/NEVER format, with code snippets}
-    RULES MUST BE GENERATED DYNAMICALLY (never hardcoded):
-    - MUST research trending best practices for {STACK} in {current_year} (web search + context7 docs)
-    - MUST generate rules in MUST/NEVER binary format from research findings
-    - MUST treat user's Q4 tech preferences as PRIMARY input for all rules
-    - MUST reference the SPECIFIC tools/libraries the user chose, not forge defaults
+    RULES HAVE 3 CATEGORIES:
+
+    **Category 1: DYNAMIC (generated from Q4 stack choice + Q4.5 decisions + research)**
+    - MUST research trending best practices for {STACK_BACKEND} + {STACK_FRONTEND} in {current_year}
+    - MUST generate MUST/NEVER rules from research findings
+    - MUST reference the SPECIFIC tools/libraries the user chose in Q4
     - MUST include code snippets for critical patterns (concurrency, auth, validation)
-    - MUST read all credentials from os.environ — NEVER hardcode secrets (universal)
-    - NEVER override user's tech choice with forge preferences
-    - NEVER generate rules for a framework/library the user did not choose
-    - Stack registry learnings are SECONDARY — proven patterns from previous builds
+    - MUST incorporate Q4.5 decisions (e.g., ARCH_PATTERN=monolith → "MUST keep all code in single deployable")
+    - NEVER generate rules for frameworks the user did not choose
+    - NEVER override user's Q4 tech choice with forge or registry preferences
+
+    **Category 2: UNIVERSAL SAFETY (always included — not tool choices, these are invariants)**
+    - "MUST read all credentials from os.environ — NEVER hardcode secrets"
+    - "MUST sanitize all user input at system boundaries"
+    - "MUST sanitize LLM output before storage or display" (if AI features)
+    - "MUST use presigned URLs for file access — NEVER serve files directly" (if file uploads)
+    - "MUST keep files under 300 lines — split if exceeding"
+
+    **Category 3: FEATURE-CONDITIONAL (only if confirmed in Q5)**
+    - Multi-tenant → tenant isolation rules (only if multi-tenant confirmed)
+    - AI/LLM → model versioning, cost controls, fallback rules (only if AI confirmed)
+    - Compliance → regulation-specific rules from domain-inference-rules.md (only if compliance confirmed)
 
     ## Compliance Rules
     <!-- Only if compliance confirmed in discovery. Omit section entirely if none. -->
@@ -771,7 +923,7 @@ Execute: spawn Agent with subagent_type="requirements-analyst"
 
     PROJECT INFO (from discovery notes):
     - Name: {name}
-    - Stack: {stack}
+    - Stack: {STACK_BACKEND} + {STACK_FRONTEND} + {STACK_DB}
     - Features: {features}
     - Users: {users}
     - Excluded: {excluded} (NEVER generate requirements for excluded items)
@@ -843,7 +995,7 @@ HANDOFF METRIC (S6):
   MUST PROPAGATE:
     - STACK → agent-routing.md has correct agent mappings for this stack
     - FEATURES → agent-routing.md covers all feature domains (auth, API, infra, etc.)
-    - Stack registry rules → copied to .claude/rules/{stack}-rules.md (if exists)
+    - Stack registry rules → copied to .claude/rules/{STACK_BACKEND}-rules.md (if exists)
   MUST NOT APPEAR:
     - Agent mappings for EXCLUDED features
 
@@ -853,10 +1005,10 @@ mkdir -p .claude/rules/
 
 **STACK REGISTRY CHECK** (do this FIRST):
 ```bash
-STACK_DIR="$HOME/.claude/stacks/{stack}"  # e.g., django, fastapi, nextjs
+STACK_DIR="$HOME/.claude/stacks/{STACK_BACKEND}"  # e.g., django, fastapi, nextjs
 if [ -d "$STACK_DIR" ]; then
   # Copy stack rules into project
-  cp "$STACK_DIR/rules.md" .claude/rules/{stack}-rules.md
+  cp "$STACK_DIR/rules.md" .claude/rules/{STACK_BACKEND}-rules.md
   # Use stack agent routing as base for agent-routing.md
   STACK_AGENTS=$(cat "$STACK_DIR/agents.md")
   # Read stack learnings — include in all agent prompts this build
@@ -878,10 +1030,10 @@ Execute: spawn Agent with subagent_type="system-architect"
   prompt: |
     Create .claude/rules/agent-routing.md for this project.
 
-    Stack: {stack}
+    Stack: {STACK_BACKEND}
     Features: {features}
 
-    IMPORTANT: Check if ~/.claude/stacks/{stack}/agents.md exists.
+    IMPORTANT: Check if ~/.claude/stacks/{STACK_BACKEND}/agents.md exists.
     If YES: use it as the BASE template, adapt for this project's specific apps/folders.
     If NO: create from scratch using the mappings below.
 
@@ -916,7 +1068,7 @@ HANDOFF METRIC (S7):
 
 Execute: spawn Agent with subagent_type="devops-architect"
   prompt: |
-    Create project scaffold for {stack}.
+    Create project scaffold for {STACK_BACKEND}.
     Read CLAUDE.md for rules. Read ~/.claude/rules/docker.md for Docker rules.
     Follow the Docker rules file — it covers volume mounts, dev vs prod, .dockerignore.
     Generate REAL files:
