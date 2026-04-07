@@ -622,7 +622,7 @@ I18N:         {I18N_REQUIRED — languages}                        [source: Q2 i
 MOBILE:       {MOBILE_REQUIRED — type}                           [source: Q3 inference]
 EXCLUDED:     {EXCLUDED[]}                                       [source: Q6]
 ```
-    "Correct? (yes / change)"
+"Correct? (yes / change)"
 
   HINTS:
     💡 Check especially:
@@ -651,17 +651,23 @@ HANDOFF METRIC (S3):
     - Every STACK item → row in Tech Stack table with version
     - Every EXCLUDED[] item → bullet in "What NOT to Build"
     - Every INTEGRATIONS[] item → Integration Rules section (if any)
-    - A11Y requirements → accessibility rules (if confirmed)
-    - SUCCESS criteria → referenced in rules (if measurable)
+    - A11Y requirements → MUST/NEVER rule in Architecture Rules (if confirmed, e.g., "MUST meet WCAG 2.1 AA")
+    - SUCCESS criteria → referenced in Architecture Rules or Testing section (if measurable)
   MUST NOT APPEAR:
     - Architecture rules for items in EXCLUDED[]
     - Compliance rules for compliance items user rejected in Q5
+
+PM MUST first:
+1. Read docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md → extract ACTUAL values (not placeholders)
+2. Read ~/.claude/stacks/{stack}/rules.md → include proven stack rules (if exists)
+3. Read templates/CLAUDE.template.md → follow exact structure
+4. Fetch latest docs: spawn @context-loader-agent for {stack} framework
 
 Execute: spawn Agent with subagent_type="system-architect"
   prompt: |
     Generate CLAUDE.md for a new project. Follow these rules STRICTLY:
 
-    PROJECT INFO (from discovery notes — docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md):
+    PROJECT INFO (PM reads actual values from docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md):
     - Name: {name}
     - Description: {description}
     - Stack: {stack}
@@ -673,6 +679,7 @@ Execute: spawn Agent with subagent_type="system-architect"
     - Integrations: {integrations} (third-party services to plan for)
     - A11Y: {a11y} (accessibility rules if required)
     - Success criteria: {success} (what "done" looks like)
+    - Stack registry rules: {stack_rules} (proven rules from previous builds, if any)
 
     TEMPLATE (MUST follow this structure — under 100 lines):
     ```
@@ -703,6 +710,15 @@ Execute: spawn Agent with subagent_type="system-architect"
     - For S3: "Presigned URLs expire after 15 minutes — NEVER serve files directly"
     - For all: "All credentials from os.environ — NEVER hardcoded"
     - Add stack-specific rules based on research
+
+    ## Compliance Rules
+    <!-- Only if compliance confirmed in discovery. Omit section entirely if none. -->
+    {MUST/NEVER rules from domain-inference-rules.md Security Signals table}
+    {e.g., "MUST encrypt all patient data at rest and in transit" for HIPAA}
+
+    ## Integration Rules
+    <!-- Only if integrations confirmed in discovery. Omit section entirely if none. -->
+    {Rules for each confirmed third-party integration}
 
     ## What NOT to Build
 
@@ -743,7 +759,7 @@ HANDOFF METRIC (S4):
     - A11Y → [REQ-A11Y-xxx] if confirmed
     - I18N → [REQ-I18N-xxx] if confirmed
     - MOBILE → [REQ-MOBILE-xxx] if confirmed
-    - Every USERS[] type → referenced in at least one REQ
+    - Every USERS[] type → referenced in at least one REQ (via API auth levels, permissions, or user-facing features)
   MUST NOT APPEAR:
     - Any [REQ-xxx] for items in EXCLUDED[] list
     - Requirements for features user rejected in Q5
@@ -796,6 +812,10 @@ Trace: save to docs/forge-trace/S4-spec-md/
 
 **STEP S5: GENERATE FORGE.md** → PM (simple, no agent needed)
 
+HANDOFF METRIC (S5):
+  MUST PROPAGATE: PROJECT_NAME and description from discovery notes in QUEUED entry
+  MUST NOT APPEAR: N/A (simple template)
+
 PM writes FORGE.md from template:
 ```markdown
 # FORGE.md — Work Queue
@@ -817,6 +837,14 @@ Verify: file exists with QUEUED entry
 Trace: save to docs/forge-trace/S5-forge-md/
 
 **STEP S6: GENERATE .claude/rules/** → PM + @system-architect agent
+
+HANDOFF METRIC (S6):
+  MUST PROPAGATE:
+    - STACK → agent-routing.md has correct agent mappings for this stack
+    - FEATURES → agent-routing.md covers all feature domains (auth, API, infra, etc.)
+    - Stack registry rules → copied to .claude/rules/{stack}-rules.md (if exists)
+  MUST NOT APPEAR:
+    - Agent mappings for EXCLUDED features
 
 ```bash
 mkdir -p .claude/rules/
@@ -877,6 +905,14 @@ Trace: save to docs/forge-trace/S6-rules/
 
 **STEP S7: GENERATE scaffold** → @devops-architect agent
 
+HANDOFF METRIC (S7):
+  MUST PROPAGATE:
+    - STACK → correct project structure for this stack
+    - DEPLOYMENT → Dockerfile + docker-compose match deployment target
+    - COMPLIANCE[] → .env.example includes compliance-related vars (e.g., ENCRYPTION_KEY for HIPAA)
+  MUST NOT APPEAR:
+    - Files for EXCLUDED features or stacks not chosen
+
 Execute: spawn Agent with subagent_type="devops-architect"
   prompt: |
     Create project scaffold for {stack}.
@@ -922,6 +958,14 @@ Verify: key files exist (pyproject.toml OR package.json, Dockerfile, docker-comp
 Trace: save to docs/forge-trace/S7-scaffold/
 
 **STEP S8: GENERATE project infrastructure** → PM (no agent needed)
+
+HANDOFF METRIC (S8):
+  MUST PROPAGATE:
+    - hooks.json → all 8 hook groups present
+    - playbook structure → 3 files exist
+    - forge-timeline.md → project name from discovery notes
+    - git hooks → commit-msg + pre-commit installed
+  MUST NOT APPEAR: N/A (infrastructure, not content)
 
 PM creates all project infrastructure that /forge needs to operate:
 
@@ -986,6 +1030,7 @@ EOF
 mkdir -p scripts
 cp ~/.claude/scripts/traceability.sh scripts/ 2>/dev/null || true
 cp ~/.claude/scripts/sync-report.sh scripts/ 2>/dev/null || true
+cp ~/.claude/scripts/forge-handoff-check.sh scripts/ 2>/dev/null || true
 chmod +x scripts/*.sh 2>/dev/null || true
 
 # 9. Install git hooks (enforces issue-first workflow + REQ impact analysis)
@@ -1000,6 +1045,14 @@ Verify: docs/forge-timeline.md exists
 Trace: save to docs/forge-trace/S8-infrastructure/
 
 **STEP S9: REVIEW all generated files** → @reviewer agent
+
+HANDOFF METRIC (S9):
+  MUST VERIFY:
+    - ALL S3-S8 handoff metrics pass (run forge-handoff-check.sh for each)
+    - Every rating >= 4
+    - Discovery notes 14 dimensions ALL represented across CLAUDE.md + SPEC.md
+    - Anti-scope: no EXCLUDED item appears in any [REQ-xxx]
+  ESCALATE: any rating < 4 → fix → re-review (max 2)
 
 Execute: spawn Agent with subagent_type="self-review"
   prompt: |
@@ -1029,7 +1082,10 @@ Trace: save to docs/forge-trace/S9-review/
 **STEP S10: COMMIT + DONE**
 
 ```bash
-git add -A
+# Add specific files — NEVER git add -A (could include .env or credentials)
+git add CLAUDE.md SPEC.md FORGE.md .claude/ .forge/ docs/ scripts/ \
+  pyproject.toml Dockerfile docker-compose.yml .dockerignore .gitignore \
+  .env.example config/ apps/ manage.py conftest.py 2>/dev/null || true
 git commit -m "init: scaffold project with forge"
 ```
 
