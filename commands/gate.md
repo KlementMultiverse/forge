@@ -44,10 +44,12 @@ GATE VERIFICATION CHECKLIST (run in order, stop on first failure):
 8. No hardcoded secrets: `grep -r "sk-\|AKIA\|ghp_" apps/ --include="*.py"` → empty
 9. Files under 300 lines: `find apps/ -name "*.py" | xargs wc -l | awk '$1 > 300'` → empty
 
-10. CodeRabbit approval: run `/cr approve` → must return APPROVED
-    If CHANGES_REQUESTED → fix findings → `/cr resolve` → `/cr review` → re-check
-    If PENDING → wait 60s → re-check (max 3 polls)
-    GATE BLOCKS without CR approval. This is NON-NEGOTIABLE.
+10. CodeRabbit approval: run `/cr approve` → exit code 0 means APPROVED
+    Exit 1 = not approved (CHANGES_REQUESTED or PENDING)
+    If exit 1 → check `/cr status` for details:
+      CHANGES_REQUESTED → fix findings → `/cr resolve` → `/cr review` → re-check
+      PENDING → wait 60s → re-check (max 3 polls)
+    GATE BLOCKS without CR approval (exit 0). This is NON-NEGOTIABLE.
 
 If ALL 10 checks pass → gate PASSES. Update state:
 ```bash

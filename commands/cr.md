@@ -130,11 +130,11 @@ This command is called by:
 
 ## Forge Flow Integration
 
-```
+```text
 Code change → push → /cr review → fix findings → /cr resolve → /cr approve → /gate → merge
 ```
 
 At every phase gate:
-```
+```text
 /checkpoint → /cr check → /cr status → /gate (blocks if CR not APPROVED)
 ```
