@@ -109,7 +109,7 @@ Trace: save to docs/forge-trace/S7-scaffold/
 
 HANDOFF METRIC (S8):
   MUST PROPAGATE:
-    - hooks.json → all 8 hook groups present
+    - hooks.json → all 9 hook groups present
     - playbook structure → 3 files exist
     - forge-timeline.md → project name from discovery notes
     - git hooks → commit-msg + pre-commit installed
