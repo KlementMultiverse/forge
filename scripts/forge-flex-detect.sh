@@ -29,7 +29,12 @@ while [ $# -gt 0 ]; do
     case "$1" in
         --help|-h) echo "$USAGE"; exit 0 ;;
         --json) JSON_MODE=true; shift ;;
-        --severity-filter) SEVERITY_FILTER="$2"; shift 2 ;;
+        --severity-filter)
+            if [ -z "${2:-}" ] || echo "${2:-}" | grep -q "^--"; then
+                echo "Error: --severity-filter requires a value (e.g., BLOCKING,ADVISORY)" >&2
+                exit 2
+            fi
+            SEVERITY_FILTER="$2"; shift 2 ;;
         *) INPUT_FILE="$1"; shift ;;
     esac
 done
@@ -129,18 +134,19 @@ if [ ${#FILTERED[@]} -eq 0 ]; then
 fi
 
 # Persistence — write ADVISORY and BLOCKING to flex-signals.log
-PROJ_DIR="${FORGE_DIR:-$PWD}"
+# NOTE: In hook context, writes to current project directory ($PWD)
+PROJECT_DIR="${PROJECT_DIR:-$PWD}"
 for sig in "${FILTERED[@]}"; do
     SIG_TYPE=$(echo "$sig" | cut -d'|' -f1)
     SIG_TARGET=$(echo "$sig" | cut -d'|' -f2)
     SIG_SEVERITY=$(echo "$sig" | cut -d'|' -f7)
     if [ "$SIG_SEVERITY" = "ADVISORY" ] || [ "$SIG_SEVERITY" = "BLOCKING" ]; then
-        mkdir -p "$PROJ_DIR/docs"
+        mkdir -p "$PROJECT_DIR/docs"
         STATUS="LOGGED"
         if [ "$SIG_SEVERITY" = "BLOCKING" ]; then
             STATUS="UNRESOLVED"
         fi
-        echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $SIG_SEVERITY $STATUS $SIG_TYPE $SIG_TARGET" >> "$PROJ_DIR/docs/flex-signals.log"
+        echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) $SIG_SEVERITY $STATUS $SIG_TYPE $SIG_TARGET" >> "$PROJECT_DIR/docs/flex-signals.log"
     fi
 done
 

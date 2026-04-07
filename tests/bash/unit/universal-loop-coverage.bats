@@ -160,6 +160,12 @@ teardown() {
     assert_output --partial "forge-flex-detect"
 }
 
+@test "Skill hook has FLEX_SIGNAL detection" {
+    run grep -A20 '"matcher": "Skill"' "$HOOKS"
+    assert_success
+    assert_output --partial "forge-flex-detect"
+}
+
 # ─── SCRIPTS EXIST ───
 
 @test "forge-step-gate.sh exists and is executable" {

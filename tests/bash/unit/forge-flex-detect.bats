@@ -322,7 +322,7 @@ WHY: Evidence
 PROPOSED: Add REQ
 SEVERITY: ADVISORY
 SIGNAL
-    FORGE_DIR="$TEST_DIR" run "$SCRIPT" "$TEST_DIR/output.md"
+    PROJECT_DIR="$TEST_DIR" run "$SCRIPT" "$TEST_DIR/output.md"
     assert_success
     assert [ -f "$TEST_DIR/docs/flex-signals.log" ]
     run grep "ADVISORY" "$TEST_DIR/docs/flex-signals.log"
@@ -341,7 +341,7 @@ WHY: Evidence
 PROPOSED: Fix
 SEVERITY: BLOCKING
 SIGNAL
-    FORGE_DIR="$TEST_DIR" run "$SCRIPT" "$TEST_DIR/output.md"
+    PROJECT_DIR="$TEST_DIR" run "$SCRIPT" "$TEST_DIR/output.md"
     assert_success
     run grep "UNRESOLVED" "$TEST_DIR/docs/flex-signals.log"
     assert_success
@@ -359,7 +359,7 @@ WHY: Minor
 PROPOSED: Adjust
 SEVERITY: INFO
 SIGNAL
-    FORGE_DIR="$TEST_DIR" run "$SCRIPT" "$TEST_DIR/output.md"
+    PROJECT_DIR="$TEST_DIR" run "$SCRIPT" "$TEST_DIR/output.md"
     assert_success
     if [ -f "$TEST_DIR/docs/flex-signals.log" ]; then
         run grep "INFO" "$TEST_DIR/docs/flex-signals.log"
@@ -379,8 +379,8 @@ SIGNAL
     assert_success
 }
 
-@test "Stop hook checks for unresolved BLOCKING signals in forge-state.json" {
-    run grep "flex_checkpoints" "$FORGE_DIR/templates/hooks.json"
+@test "Stop hook checks for unresolved BLOCKING signals in flex-signals.log" {
+    run grep "BLOCKING UNRESOLVED" "$FORGE_DIR/templates/hooks.json"
     assert_success
 }
 
