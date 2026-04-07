@@ -95,10 +95,14 @@ graph TD
         commands_learn[learn]
         commands_design_audit[design-audit]
         commands_phase_cases[phase:cases]
+        commands_phase_phase_a_s2_discovery[phase:phase-a-s2-discover]
+        commands_phase_phase_a_s9_s10_review[phase:phase-a-s9-s10-revi]
         commands_phase_tracking[phase:tracking]
+        commands_phase_phase_a_s6_s8_scaffold[phase:phase-a-s6-s8-scaff]
         commands_phase_phase_0_2_plan[phase:phase-0-2-plan]
         commands_phase_phase_a_setup[phase:phase-a-setup]
         commands_phase_phase_3_implement[phase:phase-3-implement]
+        commands_phase_phase_a_s3_s5_specs[phase:phase-a-s3-s5-specs]
         commands_phase_phase_4_5_validate[phase:phase-4-5-validate]
     end
     subgraph Scripts
@@ -154,6 +158,7 @@ graph TD
     agents_reviewer --> agents_security_engineer
     agents_reviewer --> commands_investigate
     agents_reviewer --> commands_learn
+    agents_reviewer --> scripts_forge_handoff_check_sh
     agents_business_panel_experts --> commands_investigate
     agents_business_panel_experts --> commands_learn
     agents_playbook_curator --> commands_evolve
@@ -480,7 +485,25 @@ graph TD
     commands_phase_cases --> commands_sc_save
     commands_phase_cases --> scripts_forge_enforce_sh
     commands_phase_cases --> scripts_forge_review_guard_sh
+    commands_phase_phase_a_s2_discovery --> agents_deep_research_agent
+    commands_phase_phase_a_s2_discovery --> scripts_forge_stack_sh
+    commands_phase_phase_a_s9_s10_review --> agents_repo_index
+    commands_phase_phase_a_s9_s10_review --> agents_requirements_analyst
+    commands_phase_phase_a_s9_s10_review --> agents_reviewer
+    commands_phase_phase_a_s9_s10_review --> agents_system_architect
+    commands_phase_phase_a_s9_s10_review --> scripts_forge_handoff_check_sh
+    commands_phase_phase_a_s9_s10_review --> scripts_forge_infra_check_sh
     commands_phase_tracking --> commands_gate
+    commands_phase_phase_a_s6_s8_scaffold --> agents_backend_architect
+    commands_phase_phase_a_s6_s8_scaffold --> agents_devops_architect
+    commands_phase_phase_a_s6_s8_scaffold --> agents_django_ninja_agent
+    commands_phase_phase_a_s6_s8_scaffold --> agents_frontend_architect
+    commands_phase_phase_a_s6_s8_scaffold --> agents_quality_engineer
+    commands_phase_phase_a_s6_s8_scaffold --> agents_security_engineer
+    commands_phase_phase_a_s6_s8_scaffold --> agents_self_review
+    commands_phase_phase_a_s6_s8_scaffold --> agents_system_architect
+    commands_phase_phase_a_s6_s8_scaffold --> commands_forge
+    commands_phase_phase_a_s6_s8_scaffold --> scripts_forge_handoff_check_sh
     commands_phase_phase_0_2_plan --> agents_api_architect
     commands_phase_phase_0_2_plan --> commands_bootstrap
     commands_phase_phase_0_2_plan --> commands_challenge
@@ -496,31 +519,9 @@ graph TD
     commands_phase_phase_0_2_plan --> commands_sc_estimate
     commands_phase_phase_0_2_plan --> commands_sc_workflow
     commands_phase_phase_0_2_plan --> commands_specify
-    commands_phase_phase_a_setup --> agents_aws_setup_agent
-    commands_phase_phase_a_setup --> agents_backend_architect
-    commands_phase_phase_a_setup --> agents_context_loader_agent
-    commands_phase_phase_a_setup --> agents_deep_research_agent
-    commands_phase_phase_a_setup --> agents_devops_architect
-    commands_phase_phase_a_setup --> agents_django_ninja_agent
-    commands_phase_phase_a_setup --> agents_django_tenants_agent
-    commands_phase_phase_a_setup --> agents_frontend_architect
-    commands_phase_phase_a_setup --> agents_gcp_setup_agent
-    commands_phase_phase_a_setup --> agents_llm_integration_agent
-    commands_phase_phase_a_setup --> agents_repo_index
-    commands_phase_phase_a_setup --> agents_requirements_analyst
-    commands_phase_phase_a_setup --> agents_reviewer
-    commands_phase_phase_a_setup --> agents_s3_lambda_agent
-    commands_phase_phase_a_setup --> agents_self_review
-    commands_phase_phase_a_setup --> agents_system_architect
     commands_phase_phase_a_setup --> commands_challenge
-    commands_phase_phase_a_setup --> commands_discover
     commands_phase_phase_a_setup --> commands_forge
-    commands_phase_phase_a_setup --> commands_gate
-    commands_phase_phase_a_setup --> commands_requirements
     commands_phase_phase_a_setup --> scripts_forge_enforce_sh
-    commands_phase_phase_a_setup --> scripts_forge_handoff_check_sh
-    commands_phase_phase_a_setup --> scripts_forge_infra_check_sh
-    commands_phase_phase_a_setup --> scripts_forge_stack_sh
     commands_phase_phase_3_implement --> agents_backend_architect
     commands_phase_phase_3_implement --> agents_context_loader_agent
     commands_phase_phase_3_implement --> agents_django_ninja_agent
@@ -538,6 +539,9 @@ graph TD
     commands_phase_phase_3_implement --> commands_review
     commands_phase_phase_3_implement --> scripts_forge_enforce_sh
     commands_phase_phase_3_implement --> scripts_forge_ownership_sh
+    commands_phase_phase_a_s3_s5_specs --> agents_context_loader_agent
+    commands_phase_phase_a_s3_s5_specs --> agents_requirements_analyst
+    commands_phase_phase_a_s3_s5_specs --> agents_system_architect
     commands_phase_phase_4_5_validate --> agents_deploy_guide
     commands_phase_phase_4_5_validate --> agents_deploy_guide_agent
     commands_phase_phase_4_5_validate --> agents_playbook_curator
@@ -591,9 +595,9 @@ graph TD
     hooks_Stop --> scripts_forge_phase_gate_sh
     hooks_UserPromptSubmit --> scripts_forge_state_sync_sh
     hooks_PreToolUse_Edit --> scripts_forge_change_validator_sh
-    hooks_PostToolUse_Write|Edit --> scripts_forge_change_validator_sh
     hooks_PostToolUse_Write|Edit --> scripts_forge_auto_sync_sh
-    hooks_PostToolUse_Agent --> scripts_forge_auto_state_sh
+    hooks_PostToolUse_Write|Edit --> scripts_forge_change_validator_sh
     hooks_PostToolUse_Agent --> scripts_forge_handoff_check_sh
+    hooks_PostToolUse_Agent --> scripts_forge_auto_state_sh
     hooks_PostToolUse_Skill --> scripts_forge_auto_state_sh
 ```

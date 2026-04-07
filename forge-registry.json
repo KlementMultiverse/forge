@@ -1,16 +1,16 @@
 {
   "version": "2.0",
-  "generated": "2026-04-07T08:23:14.138229+00:00",
+  "generated": "2026-04-07T09:50:14.054040+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
-    "commands": 51,
+    "commands": 55,
     "scripts": 31,
     "hooks": 9,
     "templates": 17,
-    "rules": 8,
+    "rules": 9,
     "edges": 463,
-    "phase_mapped_components": 52,
+    "phase_mapped_components": 36,
     "flows": 9
   },
   "global_short_circuit": {
@@ -31,17 +31,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S5-BROWNFIELD"
-            ],
-            "role": "implementation",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "refactoring-expert": {
         "type": "agent",
@@ -106,17 +96,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S6"
-            ],
-            "role": "implementation",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "reviewer": {
         "type": "agent",
@@ -129,6 +109,9 @@
           "commands": [
             "investigate",
             "learn"
+          ],
+          "scripts": [
+            "forge-handoff-check.sh"
           ]
         },
         "phases": [
@@ -140,14 +123,6 @@
             "role": "review",
             "is_gate": false,
             "step_pattern": "N8"
-          },
-          {
-            "phase": "A",
-            "steps": [
-              "S9"
-            ],
-            "role": "review",
-            "is_gate": false
           }
         ]
       },
@@ -194,18 +169,7 @@
             "learn",
             "server"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S6",
-              "S7"
-            ],
-            "role": "design",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "deep-research-agent": {
         "type": "agent",
@@ -215,17 +179,7 @@
             "discover",
             "learn"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S2"
-            ],
-            "role": "research",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "frontend-architect": {
         "type": "agent",
@@ -235,17 +189,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S6"
-            ],
-            "role": "design",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "pm-orchestrator": {
         "type": "agent",
@@ -352,14 +296,6 @@
             "role": "implementation",
             "is_gate": false,
             "step_pattern": "N1"
-          },
-          {
-            "phase": "A",
-            "steps": [
-              "S3"
-            ],
-            "role": "implementation",
-            "is_gate": false
           }
         ]
       },
@@ -393,19 +329,7 @@
             "learn",
             "requirements"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S3",
-              "S5-BROWNFIELD",
-              "S6"
-            ],
-            "role": "design",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "self-review": {
         "type": "agent",
@@ -415,17 +339,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S8"
-            ],
-            "role": "review",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "learning-guide": {
         "type": "agent",
@@ -509,14 +423,6 @@
             "role": "design",
             "is_gate": false,
             "step_pattern": "N0"
-          },
-          {
-            "phase": "A",
-            "steps": [
-              "S6"
-            ],
-            "role": "design",
-            "is_gate": false
           }
         ]
       },
@@ -541,15 +447,6 @@
             "role": "requirements",
             "is_gate": false,
             "step_pattern": "N2"
-          },
-          {
-            "phase": "A",
-            "steps": [
-              "S4",
-              "S5-BROWNFIELD"
-            ],
-            "role": "requirements",
-            "is_gate": false
           }
         ]
       },
@@ -791,17 +688,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S6"
-            ],
-            "role": "implementation",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "django-tenants-agent": {
         "type": "agent",
@@ -812,17 +699,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S6"
-            ],
-            "role": "implementation",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "s3-lambda-agent": {
         "type": "agent",
@@ -835,17 +712,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S6"
-            ],
-            "role": "implementation",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "django-ninja-agent": {
         "type": "agent",
@@ -855,17 +722,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S6"
-            ],
-            "role": "implementation",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "vertex-ai-agent": {
         "type": "agent",
@@ -885,17 +742,7 @@
             "investigate",
             "learn"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S6"
-            ],
-            "role": "implementation",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "azure-setup-agent": {
         "type": "agent",
@@ -937,14 +784,6 @@
             "phase": 0,
             "steps": [
               2
-            ],
-            "role": "requirements",
-            "is_gate": false
-          },
-          {
-            "phase": "A",
-            "steps": [
-              "S5-BROWNFIELD"
             ],
             "role": "requirements",
             "is_gate": false
@@ -1339,14 +1178,6 @@
             "phase": 0,
             "steps": [
               1
-            ],
-            "role": "research",
-            "is_gate": false
-          },
-          {
-            "phase": "A",
-            "steps": [
-              "S5-BROWNFIELD"
             ],
             "role": "research",
             "is_gate": false
@@ -1763,12 +1594,62 @@
           ]
         }
       },
+      "phase:phase-a-s2-discovery": {
+        "type": "phase",
+        "path": "commands/forge-phases/phase-a-s2-discovery.md",
+        "depends_on": {
+          "agents": [
+            "deep-research-agent"
+          ],
+          "scripts": [
+            "forge-stack.sh"
+          ]
+        }
+      },
+      "phase:phase-a-s9-s10-review": {
+        "type": "phase",
+        "path": "commands/forge-phases/phase-a-s9-s10-review.md",
+        "depends_on": {
+          "agents": [
+            "repo-index",
+            "requirements-analyst",
+            "reviewer",
+            "system-architect"
+          ],
+          "scripts": [
+            "forge-handoff-check.sh",
+            "forge-infra-check.sh"
+          ]
+        }
+      },
       "phase:tracking": {
         "type": "phase",
         "path": "commands/forge-phases/tracking.md",
         "depends_on": {
           "commands": [
             "gate"
+          ]
+        }
+      },
+      "phase:phase-a-s6-s8-scaffold": {
+        "type": "phase",
+        "path": "commands/forge-phases/phase-a-s6-s8-scaffold.md",
+        "depends_on": {
+          "agents": [
+            "backend-architect",
+            "devops-architect",
+            "django-ninja-agent",
+            "frontend-architect",
+            "quality-engineer",
+            "security-engineer",
+            "self-review",
+            "system-architect"
+          ],
+          "commands": [
+            "forge"
+          ],
+          "scripts": [
+            "forge-handoff-check.sh"
           ]
         }
       },
@@ -1801,36 +1682,12 @@
         "type": "phase",
         "path": "commands/forge-phases/phase-a-setup.md",
         "depends_on": {
-          "agents": [
-            "aws-setup-agent",
-            "backend-architect",
-            "context-loader-agent",
-            "deep-research-agent",
-            "devops-architect",
-            "django-ninja-agent",
-            "django-tenants-agent",
-            "frontend-architect",
-            "gcp-setup-agent",
-            "llm-integration-agent",
-            "repo-index",
-            "requirements-analyst",
-            "reviewer",
-            "s3-lambda-agent",
-            "self-review",
-            "system-architect"
-          ],
           "commands": [
             "challenge",
-            "discover",
-            "forge",
-            "gate",
-            "requirements"
+            "forge"
           ],
           "scripts": [
-            "forge-enforce.sh",
-            "forge-handoff-check.sh",
-            "forge-infra-check.sh",
-            "forge-stack.sh"
+            "forge-enforce.sh"
           ]
         }
       },
@@ -1860,6 +1717,17 @@
           "scripts": [
             "forge-enforce.sh",
             "forge-ownership.sh"
+          ]
+        }
+      },
+      "phase:phase-a-s3-s5-specs": {
+        "type": "phase",
+        "path": "commands/forge-phases/phase-a-s3-s5-specs.md",
+        "depends_on": {
+          "agents": [
+            "context-loader-agent",
+            "requirements-analyst",
+            "system-architect"
           ]
         }
       },
@@ -1917,17 +1785,7 @@
       "forge-stack.sh": {
         "type": "script",
         "path": "scripts/forge-stack.sh",
-        "depends_on": {},
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S2"
-            ],
-            "role": "implementation",
-            "is_gate": false
-          }
-        ]
+        "depends_on": {}
       },
       "forge-observer-approve.sh": {
         "type": "script",
@@ -1992,7 +1850,7 @@
           {
             "phase": "A",
             "steps": [
-              "S5-BROWNFIELD"
+              "S1"
             ],
             "role": "enforcement",
             "is_gate": false
@@ -2092,31 +1950,13 @@
             ],
             "role": "validation",
             "is_gate": false
-          },
-          {
-            "phase": "A",
-            "steps": [
-              "S8"
-            ],
-            "role": "validation",
-            "is_gate": false
           }
         ]
       },
       "sync-report.sh": {
         "type": "script",
         "path": "scripts/sync-report.sh",
-        "depends_on": {},
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S8"
-            ],
-            "role": "validation",
-            "is_gate": false
-          }
-        ]
+        "depends_on": {}
       },
       "forge-ownership.sh": {
         "type": "script",
@@ -2141,18 +1981,7 @@
           "scripts": [
             "forge-handoff-check.sh"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S8",
-              "S9"
-            ],
-            "role": "implementation",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "forge-grow.sh": {
         "type": "script",
@@ -2194,7 +2023,7 @@
           {
             "phase": "A",
             "steps": [
-              "S5-BROWNFIELD"
+              "S1"
             ],
             "role": "enforcement",
             "is_gate": false
@@ -2223,17 +2052,7 @@
           "scripts": [
             "forge-infra-check.sh"
           ]
-        },
-        "phases": [
-          {
-            "phase": "A",
-            "steps": [
-              "S10"
-            ],
-            "role": "implementation",
-            "is_gate": false
-          }
-        ]
+        }
       },
       "forge-lint.py": {
         "type": "script",
@@ -2315,8 +2134,8 @@
         "matcher": "Write|Edit",
         "depends_on": {
           "scripts": [
-            "forge-change-validator.sh",
-            "forge-auto-sync.sh"
+            "forge-auto-sync.sh",
+            "forge-change-validator.sh"
           ]
         }
       },
@@ -2327,8 +2146,8 @@
         "matcher": "Agent",
         "depends_on": {
           "scripts": [
-            "forge-auto-state.sh",
-            "forge-handoff-check.sh"
+            "forge-handoff-check.sh",
+            "forge-auto-state.sh"
           ]
         }
       },
@@ -2444,6 +2263,11 @@
       "forge-philosophy.md": {
         "type": "rule",
         "path": "rules/forge-philosophy.md",
+        "depends_on": {}
+      },
+      "universal-agent-loop.md": {
+        "type": "rule",
+        "path": "rules/universal-agent-loop.md",
         "depends_on": {}
       },
       "pm-behaviors.md": {
@@ -2588,6 +2412,11 @@
       "from": "agents/reviewer",
       "to": "commands/learn",
       "type": "commands"
+    },
+    {
+      "from": "agents/reviewer",
+      "to": "scripts/forge-handoff-check.sh",
+      "type": "scripts"
     },
     {
       "from": "agents/business-panel-experts",
@@ -4220,9 +4049,99 @@
       "type": "scripts"
     },
     {
+      "from": "commands/phase:phase-a-s2-discovery",
+      "to": "agents/deep-research-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s2-discovery",
+      "to": "scripts/forge-stack.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "commands/phase:phase-a-s9-s10-review",
+      "to": "agents/repo-index",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s9-s10-review",
+      "to": "agents/requirements-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s9-s10-review",
+      "to": "agents/reviewer",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s9-s10-review",
+      "to": "agents/system-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s9-s10-review",
+      "to": "scripts/forge-handoff-check.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "commands/phase:phase-a-s9-s10-review",
+      "to": "scripts/forge-infra-check.sh",
+      "type": "scripts"
+    },
+    {
       "from": "commands/phase:tracking",
       "to": "commands/gate",
       "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-a-s6-s8-scaffold",
+      "to": "agents/backend-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s6-s8-scaffold",
+      "to": "agents/devops-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s6-s8-scaffold",
+      "to": "agents/django-ninja-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s6-s8-scaffold",
+      "to": "agents/frontend-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s6-s8-scaffold",
+      "to": "agents/quality-engineer",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s6-s8-scaffold",
+      "to": "agents/security-engineer",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s6-s8-scaffold",
+      "to": "agents/self-review",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s6-s8-scaffold",
+      "to": "agents/system-architect",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s6-s8-scaffold",
+      "to": "commands/forge",
+      "type": "commands"
+    },
+    {
+      "from": "commands/phase:phase-a-s6-s8-scaffold",
+      "to": "scripts/forge-handoff-check.sh",
+      "type": "scripts"
     },
     {
       "from": "commands/phase:phase-0-2-plan",
@@ -4301,92 +4220,7 @@
     },
     {
       "from": "commands/phase:phase-a-setup",
-      "to": "agents/aws-setup-agent",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/backend-architect",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/context-loader-agent",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/deep-research-agent",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/devops-architect",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/django-ninja-agent",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/django-tenants-agent",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/frontend-architect",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/gcp-setup-agent",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/llm-integration-agent",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/repo-index",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/requirements-analyst",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/reviewer",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/s3-lambda-agent",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/self-review",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "agents/system-architect",
-      "type": "agents"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
       "to": "commands/challenge",
-      "type": "commands"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "commands/discover",
       "type": "commands"
     },
     {
@@ -4396,32 +4230,7 @@
     },
     {
       "from": "commands/phase:phase-a-setup",
-      "to": "commands/gate",
-      "type": "commands"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "commands/requirements",
-      "type": "commands"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
       "to": "scripts/forge-enforce.sh",
-      "type": "scripts"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "scripts/forge-handoff-check.sh",
-      "type": "scripts"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "scripts/forge-infra-check.sh",
-      "type": "scripts"
-    },
-    {
-      "from": "commands/phase:phase-a-setup",
-      "to": "scripts/forge-stack.sh",
       "type": "scripts"
     },
     {
@@ -4508,6 +4317,21 @@
       "from": "commands/phase:phase-3-implement",
       "to": "scripts/forge-ownership.sh",
       "type": "scripts"
+    },
+    {
+      "from": "commands/phase:phase-a-s3-s5-specs",
+      "to": "agents/context-loader-agent",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s3-s5-specs",
+      "to": "agents/requirements-analyst",
+      "type": "agents"
+    },
+    {
+      "from": "commands/phase:phase-a-s3-s5-specs",
+      "to": "agents/system-architect",
+      "type": "agents"
     },
     {
       "from": "commands/phase:phase-4-5-validate",
@@ -4776,22 +4600,22 @@
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-change-validator.sh",
-      "type": "scripts"
-    },
-    {
-      "from": "hooks/PostToolUse:Write|Edit",
       "to": "scripts/forge-auto-sync.sh",
       "type": "scripts"
     },
     {
-      "from": "hooks/PostToolUse:Agent",
-      "to": "scripts/forge-auto-state.sh",
+      "from": "hooks/PostToolUse:Write|Edit",
+      "to": "scripts/forge-change-validator.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Agent",
       "to": "scripts/forge-handoff-check.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Agent",
+      "to": "scripts/forge-auto-state.sh",
       "type": "scripts"
     },
     {
@@ -5134,95 +4958,11 @@
       },
       {
         "phase": "A",
-        "step": "S2",
+        "step": "S1",
         "is_gate": false,
         "files": [
-          "agents/universal/deep-research-agent.md",
-          "scripts/forge-stack.sh"
-        ]
-      },
-      {
-        "phase": "A",
-        "step": "S3",
-        "is_gate": false,
-        "files": [
-          "agents/universal/context-loader-agent.md",
-          "agents/universal/system-architect.md"
-        ]
-      },
-      {
-        "phase": "A",
-        "step": "S4",
-        "is_gate": false,
-        "files": [
-          "agents/universal/requirements-analyst.md"
-        ]
-      },
-      {
-        "phase": "A",
-        "step": "S5-BROWNFIELD",
-        "is_gate": false,
-        "files": [
-          "agents/universal/repo-index.md",
-          "agents/universal/requirements-analyst.md",
-          "agents/universal/system-architect.md",
-          "commands/discover.md",
-          "commands/requirements.md",
           "scripts/docker-state.sh",
           "scripts/forge-enforce.sh"
-        ]
-      },
-      {
-        "phase": "A",
-        "step": "S6",
-        "is_gate": false,
-        "files": [
-          "agents/stacks/django/django-ninja-agent.md",
-          "agents/stacks/django/django-tenants-agent.md",
-          "agents/stacks/django/s3-lambda-agent.md",
-          "agents/stacks/gcp/gcp-setup-agent.md",
-          "agents/stacks/genai/llm-integration-agent.md",
-          "agents/universal/aws-setup-agent.md",
-          "agents/universal/backend-architect.md",
-          "agents/universal/devops-architect.md",
-          "agents/universal/frontend-architect.md",
-          "agents/universal/system-architect.md"
-        ]
-      },
-      {
-        "phase": "A",
-        "step": "S7",
-        "is_gate": false,
-        "files": [
-          "agents/universal/devops-architect.md"
-        ]
-      },
-      {
-        "phase": "A",
-        "step": "S8",
-        "is_gate": false,
-        "files": [
-          "agents/universal/self-review.md",
-          "scripts/forge-handoff-check.sh",
-          "scripts/sync-report.sh",
-          "scripts/traceability.sh"
-        ]
-      },
-      {
-        "phase": "A",
-        "step": "S9",
-        "is_gate": false,
-        "files": [
-          "agents/universal/reviewer.md",
-          "scripts/forge-handoff-check.sh"
-        ]
-      },
-      {
-        "phase": "A",
-        "step": "S10",
-        "is_gate": false,
-        "files": [
-          "scripts/forge-infra-check.sh"
         ]
       }
     ],
@@ -5389,7 +5129,23 @@
           "security-scan",
           "plan-review",
           "design-doc",
+          "phase:phase-a-s6-s8-scaffold",
           "phase:phase-3-implement"
+        ]
+      },
+      "scripts/forge-handoff-check.sh": {
+        "agents": [
+          "reviewer"
+        ],
+        "commands": [
+          "phase:phase-a-s9-s10-review",
+          "phase:phase-a-s6-s8-scaffold"
+        ],
+        "scripts": [
+          "forge-handoff-check.sh"
+        ],
+        "hooks": [
+          "PostToolUse:Agent"
         ]
       },
       "commands/evolve": {
@@ -5422,8 +5178,7 @@
         "commands": [
           "requirements",
           "discover",
-          "phase:phase-0-2-plan",
-          "phase:phase-a-setup"
+          "phase:phase-0-2-plan"
         ]
       },
       "agents/api-architect": {
@@ -5440,8 +5195,7 @@
           "s3-lambda-agent"
         ],
         "commands": [
-          "build-project",
-          "phase:phase-a-setup"
+          "build-project"
         ]
       },
       "agents/backend-architect": {
@@ -5452,7 +5206,7 @@
           "build-project",
           "setup",
           "design-doc",
-          "phase:phase-a-setup",
+          "phase:phase-a-s6-s8-scaffold",
           "phase:phase-3-implement"
         ]
       },
@@ -5462,8 +5216,8 @@
         ],
         "commands": [
           "build-project",
-          "phase:phase-a-setup",
-          "phase:phase-3-implement"
+          "phase:phase-3-implement",
+          "phase:phase-a-s3-s5-specs"
         ]
       },
       "agents/deep-research-agent": {
@@ -5472,7 +5226,7 @@
         ],
         "commands": [
           "discover",
-          "phase:phase-a-setup"
+          "phase:phase-a-s2-discovery"
         ]
       },
       "agents/devops-architect": {
@@ -5481,7 +5235,7 @@
         ],
         "commands": [
           "build-project",
-          "phase:phase-a-setup"
+          "phase:phase-a-s6-s8-scaffold"
         ]
       },
       "agents/django-ninja-agent": {
@@ -5492,7 +5246,7 @@
         "commands": [
           "build-project",
           "setup",
-          "phase:phase-a-setup",
+          "phase:phase-a-s6-s8-scaffold",
           "phase:phase-3-implement"
         ]
       },
@@ -5503,7 +5257,6 @@
         "commands": [
           "build-project",
           "setup",
-          "phase:phase-a-setup",
           "phase:phase-3-implement"
         ]
       },
@@ -5513,7 +5266,7 @@
         ],
         "commands": [
           "build-project",
-          "phase:phase-a-setup"
+          "phase:phase-a-s6-s8-scaffold"
         ]
       },
       "agents/learning-guide": {
@@ -5564,6 +5317,7 @@
         "commands": [
           "build-project",
           "audit-patterns",
+          "phase:phase-a-s6-s8-scaffold",
           "phase:phase-3-implement"
         ]
       },
@@ -5585,8 +5339,9 @@
           "specify",
           "generate-spec",
           "phase:cases",
-          "phase:phase-a-setup",
-          "phase:phase-3-implement"
+          "phase:phase-a-s9-s10-review",
+          "phase:phase-3-implement",
+          "phase:phase-a-s3-s5-specs"
         ]
       },
       "agents/retrospective-miner": {
@@ -5613,7 +5368,6 @@
         "commands": [
           "build-project",
           "setup",
-          "phase:phase-a-setup",
           "phase:phase-3-implement"
         ]
       },
@@ -5628,7 +5382,7 @@
         ],
         "commands": [
           "audit-patterns",
-          "phase:phase-a-setup"
+          "phase:phase-a-s6-s8-scaffold"
         ]
       },
       "agents/system-architect": {
@@ -5641,7 +5395,9 @@
           "plan-review",
           "design-doc",
           "phase:cases",
-          "phase:phase-a-setup"
+          "phase:phase-a-s9-s10-review",
+          "phase:phase-a-s6-s8-scaffold",
+          "phase:phase-a-s3-s5-specs"
         ]
       },
       "agents/technical-writer": {
@@ -5754,6 +5510,7 @@
           "forge",
           "critic",
           "setup",
+          "phase:phase-a-s6-s8-scaffold",
           "phase:phase-a-setup"
         ]
       },
@@ -5770,7 +5527,6 @@
           "ship",
           "phase:tracking",
           "phase:phase-0-2-plan",
-          "phase:phase-a-setup",
           "phase:phase-3-implement",
           "phase:phase-4-5-validate"
         ]
@@ -5815,8 +5571,7 @@
         "commands": [
           "requirements",
           "feasibility",
-          "phase:phase-0-2-plan",
-          "phase:phase-a-setup"
+          "phase:phase-0-2-plan"
         ]
       },
       "commands/review": {
@@ -5899,7 +5654,6 @@
         ],
         "commands": [
           "setup",
-          "phase:phase-a-setup",
           "phase:phase-3-implement"
         ]
       },
@@ -6023,8 +5777,7 @@
       },
       "agents/gcp-setup-agent": {
         "commands": [
-          "setup",
-          "phase:phase-a-setup"
+          "setup"
         ]
       },
       "commands/setup": {
@@ -6038,39 +5791,28 @@
           "phase:phase-0-2-plan"
         ]
       },
+      "scripts/forge-stack.sh": {
+        "commands": [
+          "phase:phase-a-s2-discovery"
+        ]
+      },
       "agents/repo-index": {
         "commands": [
-          "phase:phase-a-setup"
+          "phase:phase-a-s9-s10-review"
         ]
       },
       "agents/reviewer": {
         "commands": [
-          "phase:phase-a-setup",
+          "phase:phase-a-s9-s10-review",
           "phase:phase-3-implement"
-        ]
-      },
-      "scripts/forge-handoff-check.sh": {
-        "commands": [
-          "phase:phase-a-setup"
-        ],
-        "scripts": [
-          "forge-handoff-check.sh"
-        ],
-        "hooks": [
-          "PostToolUse:Agent"
         ]
       },
       "scripts/forge-infra-check.sh": {
         "commands": [
-          "phase:phase-a-setup"
+          "phase:phase-a-s9-s10-review"
         ],
         "scripts": [
           "forge-infra-check.sh"
-        ]
-      },
-      "scripts/forge-stack.sh": {
-        "commands": [
-          "phase:phase-a-setup"
         ]
       },
       "scripts/forge-ownership.sh": {
@@ -6778,134 +6520,59 @@
     }
   },
   "changelog": {
-    "docs": [
-      {
-        "date": "2026-04-07",
-        "commit": "47d82a01",
-        "change_type": "bugfix",
-        "scope": "docs",
-        "summary": "CR re-review \u2014 3 findings fixed",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md",
-          "docs/domain-inference-rules.md",
-          "templates/hooks.json"
-        ],
-        "issues": [
-          "#189"
-        ]
-      },
-      {
-        "date": "2026-04-07",
-        "commit": "57e5cd1b",
-        "change_type": "feature",
-        "scope": "docs",
-        "summary": "AI+regulated domain support, internet-first stack research",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md",
-          "docs/domain-inference-rules.md"
-        ],
-        "issues": [
-          "#189"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "600cbd94",
-        "change_type": "chore",
-        "scope": "docs",
-        "summary": "add .coderabbit.yml \u2014 enable request_changes_workflow for explicit approvals",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          ".coderabbit.yml"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "7a8311ea",
-        "change_type": "bugfix",
-        "scope": "docs",
-        "summary": "address 2 CodeRabbit comments \u2014 remove hardcoded counts in structure, fix GNU-specific flags",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "scripts/forge-readme-sync.sh"
-        ],
-        "issues": [
-          "#98"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "4732dc29",
-        "change_type": "documentation",
-        "scope": "docs",
-        "summary": "sync README with current state + create auto-sync script",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "scripts/forge-readme-sync.sh",
-          "tests/bash/unit/forge-readme-sync.bats"
-        ],
-        "issues": [
-          "#98"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "6ac8fd3f",
-        "change_type": "documentation",
-        "scope": "docs",
-        "summary": "make CodeRabbit required \u2014 used for review, architecture, design, gates",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "README.md",
-          "tests/bash/integration/coderabbit-required.bats"
-        ],
-        "issues": [
-          "#96"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "cecf7cae",
-        "change_type": "documentation",
-        "scope": "docs",
-        "summary": "create component creation protocols \u2014 scripts, commands, agents, hooks, tests",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "docs/protocols/component-creation.md",
-          "tests/bash/unit/protocols-validation.bats"
-        ],
-        "issues": [
-          "#79"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "b3f26827",
-        "change_type": "documentation",
-        "scope": "docs",
-        "summary": "simplify install section + update counts and new features",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "README.md"
-        ],
-        "issues": [
-          "#48"
-        ]
-      }
-    ],
     "commands": [
+      {
+        "date": "2026-04-07",
+        "commit": "a53398fe",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "CR review \u2014 hook count 8 \u2192 9",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-s6-s8-scaffold.md"
+        ],
+        "issues": [
+          "#194"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "e87d1e05",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "remove agent selection bias \u2014 open agent routing",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-s6-s8-scaffold.md"
+        ],
+        "issues": [
+          "#194"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "b610ed31",
+        "change_type": "refactor",
+        "scope": "commands",
+        "summary": "split phase-a-setup.md (1358\u21926 files, largest 664)",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-s2-discovery.md",
+          "commands/forge-phases/phase-a-s3-s5-specs.md",
+          "commands/forge-phases/phase-a-s6-s8-scaffold.md",
+          "commands/forge-phases/phase-a-s9-s10-review.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "rules/universal-agent-loop.md",
+          "tests/bash/unit/adaptive-discovery.bats",
+          "tests/bash/unit/handoff-check.bats"
+        ],
+        "issues": [
+          "#194"
+        ]
+      },
       {
         "date": "2026-04-07",
         "commit": "a23c7f2b",
@@ -7426,867 +7093,22 @@
         ]
       }
     ],
-    "hooks": [
-      {
-        "date": "2026-04-07",
-        "commit": "f895927b",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "auto-regenerate registry on pre-commit when tracked files change",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/pre-commit"
-        ],
-        "issues": [
-          "#189"
-        ]
-      },
-      {
-        "date": "2026-04-07",
-        "commit": "3ea708e6",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "visible handoff evaluation after every agent + S9 gate",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/hooks.json"
-        ],
-        "issues": [
-          "#189"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "ddbd7d1d",
-        "change_type": "bugfix",
-        "scope": "hooks",
-        "summary": "grep portability \u2014 use ERE not GNU BRE for placeholder detection",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/hooks.json"
-        ],
-        "issues": [
-          "#113"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "3825dbcc",
-        "change_type": "bugfix",
-        "scope": "hooks",
-        "summary": "fix 10 CASE detection edge cases from CodeRabbit analysis",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "commands/forge.md",
-          "forge-registry.json",
-          "templates/hooks.json",
-          "tests/bash/integration/case-detection-edge-cases.bats"
-        ],
-        "issues": [
-          "#111"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "d0aa943c",
-        "change_type": "bugfix",
-        "scope": "hooks",
-        "summary": "fix broken JSON in hooks.json \u2014 unescaped quotes around CLAUDE_TOOL_INPUT",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "templates/hooks.json"
-        ],
-        "issues": [
-          "#103"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "e0c652fe",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "improve GitHub setup guidance \u2014 detect gh CLI, auth, provide links",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/hooks.json",
-          "tests/bash/integration/github-setup.bats"
-        ],
-        "issues": [
-          "#94"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "80d0b029",
-        "change_type": "feature",
-        "scope": "hooks",
-        "summary": "refactor UserPromptSubmit \u2014 gate on /forge, add SessionStart, add CASE_RESUME",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "scripts/forge-state-sync.sh",
-          "templates/hooks.json",
-          "tests/bash/integration/hook-routing.bats"
-        ],
-        "issues": [
-          "#92"
-        ]
-      }
-    ],
-    "scripts": [
-      {
-        "date": "2026-04-07",
-        "commit": "d74f31bb",
-        "change_type": "chore",
-        "scope": "scripts",
-        "summary": "regenerate registry and dependency graph",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "docs/dependency-graph.md",
-          "forge-registry.json"
-        ],
-        "issues": [
-          "#189"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "e947a108",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "CR review \u2014 registry self-loop, changelog entry",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "forge-registry.json"
-        ],
-        "issues": [
-          "#185"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "98c5b1fe",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "natural sort for phase_index \u2014 S2 before S10",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "forge-registry.json",
-          "scripts/forge-registry.py"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "485442df",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "deduplicate issue refs in changelog \u2014 sorted(set()) on findall",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "forge-registry.json",
-          "scripts/forge-registry.py"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "a3b70a3e",
-        "change_type": "test",
-        "scope": "scripts",
-        "summary": "add 3 git reset escape tests \u2014 safe alternatives exist",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/integration/git-reset-escape.bats"
-        ],
-        "issues": [
-          "#122"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "2f020e56",
-        "change_type": "test",
-        "scope": "scripts",
-        "summary": "add 3 observer fallback tests \u2014 confirms no hang without observer",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/integration/observer-fallback.bats"
-        ],
-        "issues": [
-          "#119"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "27162ca9",
-        "change_type": "feature",
-        "scope": "scripts",
-        "summary": "fix 5 critical routing gaps \u2014 infra bootstrap, reset, dir guard, manifest ref #117 #118 #120 #121",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "docs/dependency-graph.md",
-          "docs/routing-analysis.md",
-          "forge-registry.json",
-          "rules/forge-philosophy.md",
-          "scripts/forge-infra-check.sh",
-          "tests/bash/integration/infra-bootstrap.bats"
-        ],
-        "issues": [
-          "#117",
-          "#118",
-          "#120",
-          "#121",
-          "#123"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "40104f14",
-        "change_type": "test",
-        "scope": "scripts",
-        "summary": "add 23 routing verification tests \u2014 CASE\u2192phase file mapping",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "README.md",
-          "forge-registry.json",
-          "tests/bash/integration/routing-verification.bats"
-        ],
-        "issues": [
-          "#115"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "48995b3c",
-        "change_type": "test",
-        "scope": "scripts",
-        "summary": "add 5 tests for forge-runner.py \u2014 100% script coverage",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/python/unit/test_forge_runner.py"
-        ],
-        "issues": [
-          "#106"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "2d38374d",
-        "change_type": "test",
-        "scope": "scripts",
-        "summary": "add 18 flow chain integration tests \u2014 write/edit/commit/gate chains",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "README.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "tests/bash/integration/flow-chains.bats"
-        ],
-        "issues": [
-          "#86"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "9c5d0cbe",
-        "change_type": "feature",
-        "scope": "scripts",
-        "summary": "create forge-auto-sync.sh \u2014 auto-syncs README, registry on every write",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "scripts/forge-auto-sync.sh",
-          "templates/hooks.json",
-          "templates/pre-commit",
-          "tests/bash/unit/forge-auto-sync.bats"
-        ],
-        "issues": [
-          "#105"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "9298946b",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "address all CR comments \u2014 rewrite change-validator, wire post-edit, fix paths",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "scripts/forge-change-validator.sh",
-          "templates/hooks.json",
-          "tests/bash/integration/enforcement-wiring.bats"
-        ],
-        "issues": [
-          "#100"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "6bbd554b",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "address 5 CodeRabbit comments on PR #101",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "docs/protocols/forge-meta-protocol.md",
-          "scripts/forge-change-validator.sh",
-          "templates/hooks.json",
-          "tests/bash/unit/forge-change-validator.bats"
-        ],
-        "issues": [
-          "#100",
-          "#101"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "9b17d9cb",
-        "change_type": "feature",
-        "scope": "scripts",
-        "summary": "create forge meta-protocol + change validator \u2014 automatic enforcement",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "docs/protocols/forge-meta-protocol.md",
-          "scripts/forge-change-validator.sh",
-          "templates/hooks.json",
-          "tests/bash/unit/forge-change-validator.bats"
-        ],
-        "issues": [
-          "#100"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "b6725901",
-        "change_type": "feature",
-        "scope": "scripts",
-        "summary": "wire 6 enforcement systems into hooks and gates",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-3-implement.md",
-          "commands/gate.md",
-          "templates/hooks.json",
-          "templates/pre-commit",
-          "tests/bash/integration/enforcement-wiring.bats"
-        ],
-        "issues": [
-          "#78"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "e75da210",
-        "change_type": "feature",
-        "scope": "scripts",
-        "summary": "create forge-test-guard.sh \u2014 detects untested scripts",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "scripts/forge-test-guard.sh",
-          "tests/bash/unit/forge-test-guard.bats"
-        ],
-        "issues": [
-          "#67"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "c06da033",
-        "change_type": "test",
-        "scope": "scripts",
-        "summary": "add 11 integration tests for git hooks + install.sh",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/integration/git-hooks.bats"
-        ],
-        "issues": [
-          "#66"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "9e643d10",
-        "change_type": "test",
-        "scope": "scripts",
-        "summary": "add 17 pytest tests for 3 Python scripts",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/python/conftest.py",
-          "tests/python/unit/__init__.py",
-          "tests/python/unit/test_forge_lint.py",
-          "tests/python/unit/test_forge_registry.py",
-          "tests/python/unit/test_req_impact_check.py"
-        ],
-        "issues": [
-          "#65"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "b04df9a9",
-        "change_type": "test",
-        "scope": "scripts",
-        "summary": "add 21 BATS tests for 7 infrastructure scripts",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/unit/docker-state.bats",
-          "tests/bash/unit/forge-grow.bats",
-          "tests/bash/unit/forge-handshake.bats",
-          "tests/bash/unit/forge-observer.bats",
-          "tests/bash/unit/forge-shell.bats",
-          "tests/bash/unit/forge-stack.bats"
-        ],
-        "issues": [
-          "#64"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "51cb4dfa",
-        "change_type": "test",
-        "scope": "scripts",
-        "summary": "add 37 BATS tests for traceability + ownership scripts",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/unit/forge-ownership.bats",
-          "tests/bash/unit/forge-review-guard.bats",
-          "tests/bash/unit/forge-trace-update.bats",
-          "tests/bash/unit/forge-triangle.bats",
-          "tests/bash/unit/sync-report.bats"
-        ],
-        "issues": [
-          "#63"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "877ea758",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "address 3 CodeRabbit test issues on PR #72",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/unit/forge-auto-state.bats",
-          "tests/bash/unit/forge-verify.bats"
-        ],
-        "issues": [
-          "#62",
-          "#72"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "a03d0cd7",
-        "change_type": "test",
-        "scope": "scripts",
-        "summary": "add 25 BATS tests for 6 core enforcement scripts",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/unit/forge-auto-state.bats",
-          "tests/bash/unit/forge-deps.bats",
-          "tests/bash/unit/forge-fsm.bats",
-          "tests/bash/unit/forge-phase-gate.bats",
-          "tests/bash/unit/forge-state-sync.bats",
-          "tests/bash/unit/forge-verify.bats"
-        ],
-        "issues": [
-          "#62"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "9fe88f4a",
-        "change_type": "feature",
-        "scope": "scripts",
-        "summary": "set up BATS test infrastructure + 43 unit tests",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          ".gitmodules",
-          "scripts/traceability.sh",
-          "tests/Makefile",
-          "tests/bash/unit/forge-enforce.bats",
-          "tests/bash/unit/forge-phase-map.bats",
-          "tests/bash/unit/traceability.bats",
-          "tests/bats",
-          "tests/test_helper/bats-assert",
-          "tests/test_helper/bats-support",
-          "tests/test_helper/common-setup.bash"
-        ],
-        "issues": [
-          "#58"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "1c9e0811",
-        "change_type": "feature",
-        "scope": "scripts",
-        "summary": "add bulk refactor threshold \u2014 escalate when >20 REQs suspect",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "scripts/forge-enforce.sh",
-          "scripts/req-impact-check.py"
-        ],
-        "issues": [
-          "#53"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "46a763e1",
-        "change_type": "feature",
-        "scope": "scripts",
-        "summary": "add REQ dependency chains \u2014 suspect cascading",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "scripts/req-impact-check.py"
-        ],
-        "issues": [
-          "#52"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "f23d962c",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "address 3 CodeRabbit comments on PR #55",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "scripts/forge-trace-update.sh"
-        ],
-        "issues": [
-          "#51",
-          "#55"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "14fe4874",
-        "change_type": "feature",
-        "scope": "scripts",
-        "summary": "address 9 FORGE TRACE edge cases from CodeRabbit review",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "scripts/forge-trace-update.sh"
-        ],
-        "issues": [
-          "#51"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "f4a09aaa",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "replace shell interpolation with sys.argv in forge-trace-update.sh",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "scripts/forge-trace-update.sh"
-        ],
-        "issues": [
-          "#50"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "f3c14d26",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "address 3 CodeRabbit comments on install.sh PR #47",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "install.sh"
-        ],
-        "issues": [
-          "#39",
-          "#47"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "82dc0eeb",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "fix changelog files field \u2014 use git diff-tree instead of --name-only #40 #41 #42 #43",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "forge-registry.json",
-          "scripts/forge-registry.py"
-        ],
-        "issues": [
-          "#2",
-          "#40",
-          "#41",
-          "#42",
-          "#43",
-          "#44"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "69cdb73a",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "address 8 CodeRabbit review comments on PR #45 #40 #41 #42 #43",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "forge-registry.json",
-          "scripts/forge-enforce.sh",
-          "scripts/forge-registry.py",
-          "scripts/forge-triangle.sh",
-          "scripts/req-impact-check.py"
-        ],
-        "issues": [
-          "#40",
-          "#41",
-          "#42",
-          "#43",
-          "#44",
-          "#45"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "bbb06c36",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "fix 14 issues in install.sh from CodeRabbit review",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "install.sh"
-        ],
-        "issues": [
-          "#1",
-          "#10",
-          "#11",
-          "#12",
-          "#14",
-          "#15",
-          "#17",
-          "#2",
-          "#22",
-          "#39",
-          "#4",
-          "#46",
-          "#5",
-          "#6",
-          "#7",
-          "#8",
-          "#9"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "7fbdf5f4",
-        "change_type": "feature",
-        "scope": "scripts",
-        "summary": "add REQ traceability, code ownership, suspect links, and in-file trace #40 #41 #42 #43",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md",
-          "forge-registry.json",
-          "install.sh",
-          "scripts/forge-enforce.sh",
-          "scripts/forge-ownership.sh",
-          "scripts/forge-trace-update.sh",
-          "scripts/forge-triangle.sh",
-          "scripts/req-impact-check.py",
-          "scripts/sync-report.sh",
-          "scripts/traceability.sh",
-          "templates/pre-commit"
-        ],
-        "issues": [
-          "#40",
-          "#41",
-          "#42",
-          "#43",
-          "#44"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "c735c90b",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "address all 11 CodeRabbit review comments #34 #35 #36",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "scripts/forge-registry.py",
-          "templates/commit-msg"
-        ],
-        "issues": [
-          "#34",
-          "#35",
-          "#36",
-          "#37"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "c65a8ae3",
-        "change_type": "bugfix",
-        "scope": "scripts",
-        "summary": "address CodeRabbit review \u2014 populate phase/step_pattern/is_gate in JSON, enforce scope in commit-msg #34 #35 #36",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "forge-registry.json",
-          "scripts/forge-registry.py",
-          "templates/commit-msg"
-        ],
-        "issues": [
-          "#34",
-          "#35",
-          "#36",
-          "#37"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "a101b7c6",
-        "change_type": "feature",
-        "scope": "scripts",
-        "summary": "add full traceability \u2014 phase mapping, reverse deps, flow tracking, changelog #34 #35 #36",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "scripts/forge-registry.py",
-          "templates/commit-msg"
-        ],
-        "issues": [
-          "#34",
-          "#35",
-          "#36",
-          "#37"
-        ]
-      }
-    ],
-    "rules": [
-      {
-        "date": "2026-04-06",
-        "commit": "c5c612a4",
-        "change_type": "feature",
-        "scope": "rules",
-        "summary": "extract PM behaviors into auto-loaded rules file \u2014 who vs what separation",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "agents/universal/pm-orchestrator.md",
-          "commands/forge-phases/phase-a-setup.md",
-          "docs/architecture.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "rules/pm-behaviors.md",
-          "tests/bash/unit/pm-behaviors-rules.bats",
-          "tests/bash/unit/rules-validation.bats"
-        ],
-        "issues": [
-          "#173"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "aa520697",
-        "change_type": "test",
-        "scope": "rules",
-        "summary": "add 7 auto-load validation tests for 7 rules",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/unit/rules-validation.bats"
-        ],
-        "issues": [
-          "#85"
-        ]
-      }
-    ],
-    "templates": [
-      {
-        "date": "2026-04-06",
-        "commit": "ed35ae06",
-        "change_type": "test",
-        "scope": "templates",
-        "summary": "add 10 Pipe 1/2 validation tests for templates + fix safety violation",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/forge-timeline.template.md",
-          "tests/bash/unit/templates-validation.bats"
-        ],
-        "issues": [
-          "#84"
-        ]
-      }
-    ],
-    "agents": [
-      {
-        "date": "2026-04-06",
-        "commit": "1dc6ffd8",
-        "change_type": "test",
-        "scope": "agents",
-        "summary": "add 9 schema validation tests for 54 agents",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/unit/agents-validation.bats"
-        ],
-        "issues": [
-          "#82"
-        ]
-      }
-    ],
     "general": [
+      {
+        "date": "2026-04-07",
+        "commit": "e9cce54a",
+        "change_type": "chore",
+        "scope": "general",
+        "summary": "trigger CR re-review",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "agents/universal/reviewer.md"
+        ],
+        "issues": [
+          "#192"
+        ]
+      },
       {
         "date": "2026-04-05",
         "commit": "fc32d339",
@@ -9799,6 +8621,1030 @@
         "summary": "initialize Forge \u2014 autonomous software development framework",
         "breaking": false,
         "requires_reinstall": false
+      }
+    ],
+    "agents": [
+      {
+        "date": "2026-04-07",
+        "commit": "0563962a",
+        "change_type": "bugfix",
+        "scope": "agents",
+        "summary": "CR review \u2014 6 findings on agent contracts",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "agents/universal/requirements-analyst.md",
+          "agents/universal/reviewer.md",
+          "agents/universal/system-architect.md"
+        ],
+        "issues": [
+          "#192"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "c1098cae",
+        "change_type": "feature",
+        "scope": "agents",
+        "summary": "add agent contracts \u2014 input/output/quality/handoff for Phase A agents",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "agents/universal/devops-architect.md",
+          "agents/universal/requirements-analyst.md",
+          "agents/universal/reviewer.md",
+          "agents/universal/system-architect.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json"
+        ],
+        "issues": [
+          "#192"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "1dc6ffd8",
+        "change_type": "test",
+        "scope": "agents",
+        "summary": "add 9 schema validation tests for 54 agents",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/agents-validation.bats"
+        ],
+        "issues": [
+          "#82"
+        ]
+      }
+    ],
+    "docs": [
+      {
+        "date": "2026-04-07",
+        "commit": "47d82a01",
+        "change_type": "bugfix",
+        "scope": "docs",
+        "summary": "CR re-review \u2014 3 findings fixed",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/domain-inference-rules.md",
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#189"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "57e5cd1b",
+        "change_type": "feature",
+        "scope": "docs",
+        "summary": "AI+regulated domain support, internet-first stack research",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/domain-inference-rules.md"
+        ],
+        "issues": [
+          "#189"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "600cbd94",
+        "change_type": "chore",
+        "scope": "docs",
+        "summary": "add .coderabbit.yml \u2014 enable request_changes_workflow for explicit approvals",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          ".coderabbit.yml"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "7a8311ea",
+        "change_type": "bugfix",
+        "scope": "docs",
+        "summary": "address 2 CodeRabbit comments \u2014 remove hardcoded counts in structure, fix GNU-specific flags",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "scripts/forge-readme-sync.sh"
+        ],
+        "issues": [
+          "#98"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "4732dc29",
+        "change_type": "documentation",
+        "scope": "docs",
+        "summary": "sync README with current state + create auto-sync script",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "scripts/forge-readme-sync.sh",
+          "tests/bash/unit/forge-readme-sync.bats"
+        ],
+        "issues": [
+          "#98"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "6ac8fd3f",
+        "change_type": "documentation",
+        "scope": "docs",
+        "summary": "make CodeRabbit required \u2014 used for review, architecture, design, gates",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "README.md",
+          "tests/bash/integration/coderabbit-required.bats"
+        ],
+        "issues": [
+          "#96"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "cecf7cae",
+        "change_type": "documentation",
+        "scope": "docs",
+        "summary": "create component creation protocols \u2014 scripts, commands, agents, hooks, tests",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "docs/protocols/component-creation.md",
+          "tests/bash/unit/protocols-validation.bats"
+        ],
+        "issues": [
+          "#79"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "b3f26827",
+        "change_type": "documentation",
+        "scope": "docs",
+        "summary": "simplify install section + update counts and new features",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "README.md"
+        ],
+        "issues": [
+          "#48"
+        ]
+      }
+    ],
+    "hooks": [
+      {
+        "date": "2026-04-07",
+        "commit": "f895927b",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "auto-regenerate registry on pre-commit when tracked files change",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/pre-commit"
+        ],
+        "issues": [
+          "#189"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "3ea708e6",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "visible handoff evaluation after every agent + S9 gate",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#189"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "ddbd7d1d",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "grep portability \u2014 use ERE not GNU BRE for placeholder detection",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#113"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "3825dbcc",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "fix 10 CASE detection edge cases from CodeRabbit analysis",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge.md",
+          "forge-registry.json",
+          "templates/hooks.json",
+          "tests/bash/integration/case-detection-edge-cases.bats"
+        ],
+        "issues": [
+          "#111"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "d0aa943c",
+        "change_type": "bugfix",
+        "scope": "hooks",
+        "summary": "fix broken JSON in hooks.json \u2014 unescaped quotes around CLAUDE_TOOL_INPUT",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#103"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "e0c652fe",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "improve GitHub setup guidance \u2014 detect gh CLI, auth, provide links",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/hooks.json",
+          "tests/bash/integration/github-setup.bats"
+        ],
+        "issues": [
+          "#94"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "80d0b029",
+        "change_type": "feature",
+        "scope": "hooks",
+        "summary": "refactor UserPromptSubmit \u2014 gate on /forge, add SessionStart, add CASE_RESUME",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/forge-state-sync.sh",
+          "templates/hooks.json",
+          "tests/bash/integration/hook-routing.bats"
+        ],
+        "issues": [
+          "#92"
+        ]
+      }
+    ],
+    "scripts": [
+      {
+        "date": "2026-04-07",
+        "commit": "d74f31bb",
+        "change_type": "chore",
+        "scope": "scripts",
+        "summary": "regenerate registry and dependency graph",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "docs/dependency-graph.md",
+          "forge-registry.json"
+        ],
+        "issues": [
+          "#189"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "e947a108",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "CR review \u2014 registry self-loop, changelog entry",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "forge-registry.json"
+        ],
+        "issues": [
+          "#185"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "98c5b1fe",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "natural sort for phase_index \u2014 S2 before S10",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "forge-registry.json",
+          "scripts/forge-registry.py"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "485442df",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "deduplicate issue refs in changelog \u2014 sorted(set()) on findall",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "forge-registry.json",
+          "scripts/forge-registry.py"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "a3b70a3e",
+        "change_type": "test",
+        "scope": "scripts",
+        "summary": "add 3 git reset escape tests \u2014 safe alternatives exist",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/integration/git-reset-escape.bats"
+        ],
+        "issues": [
+          "#122"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "2f020e56",
+        "change_type": "test",
+        "scope": "scripts",
+        "summary": "add 3 observer fallback tests \u2014 confirms no hang without observer",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/integration/observer-fallback.bats"
+        ],
+        "issues": [
+          "#119"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "27162ca9",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "fix 5 critical routing gaps \u2014 infra bootstrap, reset, dir guard, manifest ref #117 #118 #120 #121",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "docs/dependency-graph.md",
+          "docs/routing-analysis.md",
+          "forge-registry.json",
+          "rules/forge-philosophy.md",
+          "scripts/forge-infra-check.sh",
+          "tests/bash/integration/infra-bootstrap.bats"
+        ],
+        "issues": [
+          "#117",
+          "#118",
+          "#120",
+          "#121",
+          "#123"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "40104f14",
+        "change_type": "test",
+        "scope": "scripts",
+        "summary": "add 23 routing verification tests \u2014 CASE\u2192phase file mapping",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "README.md",
+          "forge-registry.json",
+          "tests/bash/integration/routing-verification.bats"
+        ],
+        "issues": [
+          "#115"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "48995b3c",
+        "change_type": "test",
+        "scope": "scripts",
+        "summary": "add 5 tests for forge-runner.py \u2014 100% script coverage",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/python/unit/test_forge_runner.py"
+        ],
+        "issues": [
+          "#106"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "2d38374d",
+        "change_type": "test",
+        "scope": "scripts",
+        "summary": "add 18 flow chain integration tests \u2014 write/edit/commit/gate chains",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "README.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "tests/bash/integration/flow-chains.bats"
+        ],
+        "issues": [
+          "#86"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "9c5d0cbe",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "create forge-auto-sync.sh \u2014 auto-syncs README, registry on every write",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "scripts/forge-auto-sync.sh",
+          "templates/hooks.json",
+          "templates/pre-commit",
+          "tests/bash/unit/forge-auto-sync.bats"
+        ],
+        "issues": [
+          "#105"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "9298946b",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "address all CR comments \u2014 rewrite change-validator, wire post-edit, fix paths",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/forge-change-validator.sh",
+          "templates/hooks.json",
+          "tests/bash/integration/enforcement-wiring.bats"
+        ],
+        "issues": [
+          "#100"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "6bbd554b",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "address 5 CodeRabbit comments on PR #101",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "docs/protocols/forge-meta-protocol.md",
+          "scripts/forge-change-validator.sh",
+          "templates/hooks.json",
+          "tests/bash/unit/forge-change-validator.bats"
+        ],
+        "issues": [
+          "#100",
+          "#101"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "9b17d9cb",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "create forge meta-protocol + change validator \u2014 automatic enforcement",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "docs/protocols/forge-meta-protocol.md",
+          "scripts/forge-change-validator.sh",
+          "templates/hooks.json",
+          "tests/bash/unit/forge-change-validator.bats"
+        ],
+        "issues": [
+          "#100"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "b6725901",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "wire 6 enforcement systems into hooks and gates",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-3-implement.md",
+          "commands/gate.md",
+          "templates/hooks.json",
+          "templates/pre-commit",
+          "tests/bash/integration/enforcement-wiring.bats"
+        ],
+        "issues": [
+          "#78"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "e75da210",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "create forge-test-guard.sh \u2014 detects untested scripts",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/forge-test-guard.sh",
+          "tests/bash/unit/forge-test-guard.bats"
+        ],
+        "issues": [
+          "#67"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "c06da033",
+        "change_type": "test",
+        "scope": "scripts",
+        "summary": "add 11 integration tests for git hooks + install.sh",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/integration/git-hooks.bats"
+        ],
+        "issues": [
+          "#66"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "9e643d10",
+        "change_type": "test",
+        "scope": "scripts",
+        "summary": "add 17 pytest tests for 3 Python scripts",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/python/conftest.py",
+          "tests/python/unit/__init__.py",
+          "tests/python/unit/test_forge_lint.py",
+          "tests/python/unit/test_forge_registry.py",
+          "tests/python/unit/test_req_impact_check.py"
+        ],
+        "issues": [
+          "#65"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "b04df9a9",
+        "change_type": "test",
+        "scope": "scripts",
+        "summary": "add 21 BATS tests for 7 infrastructure scripts",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/docker-state.bats",
+          "tests/bash/unit/forge-grow.bats",
+          "tests/bash/unit/forge-handshake.bats",
+          "tests/bash/unit/forge-observer.bats",
+          "tests/bash/unit/forge-shell.bats",
+          "tests/bash/unit/forge-stack.bats"
+        ],
+        "issues": [
+          "#64"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "51cb4dfa",
+        "change_type": "test",
+        "scope": "scripts",
+        "summary": "add 37 BATS tests for traceability + ownership scripts",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/forge-ownership.bats",
+          "tests/bash/unit/forge-review-guard.bats",
+          "tests/bash/unit/forge-trace-update.bats",
+          "tests/bash/unit/forge-triangle.bats",
+          "tests/bash/unit/sync-report.bats"
+        ],
+        "issues": [
+          "#63"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "877ea758",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "address 3 CodeRabbit test issues on PR #72",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/forge-auto-state.bats",
+          "tests/bash/unit/forge-verify.bats"
+        ],
+        "issues": [
+          "#62",
+          "#72"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "a03d0cd7",
+        "change_type": "test",
+        "scope": "scripts",
+        "summary": "add 25 BATS tests for 6 core enforcement scripts",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/forge-auto-state.bats",
+          "tests/bash/unit/forge-deps.bats",
+          "tests/bash/unit/forge-fsm.bats",
+          "tests/bash/unit/forge-phase-gate.bats",
+          "tests/bash/unit/forge-state-sync.bats",
+          "tests/bash/unit/forge-verify.bats"
+        ],
+        "issues": [
+          "#62"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "9fe88f4a",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "set up BATS test infrastructure + 43 unit tests",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          ".gitmodules",
+          "scripts/traceability.sh",
+          "tests/Makefile",
+          "tests/bash/unit/forge-enforce.bats",
+          "tests/bash/unit/forge-phase-map.bats",
+          "tests/bash/unit/traceability.bats",
+          "tests/bats",
+          "tests/test_helper/bats-assert",
+          "tests/test_helper/bats-support",
+          "tests/test_helper/common-setup.bash"
+        ],
+        "issues": [
+          "#58"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "1c9e0811",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "add bulk refactor threshold \u2014 escalate when >20 REQs suspect",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/forge-enforce.sh",
+          "scripts/req-impact-check.py"
+        ],
+        "issues": [
+          "#53"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "46a763e1",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "add REQ dependency chains \u2014 suspect cascading",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/req-impact-check.py"
+        ],
+        "issues": [
+          "#52"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "f23d962c",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "address 3 CodeRabbit comments on PR #55",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/forge-trace-update.sh"
+        ],
+        "issues": [
+          "#51",
+          "#55"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "14fe4874",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "address 9 FORGE TRACE edge cases from CodeRabbit review",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/forge-trace-update.sh"
+        ],
+        "issues": [
+          "#51"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "f4a09aaa",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "replace shell interpolation with sys.argv in forge-trace-update.sh",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "scripts/forge-trace-update.sh"
+        ],
+        "issues": [
+          "#50"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "f3c14d26",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "address 3 CodeRabbit comments on install.sh PR #47",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "install.sh"
+        ],
+        "issues": [
+          "#39",
+          "#47"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "82dc0eeb",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "fix changelog files field \u2014 use git diff-tree instead of --name-only #40 #41 #42 #43",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "forge-registry.json",
+          "scripts/forge-registry.py"
+        ],
+        "issues": [
+          "#2",
+          "#40",
+          "#41",
+          "#42",
+          "#43",
+          "#44"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "69cdb73a",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "address 8 CodeRabbit review comments on PR #45 #40 #41 #42 #43",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "forge-registry.json",
+          "scripts/forge-enforce.sh",
+          "scripts/forge-registry.py",
+          "scripts/forge-triangle.sh",
+          "scripts/req-impact-check.py"
+        ],
+        "issues": [
+          "#40",
+          "#41",
+          "#42",
+          "#43",
+          "#44",
+          "#45"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "bbb06c36",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "fix 14 issues in install.sh from CodeRabbit review",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "install.sh"
+        ],
+        "issues": [
+          "#1",
+          "#10",
+          "#11",
+          "#12",
+          "#14",
+          "#15",
+          "#17",
+          "#2",
+          "#22",
+          "#39",
+          "#4",
+          "#46",
+          "#5",
+          "#6",
+          "#7",
+          "#8",
+          "#9"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "7fbdf5f4",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "add REQ traceability, code ownership, suspect links, and in-file trace #40 #41 #42 #43",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "forge-registry.json",
+          "install.sh",
+          "scripts/forge-enforce.sh",
+          "scripts/forge-ownership.sh",
+          "scripts/forge-trace-update.sh",
+          "scripts/forge-triangle.sh",
+          "scripts/req-impact-check.py",
+          "scripts/sync-report.sh",
+          "scripts/traceability.sh",
+          "templates/pre-commit"
+        ],
+        "issues": [
+          "#40",
+          "#41",
+          "#42",
+          "#43",
+          "#44"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "c735c90b",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "address all 11 CodeRabbit review comments #34 #35 #36",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "scripts/forge-registry.py",
+          "templates/commit-msg"
+        ],
+        "issues": [
+          "#34",
+          "#35",
+          "#36",
+          "#37"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "c65a8ae3",
+        "change_type": "bugfix",
+        "scope": "scripts",
+        "summary": "address CodeRabbit review \u2014 populate phase/step_pattern/is_gate in JSON, enforce scope in commit-msg #34 #35 #36",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "forge-registry.json",
+          "scripts/forge-registry.py",
+          "templates/commit-msg"
+        ],
+        "issues": [
+          "#34",
+          "#35",
+          "#36",
+          "#37"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "a101b7c6",
+        "change_type": "feature",
+        "scope": "scripts",
+        "summary": "add full traceability \u2014 phase mapping, reverse deps, flow tracking, changelog #34 #35 #36",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "scripts/forge-registry.py",
+          "templates/commit-msg"
+        ],
+        "issues": [
+          "#34",
+          "#35",
+          "#36",
+          "#37"
+        ]
+      }
+    ],
+    "rules": [
+      {
+        "date": "2026-04-06",
+        "commit": "c5c612a4",
+        "change_type": "feature",
+        "scope": "rules",
+        "summary": "extract PM behaviors into auto-loaded rules file \u2014 who vs what separation",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "agents/universal/pm-orchestrator.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/architecture.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "rules/pm-behaviors.md",
+          "tests/bash/unit/pm-behaviors-rules.bats",
+          "tests/bash/unit/rules-validation.bats"
+        ],
+        "issues": [
+          "#173"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "aa520697",
+        "change_type": "test",
+        "scope": "rules",
+        "summary": "add 7 auto-load validation tests for 7 rules",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/rules-validation.bats"
+        ],
+        "issues": [
+          "#85"
+        ]
+      }
+    ],
+    "templates": [
+      {
+        "date": "2026-04-06",
+        "commit": "ed35ae06",
+        "change_type": "test",
+        "scope": "templates",
+        "summary": "add 10 Pipe 1/2 validation tests for templates + fix safety violation",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/forge-timeline.template.md",
+          "tests/bash/unit/templates-validation.bats"
+        ],
+        "issues": [
+          "#84"
+        ]
       }
     ]
   }
