@@ -458,28 +458,22 @@ Q4: "Tech preferences? Or should I recommend based on what we know?"
         Option 2: {stack} — {WHY from research, with source URLs}
         My recommendation: {pick} because {reason tied to THEIR scale + compliance + problem}"
     For full-stack: ask backend AND frontend separately.
-    Both stacks registered — lookup for EACH independently.
 
   HINTS:
     💡 Not sure about tech? I'll research what's trending for {DOMAIN} projects and recommend.
        - Tell me what languages you know and I'll find the best fit
-       - Or say "recommend" and I'll research what {DOMAIN} teams are actually using right now
+       - Or say "recommend" and I'll do the research for you
        No wrong answer — I'll help make it work with whatever you pick.
 
   FALLBACK:
     If user says "I don't know" or "whatever works":
-      → PM researches trending stacks for {DOMAIN} from internet (web search + LLM knowledge)
+      → PM MUST research trending stacks from internet (NEVER skip this step)
       → PM explains WHY from research: "Teams building {DOMAIN} tools in {current_year} are using {X} because {reason}"
-      → NEVER default to a stack just because forge has used it before
-    If user picks unfamiliar stack:
-      → PM checks stack registry. If no match: auto-create with `forge-stack.sh create {stack} --auto`
-      → PM notes: "This stack is new to forge — I'll research best practices."
+      → NEVER default to a stack from forge registry or previous projects
 
   AFTER USER ANSWERS:
-    → STACK REGISTRY: For EACH stack, check ~/.claude/stacks/
-      If match: read rules.md, agents.md, learnings.md, scaffold.md
-      If no match: auto-create with `forge-stack.sh create {stack} --auto`
-    → PM WRITES to discovery notes: stack choice, registry status
+    → PM WRITES to discovery notes: stack choice with research sources
+    → Stack registry: auto-create entry for chosen stack (`forge-stack.sh create {stack} --auto`) — this is for FUTURE reference, not for current recommendation
 
   TRANSITION: "Stack set: {BACKEND} + {FRONTEND}. Now let me suggest features based on everything so far."
 
@@ -664,9 +658,9 @@ HANDOFF METRIC (S3):
 
 PM MUST first:
 1. Read docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md → extract ACTUAL values (not placeholders)
-2. Read ~/.claude/stacks/{stack}/rules.md → include proven stack rules (if exists)
-3. Read templates/CLAUDE.template.md → follow exact structure
-4. Fetch latest docs: spawn @context-loader-agent for {stack} framework
+2. Read templates/CLAUDE.template.md → follow exact structure
+3. Fetch latest docs: spawn @context-loader-agent for {stack} framework (MANDATORY)
+4. Optionally read ~/.claude/stacks/{stack}/rules.md for reference (NEVER override internet research with registry)
 
 Execute: spawn Agent with subagent_type="system-architect"
   prompt: |
