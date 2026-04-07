@@ -384,6 +384,11 @@ SIGNAL
     assert_success
 }
 
+@test "Stop hook exits 2 on unresolved BLOCKING signals" {
+    run grep "exit 2" "$FORGE_DIR/templates/hooks.json"
+    assert_success
+}
+
 # ─── DESIGN RULES IN LOOP FILE ───
 
 @test "universal-agent-loop.md has 13 steps" {
