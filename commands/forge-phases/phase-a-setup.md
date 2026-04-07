@@ -258,7 +258,8 @@ Q1: "What are you building? Describe it in one sentence."
     - "{user's exact sentence} software requirements"
     - "{detected DOMAIN} compliance regulations"
     - "{detected DOMAIN} software common features"
-    - Use @deep-research-agent for thorough domain analysis when HIGH_RISK detected
+    - MUST use @deep-research-agent when: HIGH_RISK detected, OR compliance detected, OR AI + people-affecting domain
+    - MUST research trending tech stacks for this SPECIFIC domain from internet (NEVER default to previous project stacks)
 
   QUESTION:
     "What are you building? Describe it in one sentence."
@@ -445,28 +446,31 @@ Q4: "Tech preferences? Or should I recommend based on what we know?"
   QUESTION + OPTIONS:
     "Do you have tech preferences, or should I recommend based on your {DOMAIN} project at {SCALE_TIER} scale?"
     A) "I have preferences" → PM asks: "Backend?" then "Frontend?"
-    B) "Recommend for me" → PM checks proven stacks FIRST:
-       Run: `bash ~/.claude/scripts/forge-stack.sh list 2>/dev/null || echo "(No stack registry)"`
-       Stacks with learnings > 0 are PROVEN.
-       PM presents recommendation WITH reasoning:
-       "For a {DOMAIN} project at {SCALE_TIER} scale with {COMPLIANCE[]} compliance:
-        Backend: {recommendation} — {WHY: e.g., 'Django has built-in RBAC and audit logging needed for HIPAA'}
-        Frontend: {recommendation} — {WHY: e.g., 'React for component reuse across {N} user dashboards'}
-        {If PROVEN stack: '✓ This stack has been used in {N} previous forge projects with {learnings}'}"
+    B) "Recommend for me" → PM researches INTERNET FIRST (not forge registry):
+       1. Web search: "best tech stack for {DOMAIN} {INTENT_SEED} startup {current_year}"
+       2. Web search: "{DOMAIN} software what tech stack trending popular reliable scalable"
+       3. Web search: "AI-first {DOMAIN} tool tech stack recommendation {current_year}"
+       4. From research: present TOP 2-3 options with WHY from real-world usage
+       5. Stack registry is INFORMATIONAL ONLY — mention if forge has experience, but NEVER let it override internet research
+       PM presents recommendation WITH reasoning FROM RESEARCH:
+       "Based on what {DOMAIN} teams are using in {current_year}:
+        Option 1: {stack} — {WHY from research, with source URLs}
+        Option 2: {stack} — {WHY from research, with source URLs}
+        My recommendation: {pick} because {reason tied to THEIR scale + compliance + problem}"
     For full-stack: ask backend AND frontend separately.
     Both stacks registered — lookup for EACH independently.
 
   HINTS:
-    💡 Not sure about tech? Here's what works well for your project:
-       - If you know Python → Django or FastAPI are strong choices
-       - If you know JavaScript → Express/Next.js covers both backend and frontend
-       - For {DOMAIN} with {COMPLIANCE[]}: {specific framework that handles compliance well}
+    💡 Not sure about tech? I'll research what's trending for {DOMAIN} projects and recommend.
+       - Tell me what languages you know and I'll find the best fit
+       - Or say "recommend" and I'll research what {DOMAIN} teams are actually using right now
        No wrong answer — I'll help make it work with whatever you pick.
 
   FALLBACK:
     If user says "I don't know" or "whatever works":
-      → PM recommends based on: DOMAIN + SCALE_TIER + COMPLIANCE[] + proven stacks
-      → PM explains WHY: "I'm recommending {X} because {reason tied to their specific answers}"
+      → PM researches trending stacks for {DOMAIN} from internet (web search + LLM knowledge)
+      → PM explains WHY from research: "Teams building {DOMAIN} tools in {current_year} are using {X} because {reason}"
+      → NEVER default to a stack just because forge has used it before
     If user picks unfamiliar stack:
       → PM checks stack registry. If no match: auto-create with `forge-stack.sh create {stack} --auto`
       → PM notes: "This stack is new to forge — I'll research best practices."
