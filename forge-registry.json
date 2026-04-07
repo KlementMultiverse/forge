@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-07T09:54:33.998848+00:00",
+  "generated": "2026-04-07T10:11:33.131717+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -9,7 +9,7 @@
     "hooks": 9,
     "templates": 17,
     "rules": 9,
-    "edges": 463,
+    "edges": 464,
     "phase_mapped_components": 36,
     "flows": 9
   },
@@ -2134,8 +2134,8 @@
         "matcher": "Write|Edit",
         "depends_on": {
           "scripts": [
-            "forge-auto-sync.sh",
-            "forge-change-validator.sh"
+            "forge-change-validator.sh",
+            "forge-auto-sync.sh"
           ]
         }
       },
@@ -2146,8 +2146,8 @@
         "matcher": "Agent",
         "depends_on": {
           "scripts": [
-            "forge-auto-state.sh",
-            "forge-handoff-check.sh"
+            "forge-handoff-check.sh",
+            "forge-auto-state.sh"
           ]
         }
       },
@@ -2158,6 +2158,7 @@
         "matcher": "Skill",
         "depends_on": {
           "scripts": [
+            "forge-handoff-check.sh",
             "forge-auto-state.sh"
           ]
         }
@@ -4600,12 +4601,17 @@
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-auto-sync.sh",
+      "to": "scripts/forge-change-validator.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Write|Edit",
-      "to": "scripts/forge-change-validator.sh",
+      "to": "scripts/forge-auto-sync.sh",
+      "type": "scripts"
+    },
+    {
+      "from": "hooks/PostToolUse:Agent",
+      "to": "scripts/forge-handoff-check.sh",
       "type": "scripts"
     },
     {
@@ -4614,7 +4620,7 @@
       "type": "scripts"
     },
     {
-      "from": "hooks/PostToolUse:Agent",
+      "from": "hooks/PostToolUse:Skill",
       "to": "scripts/forge-handoff-check.sh",
       "type": "scripts"
     },
@@ -5145,7 +5151,8 @@
           "forge-handoff-check.sh"
         ],
         "hooks": [
-          "PostToolUse:Agent"
+          "PostToolUse:Agent",
+          "PostToolUse:Skill"
         ]
       },
       "commands/evolve": {
@@ -6520,6 +6527,38 @@
     }
   },
   "changelog": {
+    "templates": [
+      {
+        "date": "2026-04-07",
+        "commit": "6f1a9bf3",
+        "change_type": "bugfix",
+        "scope": "templates",
+        "summary": "nested HTML comments broke Pipe 1 safety in CLAUDE.template.md",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "templates/CLAUDE.template.md"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "ed35ae06",
+        "change_type": "test",
+        "scope": "templates",
+        "summary": "add 10 Pipe 1/2 validation tests for templates + fix safety violation",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "templates/forge-timeline.template.md",
+          "tests/bash/unit/templates-validation.bats"
+        ],
+        "issues": [
+          "#84"
+        ]
+      }
+    ],
     "general": [
       {
         "date": "2026-04-07",
@@ -9646,24 +9685,6 @@
         ],
         "issues": [
           "#85"
-        ]
-      }
-    ],
-    "templates": [
-      {
-        "date": "2026-04-06",
-        "commit": "ed35ae06",
-        "change_type": "test",
-        "scope": "templates",
-        "summary": "add 10 Pipe 1/2 validation tests for templates + fix safety violation",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "templates/forge-timeline.template.md",
-          "tests/bash/unit/templates-validation.bats"
-        ],
-        "issues": [
-          "#84"
         ]
       }
     ]

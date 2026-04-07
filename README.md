@@ -35,7 +35,7 @@ What gets installed (to `~/.claude/`, shared by all projects):
 | Rules | 9 | ~/.claude/rules/ | Global rules (security, python, docker, PM behaviors, etc.) |
 | Scripts | 31 | ~/.claude/scripts/ | Enforcement, traceability, ownership, testing |
 | Templates | 22 | ~/.claude/templates/ | Project scaffolding (CLAUDE.md, SPEC.md, hooks, etc.) |
-| Tests | 506 | tests/ | BATS + pytest test suite (100% script coverage) |
+| Tests | 520 | tests/ | BATS + pytest test suite (100% script coverage) |
 | Shell fn | 1 | ~/.bashrc / ~/.zshrc | `forge` terminal command |
 
 ---
@@ -73,7 +73,10 @@ forge.md routes to correct phase file
     v
 Phase file executes steps sequentially
   - Each step: skill (/discover) or agent (@backend-architect)
-  - PostToolUse hook auto-updates forge-state.json
+  - Universal Execution Loop runs per step (agent OR command):
+      Execute → MEASURE (handoff check) → ENHANCE if missing →
+      retry max 3 → REVERSE ENGINEER → @reviewer (rate >= 4) → PROCEED
+  - PostToolUse hook auto-updates forge-state.json + runs handoff check
   - Trace saved per step (input.md + output.md + meta.md)
     |
     v
@@ -208,8 +211,8 @@ Check FORGE.md for queued items. Loop or done.
 | 4 | PreToolUse (Bash) | Blocks: rm -rf, git push --force, reset --hard, clean -f |
 | 5 | PreToolUse (Edit) | Warns when removing >10 lines + shows IMPACT for REQ-linked files |
 | 6 | PostToolUse (Write/Edit) | Runs ruff lint + warns if file >300 lines + FORGE TRACE reminder |
-| 7 | PostToolUse (Agent) | Logs activity + updates forge-state.json |
-| 8 | PostToolUse (Skill) | Logs activity + updates forge-state.json |
+| 7 | PostToolUse (Agent) | Logs activity + updates forge-state.json + handoff check |
+| 8 | PostToolUse (Skill) | Logs activity + updates forge-state.json + handoff check |
 | 9 | PostToolUse (Bash) | Logs command to activity log |
 
 Plus two git hooks:

@@ -77,7 +77,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'D=\"$PWD\"; mkdir -p \"$D/docs\"; echo \"$(date -u +%H:%M:%S) SKILL ${CLAUDE_TOOL_INPUT_SKILL:-unknown} ${CLAUDE_TOOL_INPUT_ARGS:-}\" >> \"$D/docs/.builder-activity.log\"; bash ~/.claude/scripts/forge-auto-state.sh \"${CLAUDE_TOOL_INPUT_SKILL:-}\" \"\" \"${CLAUDE_TOOL_INPUT_ARGS:-}\" 2>/dev/null; true'"
+            "command": "bash -c 'D=\"$PWD\"; mkdir -p \"$D/docs\"; echo \"$(date -u +%H:%M:%S) SKILL ${CLAUDE_TOOL_INPUT_SKILL:-unknown} ${CLAUDE_TOOL_INPUT_ARGS:-}\" >> \"$D/docs/.builder-activity.log\"; bash ~/.claude/scripts/forge-auto-state.sh \"${CLAUDE_TOOL_INPUT_SKILL:-}\" \"\" \"${CLAUDE_TOOL_INPUT_ARGS:-}\" 2>/dev/null; NOTES=\"$D/docs/forge-trace/A02_phase-a_step-s2_discovery-notes.md\"; if [ -f \"$NOTES\" ]; then for TARGET in \"$D/CLAUDE.md\" \"$D/SPEC.md\"; do if [ -f \"$TARGET\" ]; then RESULT=$(bash ~/.claude/scripts/forge-handoff-check.sh check \"$NOTES\" \"$TARGET\" 2>&1); RC=$?; if [ $RC -eq 1 ]; then echo \"[FORGE] HANDOFF INCOMPLETE for $(basename $TARGET):\"; echo \"$RESULT\" | grep -E \"MISSING|INCOMPLETE|SCORE\"; echo \"[FORGE] PM MUST enhance prompt and retry.\"; elif [ $RC -eq 2 ]; then echo \"[FORGE] HANDOFF ERROR: malformed discovery notes or target file.\"; fi; fi; done; fi; true'"
           }
         ]
       },

@@ -1,7 +1,8 @@
 # Universal Agent Execution Loop
 
 <system-reminder>
-This loop is NON-OPTIONAL. Every agent spawn MUST follow it. Hooks report handoff status after each agent (advisory); PM MUST act on MISSING/INCOMPLETE reports.
+This loop is NON-OPTIONAL. Every step MUST follow it — whether agent spawn OR slash command.
+Hooks report handoff status after each step (advisory); PM MUST act on MISSING/INCOMPLETE reports.
 Discovery notes = single source of truth. Autoresearch is BOUNDED — NEVER invents new requirements.
 </system-reminder>
 
@@ -16,7 +17,7 @@ Discovery notes = single source of truth. Autoresearch is BOUNDED — NEVER inve
    MUST NOT APPEAR: items from EXCLUDED / rejected items
 
 3. ATTEMPT 1:
-   Spawn agent with prepared prompt → receive output
+   Execute step (spawn agent OR run command) → receive output
 
 4. MEASURE (BOUNDED by discovery notes — NEVER invent):
    FOR EACH item in MUST PROPAGATE:
