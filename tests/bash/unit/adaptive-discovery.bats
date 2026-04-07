@@ -6,7 +6,10 @@ setup() {
     _common_setup
     FORGE_DIR="$(cd "${BATS_TEST_DIRNAME}/../../.." && pwd)"
     export FORGE_DIR
-    PHASE_A="$FORGE_DIR/commands/forge-phases/phase-a-setup.md"
+    PHASE_A_DIR="$FORGE_DIR/commands/forge-phases"
+    # Search all Phase A files (main + sub-files)
+    PHASE_A_FILES="$PHASE_A_DIR/phase-a-setup.md $PHASE_A_DIR/phase-a-s2-discovery.md $PHASE_A_DIR/phase-a-s3-s5-specs.md $PHASE_A_DIR/phase-a-s6-s8-scaffold.md $PHASE_A_DIR/phase-a-s9-s10-review.md"
+    PHASE_A="$PHASE_A_DIR/phase-a-s2-discovery.md"
 }
 
 teardown() {
@@ -195,46 +198,46 @@ teardown() {
 # ─── S3 has new variables ───
 
 @test "S3 prompt has compliance variable" {
-    run grep "Compliance:.*{compliance}" "$PHASE_A"
+    run grep "Compliance:.*{compliance}" $PHASE_A_FILES
     assert_success
 }
 
 @test "S3 prompt has deployment variable" {
-    run grep "Deployment:.*{deployment}" "$PHASE_A"
+    run grep "Deployment:.*{deployment}" $PHASE_A_FILES
     assert_success
 }
 
 # ─── S4 has fixed {excluded} + new variables ───
 
 @test "S4 prompt has {excluded} variable" {
-    run grep "Excluded:.*{excluded}" "$PHASE_A"
+    run grep "Excluded:.*{excluded}" $PHASE_A_FILES
     assert_success
 }
 
 @test "S4 prompt has anti-scope enforcement" {
-    run grep -i "NEVER generate.*EXCLUDED\|anti.scope" "$PHASE_A"
+    run grep -i "NEVER generate.*EXCLUDED\|anti.scope" $PHASE_A_FILES
     assert_success
 }
 
 @test "S4 generates proof-backed REQ types" {
-    run grep "REQ-COMPLIANCE\|REQ-SCALE\|REQ-INT\|REQ-SUCCESS" "$PHASE_A"
+    run grep "REQ-COMPLIANCE\|REQ-SCALE\|REQ-INT\|REQ-SUCCESS" $PHASE_A_FILES
     assert_success
 }
 
 @test "S4 has 4-column traceability table" {
-    run grep "proof.*status\|REQ.*description.*proof" "$PHASE_A"
+    run grep "proof.*status\|REQ.*description.*proof" $PHASE_A_FILES
     assert_success
 }
 
 # ─── S9 review has new sections ───
 
 @test "S9 reviews discovery notes" {
-    run grep -i "Discovery Notes.*exists\|discovery.*notes.*14" "$PHASE_A"
+    run grep -i "Discovery Notes.*exists\|discovery.*notes.*14" $PHASE_A_FILES
     assert_success
 }
 
 @test "S9 checks anti-scope enforcement" {
-    run grep -i "EXCLUDED.*accidentally\|anti.scope.*present" "$PHASE_A"
+    run grep -i "EXCLUDED.*accidentally\|anti.scope.*present" $PHASE_A_FILES
     assert_success
 }
 
