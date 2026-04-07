@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-04-07T09:50:14.054040+00:00",
+  "generated": "2026-04-07T09:54:33.998848+00:00",
   "forge_dir": "/home/intruder/projects/forge",
   "stats": {
     "agents": 51,
@@ -2146,8 +2146,8 @@
         "matcher": "Agent",
         "depends_on": {
           "scripts": [
-            "forge-handoff-check.sh",
-            "forge-auto-state.sh"
+            "forge-auto-state.sh",
+            "forge-handoff-check.sh"
           ]
         }
       },
@@ -4610,12 +4610,12 @@
     },
     {
       "from": "hooks/PostToolUse:Agent",
-      "to": "scripts/forge-handoff-check.sh",
+      "to": "scripts/forge-auto-state.sh",
       "type": "scripts"
     },
     {
       "from": "hooks/PostToolUse:Agent",
-      "to": "scripts/forge-auto-state.sh",
+      "to": "scripts/forge-handoff-check.sh",
       "type": "scripts"
     },
     {
@@ -6520,580 +6520,27 @@
     }
   },
   "changelog": {
-    "commands": [
-      {
-        "date": "2026-04-07",
-        "commit": "a53398fe",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "CR review \u2014 hook count 8 \u2192 9",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-s6-s8-scaffold.md"
-        ],
-        "issues": [
-          "#194"
-        ]
-      },
-      {
-        "date": "2026-04-07",
-        "commit": "e87d1e05",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "remove agent selection bias \u2014 open agent routing",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-s6-s8-scaffold.md"
-        ],
-        "issues": [
-          "#194"
-        ]
-      },
-      {
-        "date": "2026-04-07",
-        "commit": "b610ed31",
-        "change_type": "refactor",
-        "scope": "commands",
-        "summary": "split phase-a-setup.md (1358\u21926 files, largest 664)",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-s2-discovery.md",
-          "commands/forge-phases/phase-a-s3-s5-specs.md",
-          "commands/forge-phases/phase-a-s6-s8-scaffold.md",
-          "commands/forge-phases/phase-a-s9-s10-review.md",
-          "commands/forge-phases/phase-a-setup.md",
-          "rules/universal-agent-loop.md",
-          "tests/bash/unit/adaptive-discovery.bats",
-          "tests/bash/unit/handoff-check.bats"
-        ],
-        "issues": [
-          "#194"
-        ]
-      },
-      {
-        "date": "2026-04-07",
-        "commit": "a23c7f2b",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "CR review \u2014 9 findings on PR",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md",
-          "templates/hooks.json",
-          "templates/pre-commit"
-        ],
-        "issues": [
-          "#190"
-        ]
-      },
-      {
-        "date": "2026-04-07",
-        "commit": "f1452284",
-        "change_type": "feature",
-        "scope": "commands",
-        "summary": "Q4 shopping cart + Q4.5 design decisions + rule categories",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md"
-        ],
-        "issues": [
-          "#191"
-        ]
-      },
-      {
-        "date": "2026-04-07",
-        "commit": "939ecc78",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "remove stack registry bias permanently",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md"
-        ],
-        "issues": [
-          "#189"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "bf2e912f",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "CR review \u2014 MUST/NEVER format, reviewer agent consistency",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md"
-        ],
-        "issues": [
-          "#187"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "03afbfec",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "Phase A live test findings \u2014 7 fixes from end-to-end run",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md"
-        ],
-        "issues": [
-          "#187"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "9ec2f596",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "CR re-review + S3-S9 gaps \u2014 handoff metrics, template fixes",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md"
-        ],
-        "issues": [
-          "#185"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "32f9fc0e",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "CR re-review \u2014 5 new findings fixed",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md",
-          "scripts/forge-handoff-check.sh"
-        ],
-        "issues": [
-          "#185"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "856d09b4",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "CR review \u2014 11 findings on universal agent loop",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md",
-          "scripts/forge-handoff-check.sh",
-          "templates/hooks.json"
-        ],
-        "issues": [
-          "#185"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "5e524962",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "CR review \u2014 protocol count, variable naming, markdown lint",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md"
-        ],
-        "issues": [
-          "#183",
-          "#184"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "e956da93",
-        "change_type": "feature",
-        "scope": "commands",
-        "summary": "universal agent execution loop with handoff metrics",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "commands/forge-phases/phase-a-setup.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "scripts/forge-handoff-check.sh",
-          "templates/hooks.json",
-          "tests/bash/unit/handoff-check.bats"
-        ],
-        "issues": [
-          "#185"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "23473c3c",
-        "change_type": "feature",
-        "scope": "commands",
-        "summary": "explicit inference chains in S2 adaptive discovery",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md",
-          "tests/bash/unit/adaptive-discovery.bats"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "2ca3108d",
-        "change_type": "feature",
-        "scope": "commands",
-        "summary": "explicit inference chains in S2 adaptive discovery",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md",
-          "tests/bash/unit/adaptive-discovery.bats"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "4103106e",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "address 3 CR comments \u2014 add missing REQ prefixes, regenerate registry",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md",
-          "forge-registry.json"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "d20ec526",
-        "change_type": "feature",
-        "scope": "commands",
-        "summary": "implement adaptive discovery \u2014 domain inference, proof trail, 14 dimensions #178",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "commands/forge-phases/phase-a-setup.md",
-          "docs/dependency-graph.md",
-          "docs/domain-inference-rules.md",
-          "docs/manifesto.md",
-          "forge-registry.json",
-          "templates/CLAUDE.template.md",
-          "templates/SPEC.template.md",
-          "templates/design-doc-completeness-checklist.md",
-          "tests/bash/unit/adaptive-discovery.bats"
-        ],
-        "issues": [
-          "#177",
-          "#178"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "cfd0075f",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "add YAML frontmatter to forge.md per Claude Code standard",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "commands/forge.md",
-          "forge-registry.json",
-          "tests/bash/unit/forge-md-frontmatter.bats"
-        ],
-        "issues": [
-          "#175"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "6f9c1ff7",
-        "change_type": "test",
-        "scope": "commands",
-        "summary": "add tsconfig + apps/__init__ scaffold tests per CR",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/unit/phase-a-fixes.bats"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "07de44b3",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "add tsconfig.json to Next.js scaffold list",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "c0833eae",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "add conftest.py to scaffold + split tests + missing tests from PR",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md",
-          "tests/bash/unit/phase-a-fixes.bats"
-        ],
-        "issues": [
-          "#144",
-          "#153",
-          "#154",
-          "#167"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "9bca6a72",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "address remaining CR comments \u2014 scaffold test, registry regenerate",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "forge-registry.json"
-        ],
-        "issues": [
-          "#154"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "cf85b472",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "address CR changes \u2014 recovery path, multi-stack downstream, full script path",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md"
-        ],
-        "issues": [
-          "#154",
-          "#167"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "8993babe",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "simplify Phase A S1 \u2014 remove duplicate detection, keep only prepare",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "commands/forge-phases/phase-a-setup.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "tests/bash/unit/phase-a-fixes.bats"
-        ],
-        "issues": [
-          "#169"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "b3be62b4",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "brownfield \u2014 multi-framework detection + missing infra check #149",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/forge-phases/phase-a-setup.md",
-          "forge-registry.json"
-        ],
-        "issues": [
-          "#149",
-          "#152"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "ecdde2e4",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "Phase A Batch 4 \u2014 state persistence + partial setup + S9 fix path #132 #156",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "commands/forge-phases/phase-a-setup.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "tests/bash/unit/phase-a-fixes.bats"
-        ],
-        "issues": [
-          "#132",
-          "#156",
-          "#159"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "bf71e57a",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "Phase A Batch 3 \u2014 S6-S8 infrastructure fixes #136 #137 #145 #157",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "commands/forge-phases/phase-a-setup.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "tests/bash/unit/phase-a-fixes.bats"
-        ],
-        "issues": [
-          "#136",
-          "#137",
-          "#145",
-          "#157",
-          "#158"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "aa742c1a",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "Phase A Batch 2 \u2014 S3-S5 generation fixes #131 #133 #139 #140",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "commands/forge-phases/phase-a-setup.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "tests/bash/unit/phase-a-fixes.bats"
-        ],
-        "issues": [
-          "#131",
-          "#133",
-          "#139",
-          "#140",
-          "#143"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "0a69d0ef",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "Phase A Batch 1 \u2014 S2 question fixes #135 #138 #146",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "commands/forge-phases/phase-a-setup.md",
-          "docs/dependency-graph.md",
-          "forge-registry.json",
-          "tests/bash/unit/phase-a-fixes.bats"
-        ],
-        "issues": [
-          "#135",
-          "#138",
-          "#146",
-          "#147"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "2c6f13c7",
-        "change_type": "bugfix",
-        "scope": "commands",
-        "summary": "Phase A S1 \u2014 add git init guard if .git missing",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "README.md",
-          "commands/forge-phases/phase-a-setup.md",
-          "forge-registry.json",
-          "tests/bash/unit/phase-a-fixes.bats"
-        ],
-        "issues": [
-          "#129",
-          "#130",
-          "#134",
-          "#155"
-        ]
-      },
-      {
-        "date": "2026-04-06",
-        "commit": "9fc956a4",
-        "change_type": "test",
-        "scope": "commands",
-        "summary": "add 6 validation tests for 45 commands",
-        "breaking": false,
-        "requires_reinstall": false,
-        "files": [
-          "tests/bash/unit/all-commands-validation.bats"
-        ],
-        "issues": [
-          "#83"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "90a0c99f",
-        "change_type": "feature",
-        "scope": "commands",
-        "summary": "add 9 sc:* commands from SuperClaude \u2014 unblocks Phase 2, 4, 5",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/sc-analyze.md",
-          "commands/sc-cleanup.md",
-          "commands/sc-document.md",
-          "commands/sc-estimate.md",
-          "commands/sc-improve.md",
-          "commands/sc-reflect.md",
-          "commands/sc-save.md",
-          "commands/sc-test.md",
-          "commands/sc-workflow.md",
-          "tests/bash/unit/sc-commands.bats"
-        ],
-        "issues": [
-          "#61"
-        ]
-      },
-      {
-        "date": "2026-04-05",
-        "commit": "ac88ee95",
-        "change_type": "feature",
-        "scope": "commands",
-        "summary": "create /autoresearch command \u2014 unblocks Phase 5 step 54",
-        "breaking": false,
-        "requires_reinstall": true,
-        "files": [
-          "commands/autoresearch.md",
-          "tests/bash/unit/autoresearch-command.bats"
-        ],
-        "issues": [
-          "#60"
-        ]
-      }
-    ],
     "general": [
+      {
+        "date": "2026-04-07",
+        "commit": "bd285942",
+        "change_type": "test",
+        "scope": "general",
+        "summary": "Phase A master test matrix \u2014 68 tests + fix split references",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "README.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "tests/bash/unit/phase-a-fixes.bats",
+          "tests/bash/unit/phase-a-matrix.bats",
+          "tests/bash/unit/rules-validation.bats"
+        ],
+        "issues": [
+          "#68"
+        ]
+      },
       {
         "date": "2026-04-07",
         "commit": "e9cce54a",
@@ -8621,6 +8068,579 @@
         "summary": "initialize Forge \u2014 autonomous software development framework",
         "breaking": false,
         "requires_reinstall": false
+      }
+    ],
+    "commands": [
+      {
+        "date": "2026-04-07",
+        "commit": "a53398fe",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "CR review \u2014 hook count 8 \u2192 9",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-s6-s8-scaffold.md"
+        ],
+        "issues": [
+          "#194"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "e87d1e05",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "remove agent selection bias \u2014 open agent routing",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-s6-s8-scaffold.md"
+        ],
+        "issues": [
+          "#194"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "b610ed31",
+        "change_type": "refactor",
+        "scope": "commands",
+        "summary": "split phase-a-setup.md (1358\u21926 files, largest 664)",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-s2-discovery.md",
+          "commands/forge-phases/phase-a-s3-s5-specs.md",
+          "commands/forge-phases/phase-a-s6-s8-scaffold.md",
+          "commands/forge-phases/phase-a-s9-s10-review.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "rules/universal-agent-loop.md",
+          "tests/bash/unit/adaptive-discovery.bats",
+          "tests/bash/unit/handoff-check.bats"
+        ],
+        "issues": [
+          "#194"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "a23c7f2b",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "CR review \u2014 9 findings on PR",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "templates/hooks.json",
+          "templates/pre-commit"
+        ],
+        "issues": [
+          "#190"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "f1452284",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "Q4 shopping cart + Q4.5 design decisions + rule categories",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md"
+        ],
+        "issues": [
+          "#191"
+        ]
+      },
+      {
+        "date": "2026-04-07",
+        "commit": "939ecc78",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "remove stack registry bias permanently",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md"
+        ],
+        "issues": [
+          "#189"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "bf2e912f",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "CR review \u2014 MUST/NEVER format, reviewer agent consistency",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md"
+        ],
+        "issues": [
+          "#187"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "03afbfec",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "Phase A live test findings \u2014 7 fixes from end-to-end run",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md"
+        ],
+        "issues": [
+          "#187"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "9ec2f596",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "CR re-review + S3-S9 gaps \u2014 handoff metrics, template fixes",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md"
+        ],
+        "issues": [
+          "#185"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "32f9fc0e",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "CR re-review \u2014 5 new findings fixed",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "scripts/forge-handoff-check.sh"
+        ],
+        "issues": [
+          "#185"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "856d09b4",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "CR review \u2014 11 findings on universal agent loop",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "scripts/forge-handoff-check.sh",
+          "templates/hooks.json"
+        ],
+        "issues": [
+          "#185"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "5e524962",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "CR review \u2014 protocol count, variable naming, markdown lint",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md"
+        ],
+        "issues": [
+          "#183",
+          "#184"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "e956da93",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "universal agent execution loop with handoff metrics",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "scripts/forge-handoff-check.sh",
+          "templates/hooks.json",
+          "tests/bash/unit/handoff-check.bats"
+        ],
+        "issues": [
+          "#185"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "23473c3c",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "explicit inference chains in S2 adaptive discovery",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "tests/bash/unit/adaptive-discovery.bats"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "2ca3108d",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "explicit inference chains in S2 adaptive discovery",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "tests/bash/unit/adaptive-discovery.bats"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "4103106e",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "address 3 CR comments \u2014 add missing REQ prefixes, regenerate registry",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "forge-registry.json"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "d20ec526",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "implement adaptive discovery \u2014 domain inference, proof trail, 14 dimensions #178",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/dependency-graph.md",
+          "docs/domain-inference-rules.md",
+          "docs/manifesto.md",
+          "forge-registry.json",
+          "templates/CLAUDE.template.md",
+          "templates/SPEC.template.md",
+          "templates/design-doc-completeness-checklist.md",
+          "tests/bash/unit/adaptive-discovery.bats"
+        ],
+        "issues": [
+          "#177",
+          "#178"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "cfd0075f",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "add YAML frontmatter to forge.md per Claude Code standard",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge.md",
+          "forge-registry.json",
+          "tests/bash/unit/forge-md-frontmatter.bats"
+        ],
+        "issues": [
+          "#175"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "6f9c1ff7",
+        "change_type": "test",
+        "scope": "commands",
+        "summary": "add tsconfig + apps/__init__ scaffold tests per CR",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/phase-a-fixes.bats"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "07de44b3",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "add tsconfig.json to Next.js scaffold list",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "c0833eae",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "add conftest.py to scaffold + split tests + missing tests from PR",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "tests/bash/unit/phase-a-fixes.bats"
+        ],
+        "issues": [
+          "#144",
+          "#153",
+          "#154",
+          "#167"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "9bca6a72",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "address remaining CR comments \u2014 scaffold test, registry regenerate",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "forge-registry.json"
+        ],
+        "issues": [
+          "#154"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "cf85b472",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "address CR changes \u2014 recovery path, multi-stack downstream, full script path",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md"
+        ],
+        "issues": [
+          "#154",
+          "#167"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "8993babe",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "simplify Phase A S1 \u2014 remove duplicate detection, keep only prepare",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "tests/bash/unit/phase-a-fixes.bats"
+        ],
+        "issues": [
+          "#169"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "b3be62b4",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "brownfield \u2014 multi-framework detection + missing infra check #149",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/forge-phases/phase-a-setup.md",
+          "forge-registry.json"
+        ],
+        "issues": [
+          "#149",
+          "#152"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "ecdde2e4",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "Phase A Batch 4 \u2014 state persistence + partial setup + S9 fix path #132 #156",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "tests/bash/unit/phase-a-fixes.bats"
+        ],
+        "issues": [
+          "#132",
+          "#156",
+          "#159"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "bf71e57a",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "Phase A Batch 3 \u2014 S6-S8 infrastructure fixes #136 #137 #145 #157",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "tests/bash/unit/phase-a-fixes.bats"
+        ],
+        "issues": [
+          "#136",
+          "#137",
+          "#145",
+          "#157",
+          "#158"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "aa742c1a",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "Phase A Batch 2 \u2014 S3-S5 generation fixes #131 #133 #139 #140",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "tests/bash/unit/phase-a-fixes.bats"
+        ],
+        "issues": [
+          "#131",
+          "#133",
+          "#139",
+          "#140",
+          "#143"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "0a69d0ef",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "Phase A Batch 1 \u2014 S2 question fixes #135 #138 #146",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "docs/dependency-graph.md",
+          "forge-registry.json",
+          "tests/bash/unit/phase-a-fixes.bats"
+        ],
+        "issues": [
+          "#135",
+          "#138",
+          "#146",
+          "#147"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "2c6f13c7",
+        "change_type": "bugfix",
+        "scope": "commands",
+        "summary": "Phase A S1 \u2014 add git init guard if .git missing",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "README.md",
+          "commands/forge-phases/phase-a-setup.md",
+          "forge-registry.json",
+          "tests/bash/unit/phase-a-fixes.bats"
+        ],
+        "issues": [
+          "#129",
+          "#130",
+          "#134",
+          "#155"
+        ]
+      },
+      {
+        "date": "2026-04-06",
+        "commit": "9fc956a4",
+        "change_type": "test",
+        "scope": "commands",
+        "summary": "add 6 validation tests for 45 commands",
+        "breaking": false,
+        "requires_reinstall": false,
+        "files": [
+          "tests/bash/unit/all-commands-validation.bats"
+        ],
+        "issues": [
+          "#83"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "90a0c99f",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "add 9 sc:* commands from SuperClaude \u2014 unblocks Phase 2, 4, 5",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/sc-analyze.md",
+          "commands/sc-cleanup.md",
+          "commands/sc-document.md",
+          "commands/sc-estimate.md",
+          "commands/sc-improve.md",
+          "commands/sc-reflect.md",
+          "commands/sc-save.md",
+          "commands/sc-test.md",
+          "commands/sc-workflow.md",
+          "tests/bash/unit/sc-commands.bats"
+        ],
+        "issues": [
+          "#61"
+        ]
+      },
+      {
+        "date": "2026-04-05",
+        "commit": "ac88ee95",
+        "change_type": "feature",
+        "scope": "commands",
+        "summary": "create /autoresearch command \u2014 unblocks Phase 5 step 54",
+        "breaking": false,
+        "requires_reinstall": true,
+        "files": [
+          "commands/autoresearch.md",
+          "tests/bash/unit/autoresearch-command.bats"
+        ],
+        "issues": [
+          "#60"
+        ]
       }
     ],
     "agents": [

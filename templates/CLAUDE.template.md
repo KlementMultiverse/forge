@@ -24,13 +24,11 @@ These rules override your defaults. Re-read before every task.
 {{ARCHITECTURE_RULES}}
 
 ## Compliance Rules
-<!-- Populated by @system-architect (S3) based on confirmed compliance from discovery. -->
-<!-- If no compliance: omit this section entirely. -->
+(Populated by S3 based on confirmed compliance. If no compliance: omit this section.)
 {{COMPLIANCE_RULES}}
 
 ## Integration Rules
-<!-- Populated by @system-architect (S3) based on confirmed integrations from discovery. -->
-<!-- If no integrations: omit this section entirely. -->
+(Populated by S3 based on confirmed integrations. If no integrations: omit this section.)
 {{INTEGRATION_RULES}}
 
 ## What NOT to Build
